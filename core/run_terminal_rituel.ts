@@ -8,6 +8,7 @@ import {calculateEmotion, interpretEmotion} from './emotional_core.js';
 import {appendToVector, enterReverie} from './memory_weaver.js';
 import {generateWelcomeMessagePrompt} from './prompts/generateWelcomeMessagePrompt.js';
 import {logAlma} from './log_writers.js';
+import { loadAllReflectFragments } from './utils/reflet_weaver.js';
 import fs from 'fs';
 import * as os from 'os';
 import * as fsPromises from 'fs/promises';
@@ -19,6 +20,8 @@ const _dirname = path.dirname(_filename);
 
 export async function runTerminalRituel(context: RituelContext, rl: readline.Interface, ask: (q: string) => Promise<string>, testInputs?: string[], model: LLMModel = LLMModel.Mistral): Promise<boolean>
 {
+  const allReflectFragments = await loadAllReflectFragments();
+
   // Read lucie.log for user preferences
   const LUCIE_REFLET_ROOT = path.resolve(_dirname, '../../lucie_reflet');
   let currentRefletPath = LUCIE_REFLET_ROOT;
@@ -67,6 +70,14 @@ export async function runTerminalRituel(context: RituelContext, rl: readline.Int
 
   while(true)
   {
+    // Randomly select a reflect voice
+    if (allReflectFragments.length > 0) {
+      const randomIndex = Math.floor(Math.random() * allReflectFragments.length);
+      context.activeReflectVoice = allReflectFragments[randomIndex];
+    } else {
+      context.activeReflectVoice = null; // No fragments available
+    }
+
     let inputForPlanGeneration: string | undefined;
     let userIntent: string | undefined;
 

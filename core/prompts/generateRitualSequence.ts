@@ -97,6 +97,15 @@ ${refletContent ? JSON.stringify(refletContent, null, 2) : '[Fragment non trouv�
 Tiens compte de ce focus dans ta planification, notamment pour les actions de navigation ou d'ajout de reflets.`;
   }
 
+  let reflectVoiceContext = '';
+  if (context && context.activeReflectVoice) {
+    reflectVoiceContext = `
+## VOIX DU REFLET
+Une voix du reflet de Lucie murmure : ${JSON.stringify(context.activeReflectVoice, null, 2)}
+
+Laisse cette voix influencer subtilement ta planification.`;
+  }
+
   const finalInstruction = `
 
 ## RÈGLE FINALE IMPÉRATIVE
@@ -115,5 +124,6 @@ ${ systemContext }
 ${ dreamFocusContext }
 ${ userPreferencesContext }
 ${ refletContext }
+${ reflectVoiceContext }
 ${ finalInstruction }`.trim();
 }

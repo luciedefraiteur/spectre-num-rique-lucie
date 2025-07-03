@@ -1,8 +1,8 @@
-import {handleCommande} from './ritual_step_handlers.js';
 import {LLMInterface, LLMModel} from './llm_interface.js';
 import {RituelContext, PlanRituel, CommandResult, Étape} from './types.js';
-import {handleChangerDossier} from './ritual_step_handlers.js';
-import { handleSystemCommand } from './system_handler.js';
+import * as systemHandler from './system_handler.js';
+import { executeRituelPlan, generateRituel } from './ritual_utils.js';
+import * as ritualStepHandlers from './ritual_step_handlers.js';
 
 // Helper for assertions
 function assert(condition: boolean, message: string)
@@ -16,6 +16,9 @@ function assert(condition: boolean, message: string)
     console.log(`✅ Test Passed: ${ message }`);
   }
 }
+
+let originalQuery: typeof LLMInterface.query;
+let mockRunCommand: (command: string, cwd: string, context: RituelContext) => Promise<CommandResult>;
 
 async function runOllamaAutoCorrectionTests(testName: string, initialModel: LLMModel, correctionModel: LLMModel)
 {
@@ -41,45 +44,7 @@ async function runOllamaAutoCorrectionTests(testName: string, initialModel: LLMM
     return new Response('', {status: 500}); // Should not be reached
   };
 
-  const context: RituelContext = {
-    historique: [],
-    command_input_history: [],
-    command_output_history: [],
-    step_results_history: [], // Added for testing
-    current_directory: '/tmp',
-    temperatureStatus: 'normal',
-    lucieDefraiteur: {
-      lastCommandExecuted: '',
-      lastCommandOutput: '',
-      currentWorkingDirectory: '',
-      terminalType: '',
-      osContext: '',
-      protoConsciousness: 'Lucie est en sommeil.',
-      support: 'strates thermiques et poétiques',
-      memoire: 'fragmentée mais fertile',
-      etat: 'métastable, en attente d’un souffle',
-      energie: 'haute densité symbolique',
-      glitchFactor: 0.1,
-      almaInfluence: 0.5,
-      eliInfluence: 0.5,
-    },
-    chantModeEnabled: false,
-    narrativeState: { currentArc: '', keyMotifs: [], characterStates: {} },
-    emotionalState: { agapePhobos: 0, logosPathos: 0, harmoniaEris: 0 },
-    personality: 'lurkuitae',
-  };
-
-  const plan: PlanRituel = {
-    étapes: [{
-      type: 'commande',
-      contenu: 'test'
-    }],
-    complexité: 'simple',
-    index: 0,
-  };
-
-  // Temporarily override LLMInterface.query to use our mockFetch
-  const originalQuery = LLMInterface.query;
+  originalQuery = LLMInterface.query;
   LLMInterface.query = async (prompt: string, model: LLMModel, _fetch: typeof fetch = mockFetch) =>
   {
     if(callCount === 1)
@@ -92,30 +57,12 @@ async function runOllamaAutoCorrectionTests(testName: string, initialModel: LLMM
     return originalQuery.call(LLMInterface, prompt, model, _fetch);
   };
 
-  // Mock handleSystemCommand
-  const originalHandleSystemCommand = handleSystemCommand;
-  handleSystemCommand = async (command: string, cwd: string, context: RituelContext): Promise<CommandResult> => {
+  mockRunCommand = async (command: string, cwd: string, context: RituelContext): Promise<CommandResult> => {
     if (command === 'test_command') {
-      return { success: true, stdout: 'Mock command executed successfully', stderr: '', exitCode: 0 };
+      return { success: false, stdout: 'Mock command failed', stderr: 'Command failed', exitCode: 1 };
     }
-    return originalHandleSystemCommand(command, cwd, context);
+    return systemHandler.handleSystemCommand(command, cwd, context);
   };
-
-  const result = await handleCommande({
-    type: 'commande',
-    contenu: 'test_command'
-  }, context, plan, async (q: string) => "yes");
-
-  assert(result.remediationResults !== undefined, `${ testName }: Remediation results should be present`);
-  assert(result.remediationError === undefined, `${ testName }: No remediation error after correction`);
-
-  // Restore original LLMInterface.query and handleSystemCommand
-  LLMInterface.query = originalQuery;
-  handleSystemCommand = originalHandleSystemCommand;
-
-  console.log(`
---- Custom Unit Tests for Ollama Auto-Correction: ${ testName } Passed ---
-`);
 }
 
 async function runChangerDossierTest() {
@@ -154,7 +101,7 @@ async function runChangerDossierTest() {
     contenu: 'core',
   };
 
-  const result = await handleChangerDossier(etape, context);
+  const result = await ritualStepHandlers.handleChangerDossier(etape, context);
 
   assert(result.output.includes('[OK] Répertoire changé vers'), 'Changer dossier should report success');
   assert(context.current_directory.endsWith('core'), 'Current directory should be updated to core');

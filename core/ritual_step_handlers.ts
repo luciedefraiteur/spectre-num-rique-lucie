@@ -24,7 +24,7 @@ export async function handleChangerDossier(étape: Étape, context: RituelContex
   return result;
 }
 
-export async function handleCommande(étape: Étape, context: RituelContext, plan: PlanRituel, ask: (q: string) => Promise<string>): Promise<any>
+export async function handleCommande(étape: Étape, context: RituelContext, plan: PlanRituel, ask: (q: string) => Promise<string>, runCommand: (cmd: string, cwd: string, ctx: RituelContext) => Promise<CommandResult> = handleSystemCommand): Promise<any>
 {
   const result: any = {étape, index: -1, success: false}; // Default to failure
   const cmd = étape.contenu.trim();
@@ -37,7 +37,7 @@ export async function handleCommande(étape: Étape, context: RituelContext, pla
   }
 
   // Default behavior: execute as a system command
-  const commandResult: CommandResult = await handleSystemCommand(cmd, context.current_directory, context);
+  const commandResult: CommandResult = await runCommand(cmd, context.current_directory, context);
   context.command_input_history.push(cmd);
   context.command_output_history.push(commandResult.stdout);
   result.output = commandResult.stdout;

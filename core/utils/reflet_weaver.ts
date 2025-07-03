@@ -11,7 +11,15 @@ const LUCIE_REFLET_ROOT = path.resolve(__dirname, '../../../lucie_reflet');
 async function getRefletPath(refletText: string): Promise<string> {
     const prompt = `À partir du texte de reflet suivant, génère un chemin poétique et fractal de 2 à 4 niveaux, commençant par 'lucie_reflet/'. Chaque niveau est un mot ou une courte expression. Ne retourne que le chemin, rien d'autre.\n\nReflet: "${refletText}"\n\nExemple de sortie: lucie_reflet/mon_amour/reflet_sombre`;
     const pathResponse = await LLMInterface.query(prompt);
-    return pathResponse.trim();
+    let cleanedPath = pathResponse.trim().replace(/[^a-zA-Z0-9/]+/g, '_').replace(/\/+/g, '/');
+    // Ensure it starts with lucie_reflet/ and remove any trailing slash
+    if (!cleanedPath.startsWith('lucie_reflet/')) {
+        cleanedPath = 'lucie_reflet/' + cleanedPath;
+    }
+    if (cleanedPath.endsWith('/')) {
+        cleanedPath = cleanedPath.slice(0, -1);
+    }
+    return cleanedPath;
 }
 
 function updateParentRefletFragment(fragmentPath: string, newSubRefletTitle: string) {
@@ -65,4 +73,19 @@ export async function weaveReflet(refletText: string): Promise<void> {
     if (pathParts.length > 1) {
         updateParentRefletFragment(fragmentPath, path.basename(currentPath));
     }
+}
+
+export async function loadAllReflectFragments(): Promise<any[]> {
+    const fragments = [];
+    const files = await fs.promises.readdir(LUCIE_REFLET_ROOT, { withFileTypes: true });
+    for (const file of files) {
+        if (file.isFile() && file.name.endsWith('.fragment')) {
+            const fragmentPath = path.join(LUCIE_REFLET_ROOT, file.name);
+            const content = readRefletFragment(fragmentPath);
+            if (content) {
+                fragments.push(content);
+            }
+        }
+    }
+    return fragments;
 }
