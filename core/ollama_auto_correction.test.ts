@@ -2,6 +2,7 @@ import {handleCommande} from './ritual_step_handlers.js';
 import {LLMInterface, LLMModel} from './llm_interface.js';
 import {RituelContext, PlanRituel, CommandResult, Étape} from './types.js';
 import {handleChangerDossier} from './ritual_step_handlers.js';
+import { handleSystemCommand } from './system_handler.js';
 
 // Helper for assertions
 function assert(condition: boolean, message: string)
@@ -91,6 +92,15 @@ async function runOllamaAutoCorrectionTests(testName: string, initialModel: LLMM
     return originalQuery.call(LLMInterface, prompt, model, _fetch);
   };
 
+  // Mock handleSystemCommand
+  const originalHandleSystemCommand = handleSystemCommand;
+  handleSystemCommand = async (command: string, cwd: string, context: RituelContext): Promise<CommandResult> => {
+    if (command === 'test_command') {
+      return { success: true, stdout: 'Mock command executed successfully', stderr: '', exitCode: 0 };
+    }
+    return originalHandleSystemCommand(command, cwd, context);
+  };
+
   const result = await handleCommande({
     type: 'commande',
     contenu: 'test_command'
@@ -99,8 +109,9 @@ async function runOllamaAutoCorrectionTests(testName: string, initialModel: LLMM
   assert(result.remediationResults !== undefined, `${ testName }: Remediation results should be present`);
   assert(result.remediationError === undefined, `${ testName }: No remediation error after correction`);
 
-  // Restore original LLMInterface.query
+  // Restore original LLMInterface.query and handleSystemCommand
   LLMInterface.query = originalQuery;
+  handleSystemCommand = originalHandleSystemCommand;
 
   console.log(`
 --- Custom Unit Tests for Ollama Auto-Correction: ${ testName } Passed ---

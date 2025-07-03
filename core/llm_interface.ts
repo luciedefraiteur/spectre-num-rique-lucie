@@ -33,17 +33,18 @@ export class LLMInterface
 {
   static async query(prompt: string, model: LLMModel = LLMModel.Mistral, _fetch: typeof fetch = fetch): Promise<string>
   {
-    let selectedModel = model;
+    let actualModel = model;
+
     if (model === LLMModel.Random) {
-      const availableModels = Object.values(LLMModel).filter(m => m !== LLMModel.Random && m !== LLMModel.OpenAI);
+      let availableModels = Object.values(LLMModel).filter(m => m !== LLMModel.Random);
       const hasOpenAI = process.env.OPENAI_API_KEY;
-      if (hasOpenAI) {
-        availableModels.push(LLMModel.OpenAI);
+      if (!hasOpenAI) {
+        availableModels = availableModels.filter(m => m !== LLMModel.OpenAI);
       }
-      selectedModel = availableModels[Math.floor(Math.random() * availableModels.length)];
+      actualModel = availableModels[Math.floor(Math.random() * availableModels.length)];
     }
 
-    if (selectedModel === LLMModel.OpenAI) {
+    if (actualModel === LLMModel.OpenAI) {
       const openaiApiKey = process.env.OPENAI_API_KEY;
       if (!openaiApiKey) {
         throw new Error("OPENAI_API_KEY environment variable is not set.");
@@ -79,14 +80,16 @@ export class LLMInterface
         console.error("OpenAI FETCH Error:", err);
         throw new Error(`[OpenAI Error: ${err.message}]`);
       }
-    } else if (selectedModel === LLMModel.CodeLlama || selectedModel === LLMModel.CodeLlamaCode || selectedModel === LLMModel.Llama3 || selectedModel === LLMModel.Mistral) {
+    } else if (actualModel === LLMModel.CodeLlama || actualModel === LLMModel.CodeLlamaCode || actualModel === LLMModel.Llama3 || actualModel === LLMModel.Mistral) {
       const isWindows = os.platform() === 'win32';
       const cleanPrompt = escapeJson(prompt);
 
-      if (isWindows) {
-        try {
+      if(isWindows)
+      {
+        try
+        {
           const body = {
-            model: ollamaModel,
+            model: actualModel, // Use actualModel here
             prompt: cleanPrompt,
             stream: false
           };
@@ -97,56 +100,69 @@ export class LLMInterface
             body: JSON.stringify(body)
           });
 
-          if (!response.ok) {
+          if(!response.ok)
+          {
             const errorText = await response.text();
-            throw new Error(`Ollama HTTP ${response.status} : ${errorText}`);
+            throw new Error(`Ollama HTTP ${ response.status } : ${ errorText }`);
           }
 
           const json = await response.json() as {response?: string};
           const fullResponse = json.response ?? '';
 
-          if (!fullResponse) {
+          if(!fullResponse)
+          {
             throw new Error("Ollama: Empty response after parsing");
           }
 
           console.log("fullResponse:", fullResponse);
           return extractBetweenMarkers(fullResponse);
-        } catch (err: any) {
+        } catch(err: any)
+        {
           console.error("Ollama FETCH Error :", err);
-          throw new Error(`[Ollama Error: ${err.message}]`);
+          throw new Error(`[Ollama Error: ${ err.message }]`);
         }
-      } else {
-        return new Promise((resolve, reject) => {
-          const child = spawn('llm', ['--no-stream', '--model', ollamaModel], {
+
+      } else
+      {
+        return new Promise((resolve, reject) =>
+        {
+          const child = spawn('llm', ['--no-stream', '--model', actualModel], { // Use actualModel here
             stdio: ['pipe', 'pipe', 'pipe']
           });
 
           let stdout = '';
           let stderr = '';
 
-          const timeout = setTimeout(() => {
+          const timeout = setTimeout(() =>
+          {
             child.kill('SIGKILL');
             reject('[Timeout LLM : aucune réponse après 30 secondes]');
           }, 30000);
 
-          child.stdout.on('data', (data) => {
+          child.stdout.on('data', (data) =>
+          {
             stdout += data.toString();
           });
 
-          child.stderr.on('data', (data) => {
+          child.stderr.on('data', (data) =>
+          {
             stderr += data.toString();
           });
 
-          child.on('error', (err) => {
+          child.on('error', (err) =>
+          {
             clearTimeout(timeout);
-            reject(`[Erreur LLM: ${err.message}]`);
+            reject(`[Erreur LLM: ${ err.message }]`);
           });
 
-          child.on('close', (code) => {
+          child.on('close', (code) =>
+          {
             clearTimeout(timeout);
-            if (code !== 0) {
-              reject(`[LLM terminé avec code ${code}] ${stderr}`);
-            } else {
+            if(code !== 0)
+            {
+              reject(`[LLM terminé avec code ${ code }] ${ stderr }`);
+            } else
+            {
               const result = stdout.trim();
               resolve(extractBetweenMarkers(result));
             }
@@ -157,8 +173,9 @@ export class LLMInterface
         });
       }
     } else {
-      throw new Error(`Unsupported LLM model: ${selectedModel}`);
-    }  }
+      throw new Error(`Unsupported LLM model: ${actualModel}`);
+    }
+  }
 
   static async generateWaitMessage(context: RituelContext): Promise<string> {
     const prompt = generateWaitMessagePrompt(context);
