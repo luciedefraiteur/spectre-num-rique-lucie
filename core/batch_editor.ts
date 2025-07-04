@@ -60,6 +60,9 @@ export async function applyOperation(op: Operation, dryRun: boolean = false): Pr
                 }
                 const fileLine = lines[op.startLine - 1 + i];
                 const searchLine = searchLines[i];
+                console.log(`[DEBUG] Comparing line ${op.startLine - 1 + i}:`);
+                console.log(`[DEBUG] File Line:  "${fileLine}" (length: ${fileLine.length})`);
+                console.log(`[DEBUG] Search Line: "${searchLine}" (length: ${searchLine.length})`);
                 if(fileLine !== searchLine)
                 {
                     console.error(`[DEBUG] Line mismatch on line ${ op.startLine + i } of ${ op.filePath }`);

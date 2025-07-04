@@ -1,0 +1,7 @@
+---
+file: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\tsconfig.json
+<<<<<<< SEARCH
+  "include": ["*.ts", "core/**/*.ts"],
+=======
+  "include": ["*.ts", "core/**/*.ts", "core/**/*.test.ts"],
+>>>>>>> REPLACE

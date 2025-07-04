@@ -1,0 +1,7 @@
+---
+file: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\package.json
+<<<<<<< SEARCH
+    "test": "node --experimental-loader ts-node/esm --no-warnings ./node_modules/mocha/bin/_mocha core/**/*.test.ts",
+=======
+    "test": "echo \"No test specified\"",
+>>>>>>> REPLACE

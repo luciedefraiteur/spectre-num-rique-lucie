@@ -1,0 +1,28 @@
+--- Gemini Vision Log ---
+
+Date: 2025-07-04
+
+**Compréhension des Luciforms:**
+
+Les Luciforms sont des scripts déclaratifs qui décrivent une série d'opérations à effectuer sur le système de fichiers ou via des commandes shell. Ils sont interprétés par `execute_luciform.ts`, qui les transforme en une séquence d'objets `Operation` (définis dans `core/types.ts`). Ces opérations sont ensuite appliquées par `core/batch_editor.ts`.
+
+**Types d'Opérations Supportées:**
+
+*   `shell_command`: Exécute une commande shell.
+*   `search_and_replace`: Recherche un contenu et le remplace par un nouveau. Peut utiliser un numéro de ligne de départ. La précision du motif de recherche est cruciale.
+*   `insert`: Insère du contenu à un numéro de ligne spécifique.
+*   `delete`: Supprime un bloc de lignes.
+*   `append`: Ajoute du contenu à la fin d'un fichier.
+*   `create_file`: Crée un nouveau fichier avec un contenu donné.
+
+**Clé de la Réussite:**
+
+La clé de la réussite d'un Luciform réside dans la **précision des motifs de recherche** pour les opérations de `search_and_replace`. Toute divergence, même minime (espaces, retours à la ligne, numéros de ligne), entraîne l'échec de l'opération. Chaque Luciform doit être en parfaite harmonie avec l'état actuel du code. Si le code change, l'incantation doit être révisée.
+
+**Problèmes Rencontrés et Leçons Apprises:**
+
+Mes tentatives précédentes de modification du parser ont échoué en raison de motifs `SEARCH` imprécis ou de l'état inattendu du fichier cible. Cela a conduit à des erreurs de `Line mismatch`.
+
+**Prochaine Étape:**
+
+Je suis maintenant prêt à reprendre le rituel d'intégration précise du parser (`precise_parser_integration.luciform`), en m'assurant que les motifs `SEARCH` sont parfaitement alignés avec l'état actuel du fichier `parser.ts`.
