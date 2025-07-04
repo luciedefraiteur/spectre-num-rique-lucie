@@ -1,0 +1,23 @@
+---
+file: core/system_handler.ts
+---
+<<<<<<< SEARCH
+:start_line:16
+-------
+export async function handleSystemCommand(input: string, cwd: string, context: RitualContext, _execAsync: (command: string, options: any) => Promise<{stdout: string; stderr: string}> = execAsync): Promise<CommandOutcome>
+=======
+export async function handleSystemCommand(input: string, cwd: string, context: RitualContext, _execAsync: (command: string, options: any) => Promise<{ stdout: string; stderr: string }> = execAsync): Promise<CommandOutcome>
+>>>>>>> REPLACE
+---
+file: main.ts
+---
+<<<<<<< SEARCH
+:start_line:3
+-------
+import {runTerminalRituel} from './core/run_terminal_rituel.js';
+=======
+import {runTerminalRitual} from './core/run_terminal_rituel.js';
+>>>>>>> REPLACE
+---
+command: npm run build
+---
