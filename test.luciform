@@ -140,6 +140,3 @@ file: test.log
 <<<<<<< APPEND
 This is a test log entry.
 >>>>>>> APPEND
----
-command: npm run build
----

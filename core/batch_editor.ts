@@ -149,7 +149,14 @@ async function applyOperation(op: Operation, dryRun: boolean): Promise<void>
     {
         case 'search_and_replace':
             originalContent = await fs.readFile(op.filePath, 'utf-8');
-            const newContent = originalContent.replace(op.searchContent.trim(), op.newContent.trim());
+            const normalizedOriginalContent = originalContent.replace(/\r\n/g, '\n');
+            const normalizedSearchContent = op.searchContent.replace(/\r\n/g, '\n');
+            const newContent = normalizedOriginalContent.replace(normalizedSearchContent, op.newContent);
+            if(originalContent === newContent)
+            {
+                console.error(`Could not find search block in ${ op.filePath }`);
+                return;
+            }
             await fs.writeFile(op.filePath, newContent, 'utf-8');
             console.log(`Successfully edited ${ op.filePath }`);
             break;

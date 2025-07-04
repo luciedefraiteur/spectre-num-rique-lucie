@@ -1,0 +1,7 @@
+---
+command: git add .
+---
+command: git commit -m "feat: finalize batch editor script and luciform format"
+---
+command: git push
+---
