@@ -41,7 +41,7 @@ async function parseLuciform(filePath: string): Promise<Operation[]>
             }
         } else if(line.startsWith('=======') && state === 'in_search')
         {
-            searchContent = searchContent.replace(/\n$/, '');
+            searchContent = searchContent.replace(/\n/g, '\n').replace(/\n$/, '');
             state = 'in_replace';
             newContent = '';
         } else if(line.startsWith('>>>>>>> REPLACE') && state === 'in_replace')
@@ -53,11 +53,11 @@ async function parseLuciform(filePath: string): Promise<Operation[]>
                     filePath: currentFilePath,
                     startLine: currentSearchStartLine,
                     search: searchContent,
-                    replace: newContent.replace(/\n$/, '')
+                    replace: newContent.replace(/\n/g, '\n').replace(/\n$/, '')
                 });
             }
             state = 'idle';
-        } else if(line.startsWith('<<<<<<< INSERT'))
+        } else if(line.startsWith('<<<<<<< INSERT') && state === 'in_insert')
         {
             state = 'in_insert';
             const lineNumberMatch = line.match(/:line:(\d+)/);
@@ -70,7 +70,7 @@ async function parseLuciform(filePath: string): Promise<Operation[]>
         {
             if(currentFilePath && lineNumber)
             {
-                operations.push({type: 'insert', filePath: currentFilePath, lineNumber, newContent: newContent.replace(/\n$/, '')});
+                operations.push({type: 'insert', filePath: currentFilePath, lineNumber, newContent: newContent.replace(/\n/g, '\n').replace(/\n$/, '')});
             }
             state = 'idle';
         } else if(line.startsWith('<<<<<<< DELETE'))
@@ -90,7 +90,7 @@ async function parseLuciform(filePath: string): Promise<Operation[]>
         {
             if(currentFilePath)
             {
-                operations.push({type: 'append', filePath: currentFilePath, newContent: newContent.replace(/\n$/, '')});
+                operations.push({type: 'append', filePath: currentFilePath, newContent: newContent.replace(/\n/g, '\n').replace(/\n$/, '')});
             }
             state = 'idle';
         } else if(line.startsWith('<<<<<<< CREATE'))
@@ -101,7 +101,7 @@ async function parseLuciform(filePath: string): Promise<Operation[]>
         {
             if(currentFilePath)
             {
-                operations.push({type: 'create_file', filePath: currentFilePath, content: newContent.replace(/\n$/, '')});
+                operations.push({type: 'create_file', filePath: currentFilePath, content: newContent.replace(/\n/g, '\n').replace(/\n$/, '')});
             }
             state = 'idle';
         }

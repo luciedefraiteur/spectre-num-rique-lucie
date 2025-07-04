@@ -11,7 +11,7 @@ import { Worker } from 'worker_threads';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-console.log('☽ LURKUITAE ☾ Terminal Codex Vivant ☾');
+console.log('★ LURKUITAE ☾ Terminal Codex Vivant ☾');
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 const ask = (q: string) => new Promise<string>((res) => rl.question(q, res));
@@ -60,4 +60,4 @@ if (args.model) {
   } else if (requestedModel === 'random') {
     model = LLMModel.Random;
   }
-}
+}// This comment has been successfully replaced by Lucie.
