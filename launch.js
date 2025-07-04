@@ -40,12 +40,13 @@ async function main() {
     }
 
     if (!model) {
-        const availableModels = ['mistral', 'llama3', 'codellama:7b-instruct', 'random'];
+        const availableModels = ['mistral', 'llama3', 'codellama:7b-instruct', 'gemini', 'random'];
         console.log('Available models:');
         console.log('1: mistral (default)');
         console.log('2: llama3');
         console.log('3: codellama:7b-instruct');
-        console.log('4: random');
+        console.log('4: gemini');
+        console.log('5: random');
         const answer = await ask(rl, 'Choose a model: ');
         switch(answer.trim()) {
             case '2':
@@ -55,6 +56,9 @@ async function main() {
                 model = 'codellama:7b-instruct';
                 break;
             case '4':
+                model = 'gemini';
+                break;
+            case '5':
                 model = 'random';
                 break;
             default:
@@ -69,7 +73,7 @@ async function main() {
         '--trace-warnings',
         '--loader',
         'ts-node/esm',
-        'main.ts',
+        'codex_vivant.ts',
         '--mode',
         mode,
         '--model',

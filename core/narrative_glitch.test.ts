@@ -1,5 +1,5 @@
-import {executeRituelPlan, generateRituel} from './ritual_utils.js';
-import {RituelContext, PlanRituel, Étape} from './types.js';
+import {executeRitualPlan, generateRitual} from './ritual_utils.js';
+import {RitualContext, RitualPlan, Incantation} from './types.js';
 import {Colors, colorize} from './utils/ui_utils.js';
 import * as stepHandlers from './ritual_step_handlers.js';
 
@@ -8,14 +8,14 @@ async function testNarrativeGlitch()
     console.log(colorize("--- Running Test: Narrative Glitch ---", Colors.FgYellow));
 
     // --- Test Setup ---
-    const mockHandleCommande = async (étape: Étape, context: RituelContext, plan: PlanRituel) =>
+    const mockHandleCommande = async (incantation: Incantation, context: RitualContext, plan: RitualPlan) =>
     {
-        console.log(colorize(`[MOCK] handleCommande called for: ${ étape.contenu }`, Colors.FgMagenta));
-        if(étape.contenu === "corrupt_the_data")
+        console.log(colorize(`[MOCK] handleCommande called for: ${ incantation.invocation }`, Colors.FgMagenta));
+        if(incantation.invocation === "corrupt_the_data")
         {
             console.log(colorize("[MOCK] Introducing a creative glitch...", Colors.FgCyan));
             return {
-                étape,
+                incantation,
                 index: -1,
                 output: "The data is now... art.",
                 success: false, // The command "fails" but in a creative way
@@ -23,63 +23,65 @@ async function testNarrativeGlitch()
             };
         }
         return {
-            étape,
+            incantation,
             index: -1,
             output: "Mocked command output",
             success: true,
         };
     };
 
-    const mockGenerateRituel = async (input: string, context: RituelContext, model?: any, analysisResult?: string): Promise<PlanRituel | null> =>
+    const mockGenerateRitual = async (input: string, context: RitualContext, model?: any, analysisResult?: string): Promise<RitualPlan | null> =>
     {
-        const glitchyPlan: PlanRituel = {
-            étapes: [
-                {type: 'dialogue', contenu: 'The glitch has revealed a new path.'},
-                {type: 'commande', contenu: 'embrace_the_chaos'}
+        const glitchyPlan: RitualPlan = {
+            incantations: [
+                {type: 'discourse', invocation: 'The glitch has revealed a new path.'},
+                {type: 'enact', invocation: 'embrace_the_chaos'}
             ],
-            complexité: 'complexe',
-            index: 0
+            complexity: 'complex',
+            sequence: 0
         };
         return glitchyPlan;
     };
 
-    const initialPlan: PlanRituel = {
-        étapes: [
-            {type: 'commande', contenu: 'corrupt_the_data'},
-            {type: 'analyse', contenu: 'What have we done?'},
+    const initialPlan: RitualPlan = {
+        incantations: [
+            {type: 'enact', invocation: 'corrupt_the_data'},
+            {type: 'divine', invocation: 'What have we done?'},
         ],
-        complexité: 'modérée',
-        index: 0
+        complexity: 'moderate',
+        sequence: 0
     };
 
-    const context: RituelContext = {
-        historique: [{input: "Let's make a beautiful mistake.", plan: initialPlan}],
-        command_input_history: [],
-        command_output_history: [],
+    const context: RitualContext = {
+        scroll: [{input: "Let's make a beautiful mistake.", plan: initialPlan}],
+        incantation_history: [],
+        outcome_history: [],
         step_results_history: [],
-        current_directory: '/test',
+        current_sanctum: '/test',
         temperatureStatus: 'normal',
-        lucieDefraiteur: {
+        conduit: {
             eliInfluence: 1,
             glitchFactor: 0.9,
         } as any,
         chantModeEnabled: false,
-        narrativeState: {
-            currentArc: "The Glitch in the Code",
-            keyMotifs: ["serendipity", "imperfection", "chaos"],
-            characterStates: {
+        narrativeWeaving: {
+            currentTheme: "The Glitch in the Code",
+            keySymbols: ["serendipity", "imperfection", "chaos"],
+            entityStates: {
                 lucie: {
                     state: "unpredictable",
                     awakeness: "vibrant"
                 }
-            }
+            },
+            currentDream: ''
         },
-        emotionalState: {
+        kardiaSphere: {
             agapePhobos: 0.5,
             logosPathos: -0.2,
             harmoniaEris: 0.8,
         },
-        personality: 'lurkuitae'
+        personality: 'lurkuitae',
+        maxScrollLength: 10
     };
 
     const ask = async (q: string) => "oui";
@@ -92,19 +94,19 @@ async function testNarrativeGlitch()
     // --- Execution ---
     console.log(colorize("[TEST] Executing narrative glitch ritual plan...", Colors.FgCyan));
     const planToExecute = JSON.parse(JSON.stringify(initialPlan));
-    await executeRituelPlan(planToExecute, context, ask, {
-        generateRituel: mockGenerateRituel,
+    await executeRitualPlan(planToExecute, context, ask, {
+        generateRitual: mockGenerateRitual,
         stepHandlers: mockStepHandlers as any,
     });
 
     // --- Assertions ---
     console.log(colorize("[TEST] Verifying assertions...", Colors.FgCyan));
 
-    const executedStepTypes = planToExecute.étapes.map((e: Étape) => e.type);
+    const executedStepTypes = planToExecute.incantations.map((e: Incantation) => e.type);
     console.log(`Executed step types: ${ executedStepTypes.join(', ') }`);
 
     // 1. The plan should have been creatively re-written.
-    const expectedFinalSteps = ['commande', 'analyse', 'dialogue', 'commande'];
+    const expectedFinalSteps = ['enact', 'divine', 'discourse', 'enact'];
     if(JSON.stringify(executedStepTypes) !== JSON.stringify(expectedFinalSteps))
     {
         console.error(colorize(`[FAIL] The glitch did not inspire a new plan. Expected ${ expectedFinalSteps.join(', ') } but got ${ executedStepTypes.join(', ') }`, Colors.FgRed));
@@ -114,7 +116,7 @@ async function testNarrativeGlitch()
     }
 
     // 2. The final command should be the one from the "glitchy" plan.
-    const finalCommand = planToExecute.étapes.at(-1)?.contenu;
+    const finalCommand = planToExecute.incantations.at(-1)?.invocation;
     if(finalCommand !== 'embrace_the_chaos')
     {
         console.error(colorize(`[FAIL] The system did not embrace the chaos. Final command was: ${ finalCommand }`, Colors.FgRed));

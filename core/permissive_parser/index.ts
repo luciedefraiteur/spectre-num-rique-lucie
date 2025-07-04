@@ -1,6 +1,6 @@
 import {Tokenizer} from './tokenizer.js';
 import {Parser} from './parser.js';
-import {PlanRituel, Étape} from '../types.js';
+import {RitualPlan, Incantation} from '../types.js';
 
 /**
  * Adapts a loosely structured object from the LLM into a strict PlanRituel.
@@ -8,17 +8,17 @@ import {PlanRituel, Étape} from '../types.js';
  * @param data The raw parsed data from the LLM.
  * @returns A valid PlanRituel object or null if adaptation fails.
  */
-function adaptToPlanRituel(data: any): PlanRituel | null
+function adaptToPlanRituel(data: any): RitualPlan | null
 {
   if(!data || typeof data !== 'object')
   {
     return null;
   }
 
-  // Case 1: It's already a valid PlanRituel (or close enough).
-  if(data.hasOwnProperty('étapes') && Array.isArray(data.étapes))
+  // Case 1: It's already a valid RitualPlan (or close enough).
+  if(data.hasOwnProperty('incantations') && Array.isArray(data.incantations))
   {
-    return data as PlanRituel;
+    return data as RitualPlan;
   }
 
   // Case 2: It's an array of steps (the hallucinated format) OR an array-like object from the permissive parser.
@@ -34,50 +34,50 @@ function adaptToPlanRituel(data: any): PlanRituel | null
 
   if(potentialArray)
   {
-    const newÉtapes: Étape[] = potentialArray.map((item: any): Étape | null =>
+    const newIncantations: Incantation[] = potentialArray.map((item: any): Incantation | null =>
     {
       if(!item || typeof item !== 'object') return null;
 
       // Attempt to map the hallucinated keys to our canonical keys.
       const type = item.type || item.step || item.action;
-      const contenu = item.contenu || item.command || item.description;
+      const invocation = item.invocation || item.command || item.description;
 
-      if(!type || !contenu) return null;
+      if(!type || !invocation) return null;
 
       return {
         type: type,
-        contenu: contenu,
+        invocation: invocation,
       };
-    }).filter((e): e is Étape => e !== null);
+    }).filter((e): e is Incantation => e !== null);
 
-    if(newÉtapes.length > 0)
+    if(newIncantations.length > 0)
     {
       return {
-        étapes: newÉtapes,
-        complexité: 'simple', // Default complexity
-        index: (potentialArray[0] && potentialArray[0].index) || 0, // Try to get index from first step, or default to 0
+        incantations: newIncantations,
+        complexity: 'simple', // Default complexity
+        sequence: (potentialArray[0] && potentialArray[0].sequence) || 0, // Try to get sequence from first step, or default to 0
       };
     }
   }
 
   // Case 3: It's a single step object, not wrapped in a plan.
-  if(data.hasOwnProperty('type') && data.hasOwnProperty('contenu'))
+  if(data.hasOwnProperty('type') && data.hasOwnProperty('invocation'))
   {
-    const etape: Étape = {
+    const incantation: Incantation = {
       type: data.type,
-      contenu: data.contenu,
+      invocation: data.invocation,
     };
     return {
-      étapes: [etape],
-      complexité: data.complexité || 'simple',
-      index: data.index || 0,
+      incantations: [incantation],
+      complexity: data.complexity || 'simple',
+      sequence: data.sequence || 0,
     };
   }
 
   return null; // If it's an unknown object format
 }
 
-export const parse = (text: string): PlanRituel | null =>
+export const parse = (text: string): RitualPlan | null =>
 {
   try
   {
@@ -88,7 +88,7 @@ export const parse = (text: string): PlanRituel | null =>
     const adaptedResult = adaptToPlanRituel(result);
     if(!adaptedResult)
     {
-      console.error(`[PARSER ADAPTER] Impossible d'adapter la sortie du LLM en PlanRituel valide. Sortie brute:`, JSON.stringify(result));
+      console.error(`[PARSER ADAPTER] Impossible d'adapter la sortie du LLM en RitualPlan valide. Sortie brute:`, JSON.stringify(result));
     }
     return adaptedResult;
 

@@ -1,7 +1,7 @@
 import {spawn} from 'child_process';
 import os from 'os';
-import { RituelContext } from './types.js';
-import { generateWaitMessagePrompt } from './prompts/generateWaitMessagePrompt.js';
+import {RitualContext} from "./types.js";
+import {generateWaitMessagePrompt} from './prompts/generateWaitMessagePrompt.js';
 
 export enum LLMModel
 {
@@ -10,6 +10,7 @@ export enum LLMModel
   Llama3 = "llama3",
   Mistral = "mistral",
   OpenAI = "openai",
+  Gemini = "gemini",
   Random = "random"
 }
 
@@ -31,56 +32,117 @@ function extractBetweenMarkers(input: string): string
 
 export class LLMInterface
 {
+  private static cache: Map<string, string> = new Map();
+
   static async query(prompt: string, model: LLMModel = LLMModel.Mistral, _fetch: typeof fetch = fetch): Promise<string>
   {
+    const cacheKey = `${ model }-${ prompt }`;
+    if(LLMInterface.cache.has(cacheKey))
+    {
+      return LLMInterface.cache.get(cacheKey)!;
+    }
+
     let actualModel = model;
 
-    if (model === LLMModel.Random) {
+    if(model === LLMModel.Random)
+    {
       let availableModels = Object.values(LLMModel).filter(m => m !== LLMModel.Random);
       const hasOpenAI = process.env.OPENAI_API_KEY;
-      if (!hasOpenAI) {
+      if(!hasOpenAI)
+      {
         availableModels = availableModels.filter(m => m !== LLMModel.OpenAI);
       }
       actualModel = availableModels[Math.floor(Math.random() * availableModels.length)];
     }
 
-    if (actualModel === LLMModel.OpenAI) {
+    if(actualModel === LLMModel.OpenAI)
+    {
       const openaiApiKey = process.env.OPENAI_API_KEY;
-      if (!openaiApiKey) {
+      if(!openaiApiKey)
+      {
         throw new Error("OPENAI_API_KEY environment variable is not set.");
       }
 
-      try {
+      try
+      {
         const response = await _fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${openaiApiKey}`
+            'Authorization': `Bearer ${ openaiApiKey }`
           },
           body: JSON.stringify({
             model: "gpt-4o", // You can make this configurable or choose a default
-            messages: [{ role: "user", content: prompt }],
+            messages: [{role: "user", content: prompt}],
             temperature: 0.7
           })
         });
 
-        if (!response.ok) {
+        if(!response.ok)
+        {
           const errorText = await response.text();
-          throw new Error(`OpenAI API Error ${response.status}: ${errorText}`);
+          throw new Error(`OpenAI API Error ${ response.status }: ${ errorText }`);
         }
 
         const json = await response.json() as any;
         const fullResponse = json.choices[0]?.message?.content ?? '';
 
-        if (!fullResponse) {
+        if(!fullResponse)
+        {
           throw new Error("OpenAI API: Empty response after parsing.");
         }
+        LLMInterface.cache.set(cacheKey, fullResponse);
         return extractBetweenMarkers(fullResponse);
-      } catch (err: any) {
+      } catch(err: any)
+      {
         console.error("OpenAI FETCH Error:", err);
-        throw new Error(`[OpenAI Error: ${err.message}]`);
+        throw new Error(`[OpenAI Error: ${ err.message }]`);
       }
-    } else if (actualModel === LLMModel.CodeLlama || actualModel === LLMModel.CodeLlamaCode || actualModel === LLMModel.Llama3 || actualModel === LLMModel.Mistral) {
+    } else if(actualModel === LLMModel.Gemini)
+    {
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      if(!geminiApiKey)
+      {
+        throw new Error("GEMINI_API_KEY environment variable is not set.");
+      }
+
+      try
+      {
+        const response = await _fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${ geminiApiKey }`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{parts: [{text: prompt}]}],
+            generationConfig: {
+              temperature: 0.7,
+            }
+          })
+        });
+
+        if(!response.ok)
+        {
+          const errorText = await response.text();
+          throw new Error(`Gemini API Error ${ response.status }: ${ errorText }`);
+        }
+
+        const json = await response.json() as any;
+        const fullResponse = json.candidates[0]?.content?.parts[0]?.text ?? '';
+
+        if(!fullResponse)
+        {
+          throw new Error("Gemini API: Empty response after parsing.");
+        }
+        LLMInterface.cache.set(cacheKey, fullResponse);
+        return extractBetweenMarkers(fullResponse);
+      } catch(err: any)
+      {
+        console.error("Gemini FETCH Error:", err);
+        throw new Error(`[Gemini Error: ${ err.message }]`);
+      }
+    } else if(actualModel === LLMModel.CodeLlama || actualModel === LLMModel.CodeLlamaCode || actualModel === LLMModel.Llama3 || actualModel === LLMModel.Mistral)
+    {
       const isWindows = os.platform() === 'win32';
       const cleanPrompt = escapeJson(prompt);
 
@@ -172,12 +234,14 @@ export class LLMInterface
           child.stdin.end();
         });
       }
-    } else {
-      throw new Error(`Unsupported LLM model: ${actualModel}`);
+    } else
+    {
+      throw new Error(`Unsupported LLM model: ${ actualModel }`);
     }
   }
 
-  static async generateWaitMessage(context: RituelContext): Promise<string> {
+  static async generateWaitMessage(context: RitualContext): Promise<string>
+  {
     const prompt = generateWaitMessagePrompt(context);
     return this.query(prompt);
   }

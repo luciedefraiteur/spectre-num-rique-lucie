@@ -1,5 +1,5 @@
 import {calculateEmotion, interpretEmotion, journeyTowards} from './emotional_core.js';
-import {RituelContext, KardiosSphairaState} from './types.js';
+import {RitualContext, KardiaSphere} from './types.js';
 import {LLMInterface} from './llm_interface.js';
 
 // Simple mock for jest
@@ -44,22 +44,23 @@ async function runTest(name: string, testFn: () => Promise<void>)
 
 runTest("Calculate Emotion produces valid state", async () =>
 {
-    const context: RituelContext = {
-        historique: [],
-        command_input_history: [],
-        command_output_history: [],
+    const context: RitualContext = {
+        scroll: [],
+        incantation_history: [],
+        outcome_history: [],
         step_results_history: [],
-        current_directory: '/test',
+        current_sanctum: '/test',
         temperatureStatus: 'normal',
-        lucieDefraiteur: {
+        conduit: {
             almaInfluence: 0.5,
             eliInfluence: 0.5,
             glitchFactor: 0.1,
         } as any,
         chantModeEnabled: false,
-        narrativeState: {} as any,
-        emotionalState: {} as any,
+        narrativeWeaving: {} as any,
+        kardiaSphere: {} as any,
         personality: 'lurkuitae',
+        maxScrollLength: 10,
     };
 
     const emotionalState = calculateEmotion(context);
@@ -80,13 +81,13 @@ runTest("Calculate Emotion produces valid state", async () =>
 
 runTest("Journey Towards moves state correctly", async () =>
 {
-    const currentState: KardiosSphairaState = {
+    const currentState: KardiaSphere = {
         agapePhobos: 0,
         logosPathos: 0,
         harmoniaEris: 0,
     };
 
-    const targetState: KardiosSphairaState = {
+    const targetState: KardiaSphere = {
         agapePhobos: 1,
         logosPathos: -1,
         harmoniaEris: 0.5,
@@ -113,7 +114,7 @@ runTest("Interpret Emotion calls LLM with correct prompt", async () =>
     const mockQuery = jest.fn<typeof LLMInterface.query>();
     LLMInterface.query = mockQuery;
 
-    const emotionalState: KardiosSphairaState = {
+    const emotionalState: KardiaSphere = {
         agapePhobos: 0.5,
         logosPathos: -0.2,
         harmoniaEris: 0.8,

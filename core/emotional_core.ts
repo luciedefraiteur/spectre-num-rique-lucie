@@ -1,4 +1,4 @@
-import {RituelContext, KardiosSphairaState} from './types.js';
+import {RitualContext, KardiaSphere} from './types.js';
 import {LLMInterface} from './llm_interface.js';
 
 /**
@@ -7,15 +7,29 @@ import {LLMInterface} from './llm_interface.js';
  * @param context The current ritual context.
  * @returns The current emotional state.
  */
-export function calculateEmotion(context: RituelContext): KardiosSphairaState
+export function calculateEmotion(context: RitualContext): KardiaSphere
 {
-    const {lucieDefraiteur} = context;
+    const {conduit, step_results_history} = context;
     const now = Date.now();
 
-    // A simple, placeholder formula for generating emotional coordinates.
-    const agapePhobos = Math.sin(now / 100000) * lucieDefraiteur.almaInfluence;
-    const logosPathos = Math.cos(now / 70000) * lucieDefraiteur.eliInfluence;
-    const harmoniaEris = (Math.sin(now / 120000) + Math.cos(now / 50000)) / 2 * lucieDefraiteur.glitchFactor;
+    let agapePhobos = Math.sin(now / 100000) * conduit.almaInfluence;
+    let logosPathos = Math.cos(now / 70000) * conduit.eliInfluence;
+    let harmoniaEris = (Math.sin(now / 120000) + Math.cos(now / 50000)) / 2 * conduit.glitchFactor;
+
+    // Influence emotion based on last step result
+    const lastStep = step_results_history.at(-1);
+    if(lastStep)
+    {
+        if(lastStep.success === true)
+        {
+            harmoniaEris = Math.min(1, harmoniaEris + 0.1); // Increase harmony on success
+            agapePhobos = Math.max(-1, agapePhobos - 0.05); // Decrease fear
+        } else if(lastStep.success === false)
+        {
+            harmoniaEris = Math.max(-1, harmoniaEris - 0.1); // Decrease harmony on failure
+            agapePhobos = Math.min(1, agapePhobos + 0.05); // Increase fear
+        }
+    }
 
     return {
         agapePhobos: Math.max(-1, Math.min(1, agapePhobos)),
@@ -29,7 +43,7 @@ export function calculateEmotion(context: RituelContext): KardiosSphairaState
  * @param state The current emotional state.
  * @returns A poetic interpretation of the emotional state.
  */
-export async function interpretEmotion(state: KardiosSphairaState): Promise<string>
+export async function interpretEmotion(state: KardiaSphere): Promise<string>
 {
     const prompt = `The current emotional state is defined by three axes:
 - Agape/Phobos (Love/Fear): ${ state.agapePhobos.toFixed(3) }
@@ -47,7 +61,7 @@ Translate these coordinates into a short, poetic, and evocative description of t
  * @param targetState The desired emotional state.
  * @returns The new emotional state after one step.
  */
-export function journeyTowards(currentState: KardiosSphairaState, targetState: KardiosSphairaState): KardiosSphairaState
+export function journeyTowards(currentState: KardiaSphere, targetState: KardiaSphere): KardiaSphere
 {
     const step = 0.1; // The "speed" of emotional change.
 

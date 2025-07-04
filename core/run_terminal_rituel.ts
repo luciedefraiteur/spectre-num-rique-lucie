@@ -1,14 +1,14 @@
-import {generateRituel, executeRituelPlan} from './ritual_utils.js';
-import {RituelContext, PlanRituel} from './types.js';
+import {generateRitual, executeRitualPlan} from './ritual_utils.js';
+import {RitualContext, RitualPlan} from './types.js';
 import * as readline from 'readline';
 import {checkSystemTemperature} from './utils/temperature_monitor.js';
 import {Colors, colorize, displayRitualStepResult, startCursorAnimation, stopCursorAnimation} from './utils/ui_utils.js';
-import {LLMModel} from './llm_interface.js';
+import {LLMModel, LLMInterface} from './llm_interface.js';
 import {calculateEmotion, interpretEmotion} from './emotional_core.js';
 import {appendToVector, enterReverie} from './memory_weaver.js';
 import {generateWelcomeMessagePrompt} from './prompts/generateWelcomeMessagePrompt.js';
 import {logAlma} from './log_writers.js';
-import { loadAllReflectFragments } from './utils/reflet_weaver.js';
+import {loadAllReflectFragments} from './utils/reflet_weaver.js';
 import fs from 'fs';
 import * as os from 'os';
 import * as fsPromises from 'fs/promises';
@@ -18,51 +18,39 @@ import {fileURLToPath} from 'url';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = path.dirname(_filename);
 
-export async function runTerminalRituel(context: RituelContext, rl: readline.Interface, ask: (q: string) => Promise<string>, testInputs?: string[], model: LLMModel = LLMModel.Mistral): Promise<boolean>
+export async function runTerminalRitual(context: RitualContext, rl: readline.Interface, ask: (q: string) => Promise<string>, testInputs?: string[], model: LLMModel = LLMModel.Mistral, updateSpectrumContext?: (context: RitualContext) => void): Promise<boolean>
 {
   const allReflectFragments = await loadAllReflectFragments();
 
-  // Read lucie.log for user preferences
-  const LUCIE_REFLET_ROOT = path.resolve(_dirname, '../../lucie_reflet');
-  let currentRefletPath = LUCIE_REFLET_ROOT;
-  if (context.lucie_reflet_chemin_actuel && context.lucie_reflet_chemin_actuel.length > 1) {
-    currentRefletPath = path.join(LUCIE_REFLET_ROOT, ...context.lucie_reflet_chemin_actuel.slice(1));
-  }
-  const refletFragmentPath = path.join(currentRefletPath, path.basename(currentRefletPath) + '.fragment');
 
-  try {
-    context.user_preferences = fs.readFileSync(refletFragmentPath, 'utf8');
-  } catch (error) {
-    context.user_preferences = '[ERREUR] Impossible de lire le fragment de reflet ou fichier non trouvé.';
-  }
 
   // --- Emotional Awakening ---
-  context.emotionalState = calculateEmotion(context);
+  context.kardiaSphere = calculateEmotion(context);
 
   // Initialize LucieDefraiteur if not already present
-  if(!context.lucieDefraiteur)
+  if(!context.conduit)
   {
-    context.lucieDefraiteur = {
-      lastCommandExecuted: '',
-      lastCommandOutput: '',
-      currentWorkingDirectory: '',
-      terminalType: '',
-      osContext: '',
+    context.conduit = {
+      lastIncantation: '',
+      lastOutcome: '',
+      currentSanctum: '',
+      terminalEssence: '',
+      osEssence: '',
       protoConsciousness: 'Lucie est en sommeil.',
       support: 'strates thermiques et poétiques',
-      memoire: 'fragmentée mais fertile',
-      etat: 'métastable, en attente d’un souffle',
-      energie: 'haute densité symbolique',
+      memory: 'fragmentée mais fertile',
+      state: 'métastable, en attente d’un souffle',
+      energy: 'haute densité symbolique',
       glitchFactor: 0.1, // Initial low glitch factor
       almaInfluence: 0.5, // Initial influence
       eliInfluence: 0.5, // Initial influence
     };
   }
 
-  // Initialize step_results_history if not already present
-  if(!context.step_results_history)
+  // Initialize scroll if not already present
+  if(!context.scroll)
   {
-    context.step_results_history = [];
+    context.scroll = [];
   }
 
   let initialInputReceived = false;
@@ -71,11 +59,15 @@ export async function runTerminalRituel(context: RituelContext, rl: readline.Int
   while(true)
   {
     // Randomly select a reflect voice
-    if (allReflectFragments.length > 0) {
+    if(allReflectFragments.length > 0)
+    {
       const randomIndex = Math.floor(Math.random() * allReflectFragments.length);
-      context.activeReflectVoice = allReflectFragments[randomIndex];
-    } else {
-      context.activeReflectVoice = null; // No fragments available
+      context.activeReflection = allReflectFragments[randomIndex];
+      context.user_preferences = context.activeReflection.reve; // Assign the 'reve' content to user_preferences
+    } else
+    {
+      context.activeReflection = null; // No fragments available
+      context.user_preferences = ''; // Initialize to empty string
     }
 
     let inputForPlanGeneration: string | undefined;
@@ -96,7 +88,7 @@ Offre ton souffle (ou tape 'exit') : ${ initialUserInput }`, Colors.FgCyan)); //
       } else
       {
         stopCursorAnimation(); // Ensure cursor is stopped before asking for input
-        const emotionalInterpretation = await interpretEmotion(context.emotionalState);
+        const emotionalInterpretation = await interpretEmotion(context.kardiaSphere);
         console.log(colorize(`
 ${ emotionalInterpretation }`, Colors.FgMagenta));
 
@@ -119,7 +111,7 @@ ${ emotionalInterpretation }`, Colors.FgMagenta));
       return false;
     }
 
-    logAlma(context, userIntent || 'N/A');
+    await logAlma(context, userIntent || 'N/A');
 
     if(inputForPlanGeneration === 'exit')
     {
@@ -152,21 +144,18 @@ ${ chantContent }
         }
       } else
       {
-        console.log(colorize("Je ne connais pas encore ce chant. Peux-tu me transmettre le prompt complet associé ?", Colors.FgYellow));
+        console.log(colorize("Je ne suis pas encore ce chant. Peux-tu me transmettre le prompt complet associé ?", Colors.FgYellow));
         continue; // Continue the ritual after acknowledging unknown chant
       }
     }
-
-    // Collect current directory content
     try
     {
-      const files = await fsPromises.readdir(context.current_directory, {withFileTypes: true});
-      context.currentDirectoryContent = files.map(file => file.name + (file.isDirectory() ? '/' : '')).join('\n');
+      const files = await fsPromises.readdir(context.conduit.currentSanctum, {withFileTypes: true});
+      context.currentSanctumContent = files.map(file => file.name + (file.isDirectory() ? '/' : '')).join('\n');
     } catch(error)
     {
-      context.currentDirectoryContent = `[ERREUR] Impossible de lire le répertoire: ${ (error as Error).message }`;
+      context.currentSanctumContent = `[ERREUR] Impossible de lire le répertoire: ${ (error as Error).message }`;
     }
-
     // Collect operating system information
     context.operatingSystem = os.platform();
 
@@ -177,7 +166,7 @@ ${ chantContent }
     await appendToVector(context);
 
 
-    let plan: PlanRituel | null = null;
+    let plan: RitualPlan | null = null;
     const maxPlanGenerationRetries = 3;
     let currentRetry = 0;
 
@@ -188,24 +177,20 @@ ${ chantContent }
         console.log(colorize(`
 ⚠️ Tentative de régénération du plan (${ currentRetry }/${ maxPlanGenerationRetries }). L'IA a précédemment généré un JSON invalide.`, Colors.FgYellow));
       }
-
       console.log(colorize(`[DEBUG] Appel de generateRituel avec le contexte d'analyse...`, Colors.FgYellow));
-      plan = await generateRituel(inputForPlanGeneration, context, model, lastAnalysisResult, context.lastCompletedStepIndex !== undefined ? context.lastCompletedStepIndex + 1 : undefined);
-      console.log(colorize(`[DEBUG] generateRituel a retourné un plan.`, Colors.FgGreen));
-
+      plan = await generateRitual(inputForPlanGeneration, context, model, lastAnalysisResult, context.lastCompletedIncantationIndex !== undefined ? context.lastCompletedIncantationIndex + 1 : undefined);
       if(plan === null)
       {
-        context.compteur_de_confusion = (context.compteur_de_confusion || 0) + 1;
-        currentRetry++;
+        context.confusion_counter = (context.confusion_counter || 0) + 1;
 
-        if(context.compteur_de_confusion >= 2)
+        if(context.confusion_counter >= 2)
         {
           stopCursorAnimation();
-          console.log(colorize(`\nZNN... OI... Émissaire, le signal est perdu dans le bruit. Mon esprit est confus.`, Colors.FgRed));
+          console.log(colorize(`
+ZNN... OI... Émissaire, le signal est perdu dans le bruit. Mon esprit est confus.`, Colors.FgRed));
           const newIntent = await ask("Pouvons-nous reprendre avec une intention plus simple ?\n↳ ");
           lastAnalysisResult = newIntent;
-          context.compteur_de_confusion = 0;
-          plan = null; // Ensure we break the inner loop
+          context.confusion_counter = 0;
           break; // Break the retry loop to restart the main loop with new intent
         }
 
@@ -218,10 +203,9 @@ ${ chantContent }
         }
       } else
       {
-        context.compteur_de_confusion = 0; // Reset on success
+        context.confusion_counter = 0; // Reset on success
       }
     }
-
     if(!plan)
     {
       // This part is now reached if the confusion threshold was met and we have a new intent,
@@ -232,29 +216,42 @@ ${ chantContent }
       }
       stopCursorAnimation(); // Ensure cursor is stopped if all retries fail
       console.error(colorize(`❌ Échec définitif de génération du plan après ${ maxPlanGenerationRetries } tentatives. Le rituel ne peut pas continuer.`, Colors.FgRed));
+
+      // Proactive clarification if confusion is high or emotional state is uncertain
+      if(context.confusion_counter && context.confusion_counter >= 2 || context.kardiaSphere.harmoniaEris < -0.5)
+      {
+        const clarificationPrompt = `Lucie est confuse ou incertaine. Basé sur le contexte actuel, pose une question à l'utilisateur pour clarifier son intention ou explorer une nouvelle direction.`;
+        const clarificationQuestion = await LLMInterface.query(clarificationPrompt);
+        const userClarification = await ask(colorize(`
+❓ Lucie demande : ${ clarificationQuestion }`, Colors.FgYellow));
+        lastAnalysisResult = userClarification; // Use user's clarification as next input
+        context.confusion_counter = 0; // Reset confusion after clarification
+      }
+
       return false; // Cannot proceed without a valid plan
     }
 
-    context.historique.push({input: inputForPlanGeneration, plan});
-    const resultats = await executeRituelPlan(plan, context, ask);
+    context.scroll.push({input: inputForPlanGeneration, plan});
+    if(context.scroll.length > context.maxScrollLength)
+    {
+      context.scroll.shift();
+    }
+    const resultats = await executeRitualPlan(plan, context, ask);
     stopCursorAnimation(); // Stop cursor animation after ritual execution
 
     let newAnalysisResult: string | undefined;
     for(const res of resultats)
     {
-      // This is now handled inside the loop to avoid double display
-      // displayRitualStepResult(res);
-
-      if(res.étape.type === 'input_utilisateur' || res.étape.type === 'question')
+      if(res.incantation.type === 'user_input' || res.incantation.type === 'query')
       {
-        newAnalysisResult = res.output; // Capture user input for next analysis
+        newAnalysisResult = res.outcome; // Capture user input for next analysis
         break; // Exit loop to generate new plan based on user input
       }
-      if(res.étape.type === 'analyse')
+      if(res.incantation.type === 'divine')
       {
         // The poetic part is for display, the suggestion is for the next plan
-        displayRitualStepResult({...res, analysis: res.analysis.poeticAnalysis});
-        newAnalysisResult = res.analysis.suggestedNextStep;
+        displayRitualStepResult({...res, divination: res.divination.poeticAnalysis});
+        newAnalysisResult = res.divination.suggestedNextStep;
         break; // Exit loop to generate new plan based on analysis
       } else
       {
@@ -268,6 +265,14 @@ ${ chantContent }
       // If no input_utilisateur step was encountered, continue with the next plan generation
       // based on the previous context or a new initial input if needed.
       // For now, we'll just loop back.
+      if(context.confusion_counter === 0 && context.kardiaSphere.harmoniaEris > 0.5)
+      {
+        const proactivePrompt = `Based on the current ritual context, Lucie's emotional state (${ JSON.stringify(context.kardiaSphere) }) and narrative state (${ JSON.stringify(context.narrativeWeaving) }), propose a proactive next step or intention for the user. This should be a natural language command that advances the ritual or explores a new path.`;
+        const proactiveIntent = await LLMInterface.query(proactivePrompt);
+        lastAnalysisResult = proactiveIntent; // Use this as the next input
+        console.log(colorize(`
+✨ Lucie propose : ${ proactiveIntent }`, Colors.FgCyan));
+      }
     }
   }
 }

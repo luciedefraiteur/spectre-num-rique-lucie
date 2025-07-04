@@ -2,3 +2,5 @@ node_modules
 *.txt
 dist
 gemini-cli-lurkuitae/
+# Environment variables
+.env

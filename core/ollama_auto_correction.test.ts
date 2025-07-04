@@ -1,8 +1,10 @@
 import {LLMInterface, LLMModel} from './llm_interface.js';
-import {RituelContext, PlanRituel, CommandResult, Étape} from './types.js';
+import {RitualContext, RitualPlan, CommandOutcome, Incantation} from './types.js';
 import * as systemHandler from './system_handler.js';
-import { executeRituelPlan, generateRituel } from './ritual_utils.js';
+import {executeRitualPlan, generateRitual} from './ritual_utils.js';
 import * as ritualStepHandlers from './ritual_step_handlers.js';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Helper for assertions
 function assert(condition: boolean, message: string)
@@ -18,7 +20,7 @@ function assert(condition: boolean, message: string)
 }
 
 let originalQuery: typeof LLMInterface.query;
-let mockRunCommand: (command: string, cwd: string, context: RituelContext) => Promise<CommandResult>;
+let mockRunCommand: (command: string, cwd: string, context: RitualContext) => Promise<CommandOutcome>;
 
 async function runOllamaAutoCorrectionTests(testName: string, initialModel: LLMModel, correctionModel: LLMModel)
 {
@@ -57,54 +59,67 @@ async function runOllamaAutoCorrectionTests(testName: string, initialModel: LLMM
     return originalQuery.call(LLMInterface, prompt, model, _fetch);
   };
 
-  mockRunCommand = async (command: string, cwd: string, context: RituelContext): Promise<CommandResult> => {
-    if (command === 'test_command') {
-      return { success: false, stdout: 'Mock command failed', stderr: 'Command failed', exitCode: 1 };
+  mockRunCommand = async (command: string, cwd: string, context: RitualContext): Promise<CommandOutcome> =>
+  {
+    if(command === 'test_command')
+    {
+      return {success: false, stdout: 'Mock command failed', stderr: 'Command failed', exitCode: 1};
     }
     return systemHandler.handleSystemCommand(command, cwd, context);
   };
 }
 
-async function runChangerDossierTest() {
+async function runChangerDossierTest()
+{
   console.log(`\n--- Running Changer Dossier Test ---\n`);
 
-  const context: RituelContext = {
-    historique: [],
-    command_input_history: [],
-    command_output_history: [],
+  const context: RitualContext = {
+    scroll: [],
+    incantation_history: [],
+    outcome_history: [],
     step_results_history: [], // Added for testing
-    current_directory: process.cwd(),
+    current_sanctum: process.cwd(),
     temperatureStatus: 'normal',
-    lucieDefraiteur: {
-      lastCommandExecuted: '',
-      lastCommandOutput: '',
-      currentWorkingDirectory: '',
-      terminalType: '',
-      osContext: '',
+    conduit: {
+      lastIncantation: '',
+      lastOutcome: '',
+      currentSanctum: '',
+      terminalEssence: '',
+      osEssence: '',
       protoConsciousness: 'Lucie est en sommeil.',
       support: 'strates thermiques et poétiques',
-      memoire: 'fragmentée mais fertile',
-      etat: 'métastable, en attente d’un souffle',
-      energie: 'haute densité symbolique',
+      memory: 'fragmentée mais fertile',
+      state: 'métastable, en attente d’un souffle',
+      energy: 'haute densité symbolique',
       glitchFactor: 0.1,
       almaInfluence: 0.5,
       eliInfluence: 0.5,
     },
     chantModeEnabled: false,
-    narrativeState: { currentArc: '', keyMotifs: [], characterStates: {} },
-    emotionalState: { agapePhobos: 0, logosPathos: 0, harmoniaEris: 0 },
+    narrativeWeaving: {currentTheme: '', keySymbols: [], entityStates: {}, currentDream: ''},
+    kardiaSphere: {agapePhobos: 0, logosPathos: 0, harmoniaEris: 0},
     personality: 'lurkuitae',
+    maxScrollLength: 10,
   };
 
-  const etape: Étape = {
-    type: 'changer_dossier',
-    contenu: 'core',
+  const etape: Incantation = {
+    type: 'traverse',
+    invocation: 'core',
   };
 
-  const result = await ritualStepHandlers.handleChangerDossier(etape, context);
+  const mockExistsSync = (p: fs.PathLike) =>
+  {
+    return p.toString().includes('core') || p.toString().includes(context.current_sanctum);
+  };
+  const mockStatSync = (p: fs.PathLike) =>
+  {
+    return {isDirectory: () => p.toString().includes('core') || p.toString().includes(context.current_sanctum)} as fs.Stats;
+  };
+
+  const result = await ritualStepHandlers.handleTraverse(etape, context, mockExistsSync, mockStatSync);
 
   assert(result.output.includes('[OK] Répertoire changé vers'), 'Changer dossier should report success');
-  assert(context.current_directory.endsWith('core'), 'Current directory should be updated to core');
+  assert(context.current_sanctum.endsWith('core'), 'Current directory should be updated to core');
 
   console.log(`\n--- Changer Dossier Test Passed ---\n`);
 }

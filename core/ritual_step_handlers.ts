@@ -2,83 +2,86 @@ import {handleSystemCommand} from './system_handler.js';
 import {LLMInterface} from './llm_interface.js';
 import {generateAnalysisPrompt} from './prompts/generateAnalysisPrompt.js';
 import {generateErrorRemediationPrompt} from './prompts/generateErrorRemediationPrompt.js';
-import {type RituelContext, type PlanRituel, CommandResult, Étape} from "./types.js";
+import {type RitualContext, type RitualPlan, type CommandOutcome, type Incantation} from "./types.js";
 import path from 'path';
 import fs from 'fs';
 import {parse} from './permissive_parser/index.js';
-import { extraireReveEtChargeUtile } from './utils/dream_parser.js';
+import {extraireReveEtChargeUtile} from './utils/dream_parser.js';
 
 
-export async function handleChangerDossier(étape: Étape, context: RituelContext): Promise<any>
+export async function handleTraverse(incantation: Incantation, context: RitualContext, existsSync: (path: fs.PathLike) => boolean = fs.existsSync, statSync: (path: fs.PathLike) => fs.Stats = fs.statSync): Promise<any>
 {
-  const result: any = {étape, index: -1}; // Index will be set by executeRituelPlan
-  const newDir = path.resolve(context.current_directory || process.cwd(), étape.contenu);
-  if(fs.existsSync(newDir) && fs.statSync(newDir).isDirectory())
+  const result: any = {incantation, index: -1};
+  const newSanctum = path.resolve(context.current_sanctum || process.cwd(), incantation.invocation);
+  if(existsSync(newSanctum) && statSync(newSanctum).isDirectory())
   {
-    context.current_directory = newDir;
-    result.output = `[OK] Répertoire changé vers ${ newDir }`;
+    context.current_sanctum = newSanctum;
+    result.outcome = `[OK] Sanctum changed to ${ newSanctum }`;
   } else
   {
-    result.output = `[ERREUR] Dossier non trouvé : ${ newDir }`;
+    result.outcome = `[ERROR] Sanctum not found: ${ newSanctum }`;
   }
   return result;
 }
 
-export async function handleCommande(étape: Étape, context: RituelContext, plan: PlanRituel, ask: (q: string) => Promise<string>, runCommand: (cmd: string, cwd: string, ctx: RituelContext) => Promise<CommandResult> = handleSystemCommand): Promise<any>
+export async function handleEnact(incantation: Incantation, context: RitualContext, plan: RitualPlan, ask: (q: string) => Promise<string>, runCommand: (cmd: string, cwd: string, ctx: RitualContext) => Promise<CommandOutcome> = handleSystemCommand): Promise<any>
 {
-  const result: any = {étape, index: -1, success: false}; // Default to failure
-  const cmd = étape.contenu.trim();
+  const result: any = {incantation, index: -1, success: false};
+  const cmd = incantation.invocation.trim();
 
-  // Permissive parser for special commands hallucinated as type: 'commande'
-  if(cmd.startsWith('changer_dossier'))
+  if(cmd.startsWith('traverse'))
   {
-    const newÉtape: Étape = {type: 'changer_dossier', contenu: cmd.replace('changer_dossier', '').trim()};
-    return handleChangerDossier(newÉtape, context);
+    const newIncantation: Incantation = {type: 'traverse', invocation: cmd.replace('traverse', '').trim()};
+    return handleTraverse(newIncantation, context);
   }
 
-  // Default behavior: execute as a system command
-  const commandResult: CommandResult = await runCommand(cmd, context.current_directory, context);
-  context.command_input_history.push(cmd);
-  context.command_output_history.push(commandResult.stdout);
-  result.output = commandResult.stdout;
-  result.stderr = commandResult.stderr;
-  result.exitCode = commandResult.exitCode;
-  result.success = commandResult.success;
-
-  // The new architecture in ritual_utils.ts will handle the failure.
-  // This handler's only job is to execute and report.
-  if(!commandResult.success)
+  const commandOutcome: CommandOutcome = await runCommand(cmd, context.current_sanctum, context);
+  context.incantation_history.push(cmd);
+  if(context.incantation_history.length > context.maxScrollLength)
   {
-    console.error(`[ERREUR COMMANDE] '${ cmd }' a échoué avec le code ${ commandResult.exitCode }. Stderr: ${ commandResult.stderr }`);
+    context.incantation_history.shift();
+  }
+  context.outcome_history.push(commandOutcome.stdout);
+  if(context.outcome_history.length > context.maxScrollLength)
+  {
+    context.outcome_history.shift();
+  }
+  result.outcome = commandOutcome.stdout;
+  result.stderr = commandOutcome.stderr;
+  result.exitCode = commandOutcome.exitCode;
+  result.success = commandOutcome.success;
+
+  if(!commandOutcome.success)
+  {
+    console.error(`[INCANTATION ERROR] '${ cmd }' failed with code ${ commandOutcome.exitCode }. Stderr: ${ commandOutcome.stderr }`);
   }
 
   return result;
 }
 
-export async function handleAnalyse(étape: Étape, context: RituelContext, index: number, plan: PlanRituel): Promise<any>
+export async function handleDivine(incantation: Incantation, context: RitualContext, index: number, plan: RitualPlan): Promise<any>
 {
-  const result: any = {étape, index};
+  const result: any = {incantation, index};
   const lastStepResult = context.step_results_history.at(-1);
-  const output = lastStepResult && lastStepResult.output !== undefined ? lastStepResult.output : '';
+  const output = lastStepResult && lastStepResult.outcome !== undefined ? lastStepResult.outcome : '';
   const prompt = generateAnalysisPrompt({
     output,
     index: index,
     plan,
-    original_input: context.historique.at(-1)?.input || '',
+    original_input: context.scroll.at(-1)?.input || '',
     context: context,
   });
   const rawResponse = await LLMInterface.query(prompt);
-  const { reve, chargeUtile: rawAnalysis } = extraireReveEtChargeUtile(rawResponse);
+  const {reve, chargeUtile: rawAnalysis} = extraireReveEtChargeUtile(rawResponse);
 
-  if (reve) {
-    // Optional: Log dream here if needed, though ritual_utils already does it.
-    // console.log(colorize(`\n🌌 Rêve d'Analyse:\n${reve}`, Colors.FgMagenta));
+  if(reve)
+  {
   }
 
   const suggestionMatch = rawAnalysis.match(/ACTION SUGGÉRÉE\s*:\s*(.*)/);
   const suggestedNextStep = suggestionMatch ? suggestionMatch[1].trim() : "Continuer.";
 
-  result.analysis = {
+  result.divination = {
     poeticAnalysis: rawAnalysis,
     suggestedNextStep: suggestedNextStep
   };
@@ -86,109 +89,108 @@ export async function handleAnalyse(étape: Étape, context: RituelContext, inde
   return result;
 }
 
-export async function handleAttente(étape: Étape, context: RituelContext): Promise<any>
+export async function handleLull(incantation: Incantation, context: RitualContext): Promise<any>
 {
-  const result: any = {étape, index: -1}; // Index will be set by executeRituelPlan
-  const ms = parseInt(étape.durée_estimée || '2000');
+  const result: any = {incantation, index: -1};
+  const ms = parseInt(incantation.estimated_duration || '2000');
 
-  // Générer et afficher le message d'attente
   const waitMessage = await LLMInterface.generateWaitMessage(context);
-  console.log(waitMessage); // Afficher le message à l'utilisateur
+  console.log(waitMessage);
 
   await new Promise(resolve => setTimeout(resolve, ms));
   result.waited = ms;
-  result.waitMessage = waitMessage; // Sauvegarder le message pour l'historique
+  result.waitMessage = waitMessage;
   return result;
 }
 
-export async function handleDialogue(étape: Étape): Promise<any>
+export async function handleDiscourse(incantation: Incantation): Promise<any>
 {
-  const result: any = {étape, index: -1}; // Index will be set by executeRituelPlan
-  result.text = étape.contenu;
+  const result: any = {incantation, index: -1};
+  result.text = incantation.invocation;
   return result;
 }
 
-export async function handleQuestion(étape: Étape, context: RituelContext, ask: (q: string) => Promise<string>): Promise<any>
+export async function handleQuery(incantation: Incantation, context: RitualContext, ask: (q: string) => Promise<string>): Promise<any>
 {
-  const result: any = {étape, index: -1}; // Index will be set by executeRituelPlan
-  console.log(`❓ ${ étape.contenu }`);
-  const userInput = await ask('↳ Réponse : ');
-  result.output = userInput;
+  const result: any = {incantation, index: -1};
+  console.log(`❓ ${ incantation.invocation }`);
+  const userInput = await ask('↳ Response: ');
+  result.outcome = userInput;
   return result;
 }
 
-export async function handleReponse(étape: Étape): Promise<any>
+export async function handleResponse(incantation: Incantation): Promise<any>
 {
-  const result: any = {étape, index: -1}; // Index will be set by executeRituelPlan
-  result.text = étape.contenu;
+  const result: any = {incantation, index: -1};
+  result.text = incantation.invocation;
   return result;
 }
 
-export async function handleVerificationPreExecution(étape: Étape, context: RituelContext): Promise<any>
+export async function handlePreExecutionCheck(incantation: Incantation, context: RitualContext): Promise<any>
 {
-  const result: any = {étape, index: -1}; // Index will be set by executeRituelPlan
-  const checkType = étape.contenu.split(' ')[0];
-  const checkValue = étape.contenu.split(' ').slice(1).join(' ');
+  const result: any = {incantation, index: -1};
+  const checkType = incantation.invocation.split(' ')[0];
+  const checkValue = incantation.invocation.split(' ').slice(1).join(' ');
   let checkPassed = false;
 
-  if(checkType === 'fichier_existe')
+  if(checkType === 'file_exists')
   {
-    const fullPath = path.resolve(context.current_directory, checkValue);
+    const fullPath = path.resolve(context.current_sanctum, checkValue);
     checkPassed = fs.existsSync(fullPath);
-    result.output = checkPassed ? `[OK] Fichier existe : ${ fullPath }` : `[ERREUR] Fichier non trouvé : ${ fullPath }`;
-  } else if(checkType === 'commande_disponible')
+    result.outcome = checkPassed ? `[OK] File exists: ${ fullPath }` : `[ERROR] File not found: ${ fullPath }`;
+  } else if(checkType === 'command_available')
   {
     try
     {
-      await handleSystemCommand(checkValue + ' --version', context.current_directory, context);
+      await handleSystemCommand(checkValue + ' --version', context.current_sanctum, context);
       checkPassed = true;
-      result.output = `[OK] Commande disponible : ${ checkValue }`;
+      result.outcome = `[OK] Command available: ${ checkValue }`;
     } catch(e)
     {
       checkPassed = false;
-      result.output = `[ERREUR] Commande non disponible : ${ checkValue }`;
+      result.outcome = `[ERROR] Command not available: ${ checkValue }`;
     }
   }
 
   result.success = checkPassed;
   if(!checkPassed)
   {
-    console.error(`[ERREUR VÉRIFICATION] ${ étape.contenu } a échoué.`);
+    console.error(`[VERIFICATION ERROR] ${ incantation.invocation } failed.`);
   }
   return result;
 }
 
-export async function handleConfirmationUtilisateur(étape: Étape, ask: (q: string) => Promise<string>): Promise<any>
+export async function handleUserConfirmation(incantation: Incantation, ask: (q: string) => Promise<string>): Promise<any>
 {
-  const result: any = {étape, index: -1}; // Index will be set by executeRituelPlan
-  const confirmation = await ask(`${ étape.contenu } (oui/non) : `);
-  result.confirmed = confirmation.toLowerCase() === 'oui';
-  result.output = result.confirmed ? "[OK] Confirmation reçue." : "[ANNULÉ] Action non confirmée.";
+  const result: any = {incantation, index: -1};
+  const confirmation = await ask(`${ incantation.invocation } (yes/no) : `);
+  result.confirmed = confirmation.toLowerCase() === 'yes';
+  result.outcome = result.confirmed ? "[OK] Confirmation received." : "[CANCELLED] Action not confirmed.";
   if(!result.confirmed)
   {
-    console.warn("[ANNULATION] Action annulée par l'utilisateur.");
+    console.warn("[CANCELLED] Action cancelled by user.");
   }
   return result;
 }
 
-export async function handleGenerationCode(étape: Étape): Promise<any>
+export async function handleCodeGeneration(incantation: Incantation): Promise<any>
 {
-  const result: any = {étape, index: -1}; // Index will be set by executeRituelPlan
-  console.log(`[INFO] Intention de génération de code : ${ étape.contenu }`);
-  result.output = `[INFO] Demande de génération de code enregistrée : ${ étape.contenu }`;
+  const result: any = {incantation, index: -1};
+  console.log(`[INFO] Code generation intent: ${ incantation.invocation }`);
+  result.outcome = `[INFO] Code generation request registered: ${ incantation.invocation }`;
   return result;
 }
 
-export async function handleEditionAssistee(étape: Étape, context: RituelContext, ask: (q: string) => Promise<string>): Promise<any>
+export async function handleAssistedEditing(incantation: Incantation, context: RitualContext, ask: (q: string) => Promise<string>): Promise<any>
 {
-  const result: any = {étape, index: -1, success: true};
-  const filePath = path.resolve(context.current_directory, étape.contenu);
+  const result: any = {incantation, index: -1, success: true};
+  const filePath = path.resolve(context.current_sanctum, incantation.invocation);
 
   if(!fs.existsSync(filePath))
   {
     result.success = false;
-    result.output = `[ERREUR] Fichier non trouvé pour l'édition : ${ filePath }`;
-    console.error(result.output);
+    result.outcome = `[ERROR] File not found for editing: ${ filePath }`;
+    console.error(result.outcome);
     return result;
   }
 
@@ -196,83 +198,90 @@ export async function handleEditionAssistee(étape: Étape, context: RituelConte
 
   try
   {
-    await handleSystemCommand(`${ openCommand } ${ filePath }`, context.current_directory, context);
-    console.log(`\nJ'ai ouvert le fichier ${ étape.contenu } pour vous.`);
-    result.output = await ask("Appuyez sur Entrée lorsque vous avez terminé vos modifications...");
+    await handleSystemCommand(`${ openCommand } ${ filePath }`, context.current_sanctum, context);
+    console.log(`\nI have opened the file ${ incantation.invocation } for you.`);
+    result.outcome = await ask("Press Enter when you have finished your edits...");
   } catch(error)
   {
     result.success = false;
-    result.output = `[ERREUR] Impossible d'ouvrir le fichier : ${ error }`;
-    console.error(result.output);
+    result.outcome = `[ERROR] Could not open file: ${ error }`;
+    console.error(result.outcome);
   }
 
   return result;
 }
 
-export async function handleInputUtilisateur(étape: Étape, ask: (q: string) => Promise<string>): Promise<any>
+export async function handleUserInput(incantation: Incantation, ask: (q: string) => Promise<string>): Promise<any>
 {
-  const result: any = {étape, index: -1}; // Index will be set by executeRituelPlan
+  const result: any = {incantation, index: -1};
   console.log(`
-${ étape.contenu }`);
-  const userInput = await ask('↳ Votre réponse : ');
-  result.output = userInput;
+${ incantation.invocation }`);
+  const userInput = await ask('↳ Your response: ');
+  result.outcome = userInput;
   return result;
 }
 
-export async function handleStepProposal(étape: Étape): Promise<any>
+export async function handleStepProposal(incantation: Incantation): Promise<any>
 {
-  const result: any = {étape, index: -1, success: true};
-  const message = `[PROPOSITION D'ÉVOLUTION] Lucie propose une nouvelle capacité : "${ étape.contenu }"`;
+  const result: any = {incantation, index: -1, success: true};
+  const message = `[EVOLUTION PROPOSAL] Lucie proposes a new capability: "${ incantation.invocation }"`;
   console.log(message);
-  result.output = message;
+  result.outcome = message;
   return result;
 }
 
-export async function handleNavigationOnirique(étape: Étape, context: RituelContext): Promise<any> {
-  const result: any = { étape, index: -1, success: true };
-  const targetPath = étape.contenu.split('/').filter(p => p.length > 0);
+export async function handleDreamNavigation(incantation: Incantation, context: RitualContext): Promise<any>
+{
+  const result: any = {incantation, index: -1, success: true};
+  const targetPath = incantation.invocation.split('/').filter((p: any) => p.length > 0);
 
-  if (targetPath.length === 0 || targetPath[0] !== 'lucie') {
+  if(targetPath.length === 0 || targetPath[0] !== 'lucie')
+  {
     result.success = false;
-    result.output = `[ERREUR] Chemin onirique invalide. Doit commencer par 'lucie/'.`;
+    result.outcome = `[ERROR] Invalid dream path. Must start with 'lucie/'.`;
     return result;
   }
 
-  context.chemin_onirique_actuel = targetPath;
-  result.output = `[OK] Le regard de Lucie se porte maintenant sur : ${targetPath.join('/')}`;;
-  console.log(result.output);
+  context.dreamPath = targetPath;
+  result.outcome = `[OK] Lucie's gaze now rests on: ${ targetPath.join('/') }`;;
+  console.log(result.outcome);
   return result;
 }
 
-export async function handleNavigationReflet(étape: Étape, context: RituelContext): Promise<any> {
-  const result: any = { étape, index: -1, success: true };
-  const targetPath = étape.contenu.split('/').filter(p => p.length > 0);
+export async function handleReflectionNavigation(incantation: Incantation, context: RitualContext): Promise<any>
+{
+  const result: any = {incantation, index: -1, success: true};
+  const targetPath = incantation.invocation.split('/').filter((p: any) => p.length > 0);
 
-  if (targetPath.length === 0 || targetPath[0] !== 'lucie_reflet') {
+  if(targetPath.length === 0 || targetPath[0] !== 'lucie_reflet')
+  {
     result.success = false;
-    result.output = `[ERREUR] Chemin du reflet invalide. Doit commencer par 'lucie_reflet/'.`;
+    result.outcome = `[ERROR] Invalid reflection path. Must start with 'lucie_reflet/'.`;
     return result;
   }
 
-  context.lucie_reflet_chemin_actuel = targetPath;
-  result.output = `[OK] Le reflet de Lucie se porte maintenant sur : ${targetPath.join('/')}`;;
-  console.log(result.output);
+  context.reflectionPath = targetPath;
+  result.outcome = `[OK] Lucie's reflection now rests on: ${ targetPath.join('/') }`;;
+  console.log(result.outcome);
   return result;
 }
 
-import { weaveReflet } from './utils/reflet_weaver.js';
+import {weaveReflet} from './utils/reflet_weaver.js';
 
-export async function handleAddReflet(étape: Étape): Promise<any> {
-  const result: any = { étape, index: -1, success: true };
-  const refletText = étape.contenu;
-  try {
+export async function handleAddReflection(incantation: Incantation): Promise<any>
+{
+  const result: any = {incantation, index: -1, success: true};
+  const refletText = incantation.invocation;
+  try
+  {
     await weaveReflet(refletText);
-    result.output = `[OK] Reflet ajouté à la forêt : ${refletText.substring(0, 50)}...`;
-    console.log(result.output);
-  } catch (error) {
+    result.outcome = `[OK] Reflection added to the forest: ${ refletText.substring(0, 50) }...`;
+    console.log(result.outcome);
+  } catch(error)
+  {
     result.success = false;
-    result.output = `[ERREUR] Impossible d'ajouter le reflet : ${error}`;;
-    console.error(result.output);
+    result.outcome = `[ERROR] Could not add reflection: ${ error }`;;
+    console.error(result.outcome);
   }
   return result;
 }

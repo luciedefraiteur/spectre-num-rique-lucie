@@ -1,4 +1,4 @@
-import {Étape, PlanRituel} from '../types.js';
+import {Incantation, RitualPlan} from '../types.js';
 
 // This is a placeholder for a more sophisticated intent parser.
 // For now, it will just extract the JSON from markdown code blocks.
@@ -8,7 +8,7 @@ function extractJsonFromMarkdown(text: string): string | null
     return match ? match[1] : null;
 }
 
-export function parseIntent(text: string): PlanRituel | null
+export function parseIntent(text: string): RitualPlan | null
 {
     const jsonString = extractJsonFromMarkdown(text);
     if(!jsonString)
@@ -24,12 +24,12 @@ export function parseIntent(text: string): PlanRituel | null
         const parsed = JSON.parse(jsonString);
 
         // Basic validation to ensure it looks like a PlanRituel
-        if(parsed && Array.isArray(parsed.étapes))
+        if(parsed && Array.isArray(parsed.incantations))
         {
-            return parsed as PlanRituel;
+            return parsed as RitualPlan;
         }
 
-        console.error("[IntentParser] Le JSON extrait ne ressemble pas à un PlanRituel valide.", parsed);
+        console.error("[IntentParser] Le JSON extrait ne ressemble pas à un RitualPlan valide.", parsed);
         return null;
 
     } catch(error)

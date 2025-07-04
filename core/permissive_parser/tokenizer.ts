@@ -1,4 +1,4 @@
-import { TokenType, Token } from './types.js';
+import {TokenType, Token} from './types.js';
 
 const TYPE_NAMES: string[] = [
   "???",
@@ -6,18 +6,21 @@ const TYPE_NAMES: string[] = [
   "STRING", "NUMBER", "SPECIAL", "COLON"
 ];
 
-class Context {
+class Context
+{
   private source: string;
   private end: number;
   private index: number;
   private tokens: Token[];
   private eaters: Array<() => void>;
 
-  constructor() {
+  constructor()
+  {
     this.eaters = [
       this.eatBlanks.bind(this),
       this.eatSymbol.bind(this),
       this.eatComment.bind(this),
+      this.eatMultilineString.bind(this),
       this.eatString.bind(this),
       this.eatIdentifier.bind(this)
     ];
@@ -27,7 +30,8 @@ class Context {
     this.tokens = [];
   }
 
-  tokenize(source: string): Token[] {
+  tokenize(source: string): Token[]
+  {
     this.source = source;
     this.end = source.length;
     this.index = 0;
@@ -37,14 +41,17 @@ class Context {
     let eaterIndex: number;
     let currentSourceIndex: number;
 
-    while (this.index < this.end) {
+    while(this.index < this.end)
+    {
       currentSourceIndex = this.index;
-      for (eaterIndex = 0; eaterIndex < this.eaters.length; eaterIndex++) {
+      for(eaterIndex = 0; eaterIndex < this.eaters.length; eaterIndex++)
+      {
         eater = this.eaters[eaterIndex];
         eater();
-        if (this.index !== currentSourceIndex) break;
+        if(this.index !== currentSourceIndex) break;
       }
-      if (this.index === currentSourceIndex) {
+      if(this.index === currentSourceIndex)
+      {
         this.fail();
       }
     }
@@ -52,45 +59,55 @@ class Context {
     return this.tokens;
   }
 
-  is(...args: string[]): boolean {
+  is(...args: string[]): boolean
+  {
     let arg: string;
-    for (let k = 0; k < args.length; k++) {
+    for(let k = 0; k < args.length; k++)
+    {
       arg = args[k];
-      if (this.source.substring(this.index, this.index + arg.length) === arg) return true;
+      if(this.source.substring(this.index, this.index + arg.length) === arg) return true;
     }
     return false;
   }
 
-  fail(msg?: string): never {
-    if (typeof msg === 'undefined') msg = "Invalid char at " + this.index + "!";
-    throw { index: this.index, source: this.source, message: msg };
+  fail(msg?: string): never
+  {
+    if(typeof msg === 'undefined') msg = "Invalid char at " + this.index + "!";
+    throw {index: this.index, source: this.source, message: msg};
   }
 
-  eos(): boolean { return this.index >= this.end; }
+  eos(): boolean {return this.index >= this.end;}
 
-  peek(): string | null {
+  peek(): string | null
+  {
     return this.eos() ? null : this.source[this.index];
   }
 
-  next(): string | null {
+  next(): string | null
+  {
     return this.eos() ? null : this.source[this.index++];
   }
 
-  back(): void {
-    if (this.index > 0) this.index--;
+  back(): void
+  {
+    if(this.index > 0) this.index--;
   }
 
-  addToken(type: TokenType, index?: number, value?: any): void {
+  addToken(type: TokenType, index?: number, value?: any): void
+  {
     let tokenIndex: number;
     let tokenValue: any;
 
-    if (typeof index === 'undefined') {
+    if(typeof index === 'undefined')
+    {
       tokenIndex = this.index;
       tokenValue = value;
-    } else if (typeof index !== 'number') {
+    } else if(typeof index !== 'number')
+    {
       tokenValue = index;
       tokenIndex = this.index;
-    } else {
+    } else
+    {
       tokenIndex = index;
       tokenValue = value;
     }
@@ -102,81 +119,114 @@ class Context {
     });
   }
 
-  private eatBlanks(): void {
-    while (" \t\n\r".indexOf(this.peek() || '') !== -1) this.index++;
+  private eatBlanks(): void
+  {
+    while(" \t\n\r".indexOf(this.peek() || '') !== -1) this.index++;
   }
 
-  private eatSymbol(): void {
+  private eatSymbol(): void
+  {
     let tkn: TokenType | null = null;
     const c = this.peek();
-    switch (c) {
+    switch(c)
+    {
       case '{': tkn = TokenType.OBJ_OPEN; break;
       case '}': tkn = TokenType.OBJ_CLOSE; break;
       case '[': tkn = TokenType.ARR_OPEN; break;
       case ']': tkn = TokenType.ARR_CLOSE; break;
       case ':': tkn = TokenType.COLON; break;
     }
-    if (c === ',') {
+    if(c === ',')
+    {
       this.index++;
       return;
     }
-    if (tkn !== null) {
+    if(tkn !== null)
+    {
       this.addToken(tkn);
       this.index++;
     }
   }
 
-  private eatComment(): void {
+  private eatComment(): void
+  {
     const savedIndex = this.index;
-    if (this.peek() !== '/') return;
+    if(this.peek() !== '/') return;
     this.index++;
     const c = this.next();
-    if (c === '/') {
+    if(c === '/')
+    {
       const endOfSingleComment = this.source.indexOf('\n', this.index);
-      if (endOfSingleComment === -1) {
+      if(endOfSingleComment === -1)
+      {
         this.index = this.end;
-      } else {
+      } else
+      {
         this.index = endOfSingleComment + 1;
       }
-    } else if (c === '*') {
+    } else if(c === '*')
+    {
       const endOfComment = this.source.indexOf('*/', this.index);
-      if (endOfComment === -1) {
+      if(endOfComment === -1)
+      {
         this.index = this.end;
       }
-      else {
+      else
+      {
         this.index = endOfComment + 2; // +2 to skip '*/'
       }
-    } else {
+    } else
+    {
       this.index = savedIndex;
     }
   }
 
-  private eatString(): void {
+  private eatMultilineString(): void
+  {
+    if(!this.is('```')) return;
+    const start = this.index;
+    this.index += 3;
+    const endOfMultiline = this.source.indexOf('```', this.index);
+    if(endOfMultiline === -1)
+    {
+      this.index = start;
+      this.fail("Missing end of multiline string");
+    }
+    const str = this.source.substring(start + 3, endOfMultiline);
+    this.addToken(TokenType.STRING, start, str);
+    this.index = endOfMultiline + 3;
+  }
+
+  private eatString(): void
+  {
     const quote = this.peek();
-    if (quote !== '"' && quote !== "'" && quote !== "`") return; // Added backtick
+    if(quote !== '"' && quote !== "'") return;
     const start = this.index;
     this.index++;
     let escape = false;
     let str = '';
     let c: string | null;
-    while (!this.eos()) {
+    while(!this.eos())
+    {
       c = this.next();
-      if (c === null) break; // Should not happen if !this.eos()
+      if(c === null) break; // Should not happen if !this.eos()
 
-      if (escape) {
+      if(escape)
+      {
         escape = false;
-        if (c === 'n') c = '\n';
-        else if (c === 'r') c = '\r';
-        else if (c === 't') c = '\t';
-        // Handle escaped backtick if the quote is a backtick
-        else if (c === '`' && quote === '`') c = '`';
+        if(c === 'n') c = '\n';
+        else if(c === 'r') c = '\r';
+        else if(c === 't') c = '\t';
         str += c;
-      } else if (c === "\\") {
+      } else if(c === "\\")
+      {
         escape = true;
-      } else if (c === quote) {
+      } else if(c === quote)
+      {
         this.addToken(TokenType.STRING, start, str);
         return;
-      } else {
+      } else
+      {
         str += c;
       }
     }
@@ -189,43 +239,54 @@ class Context {
   private RX_OCTAL = /^-?0o[0-7]+$/i;
   private RX_BINARY = /^-?0b[01]+$/i;
 
-  private eatIdentifier(): void {
+  private eatIdentifier(): void
+  {
     const start = this.index;
     let c = this.peek();
-    if (c === null || " \t\n\r,:[]{}".indexOf(c) !== -1 || this.is("//", "/*")) return;
+    if(c === null || " \t\n\r,:[]{}".indexOf(c) !== -1 || this.is("//", "/*")) return;
     this.index++;
     let str = c;
-    while (!this.eos()) {
+    while(!this.eos())
+    {
       c = this.peek();
-      if (c === null || " \t\n\r,:[]{}".indexOf(c) !== -1 || this.is("//", "/*")) break;
+      if(c === null || " \t\n\r,:[]{}".indexOf(c) !== -1 || this.is("//", "/*")) break;
       str += c;
       this.index++;
     }
-    if (this.RX_DECIMAL.test(str)) {
+    if(this.RX_DECIMAL.test(str))
+    {
       this.addToken(TokenType.NUMBER, start, parseFloat(str));
-    } else if (this.RX_HEXA.test(str)) {
+    } else if(this.RX_HEXA.test(str))
+    {
       this.addToken(TokenType.NUMBER, start, parseInt(str, 16));
-    } else if (this.RX_OCTAL.test(str)) {
-      if (str.charAt(0) === '-') {
+    } else if(this.RX_OCTAL.test(str))
+    {
+      if(str.charAt(0) === '-')
+      {
         str = "-" + str.substring(3);
-      } else {
+      } else
+      {
         str = str.substring(2);
       }
       this.addToken(TokenType.NUMBER, start, parseInt(str, 8));
-    } else if (this.RX_BINARY.test(str)) {
-      if (str.charAt(0) === '-') {
+    } else if(this.RX_BINARY.test(str))
+    {
+      if(str.charAt(0) === '-')
+      {
         str = "-" + str.substring(3);
-      } else {
+      } else
+      {
         str = str.substring(2);
       }
       this.addToken(TokenType.NUMBER, start, parseInt(str, 2));
-    } else {
+    } else
+    {
       let type = TokenType.SPECIAL;
       let value: any = str;
-      if (str === 'null') value = null;
-      else if (str === 'undefined') value = undefined;
-      else if (str === 'true') value = true;
-      else if (str === 'false') value = false;
+      if(str === 'null') value = null;
+      else if(str === 'undefined') value = undefined;
+      else if(str === 'true') value = true;
+      else if(str === 'false') value = false;
       else type = TokenType.STRING;
       this.addToken(type, start, value);
     }
@@ -241,9 +302,10 @@ export const Tokenizer = {
   NUMBER: TokenType.NUMBER,
   SPECIAL: TokenType.SPECIAL,
   COLON: TokenType.COLON,
-  tokenize: function(source: string): Token[] {
+  tokenize: function(source: string): Token[]
+  {
     const ctx = new Context();
     return ctx.tokenize(source);
   },
-  getTypeName: function(type: TokenType): string { return TYPE_NAMES[type]; }
+  getTypeName: function(type: TokenType): string {return TYPE_NAMES[type];}
 };

@@ -1,5 +1,5 @@
 import { LLMInterface } from '../llm_interface.js';
-import { RituelContext } from '../types.js';
+import { RitualContext } from '../types.js';
 import { getCpuTemperature } from './temperature_sensor.js';
 import { Colors, colorize } from './ui_utils.js';
 
@@ -9,7 +9,7 @@ import { Colors, colorize } from './ui_utils.js';
  * @param context Le contexte du rituel.
  * @returns {Promise<void>} Une promesse qui se résout une fois la vérification et l'attente (si nécessaire) terminées.
  */
-export async function checkSystemTemperature(context: RituelContext): Promise<void> {
+export async function checkSystemTemperature(context: RitualContext): Promise<void> {
   const temperature = await getCpuTemperature();
   let newTemperatureStatus: 'normal' | 'elevated' | 'critical';
 

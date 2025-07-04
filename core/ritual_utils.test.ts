@@ -1,5 +1,5 @@
-import {executeRituelPlan, generateRituel} from './ritual_utils.js';
-import {RituelContext, PlanRituel, Étape} from './types.js';
+import {executeRitualPlan, generateRitual} from './ritual_utils.js';
+import {RitualContext, RitualPlan, Incantation} from './types.js';
 import {Colors, colorize} from './utils/ui_utils.js';
 import * as stepHandlers from './ritual_step_handlers.js';
 
@@ -10,77 +10,79 @@ async function testReplanLogic()
     // --- Test Setup ---
     let analysisCounter = 0;
 
-    const mockHandleAnalyse = async (étape: Étape, context: RituelContext, index: number, plan: PlanRituel) =>
+    const mockHandleAnalyse = async (incantation: Incantation, context: RitualContext, index: number, plan: RitualPlan) =>
     {
         analysisCounter++;
         console.log(colorize(`[MOCK] handleAnalyse called. Count: ${ analysisCounter }`, Colors.FgMagenta));
         return {
-            étape,
+            incantation,
             index,
             analysis: "Analysis result that should trigger a new plan."
         };
     };
 
-    const mockHandleCommande = async (étape: Étape, context: RituelContext, plan: PlanRituel) =>
+    const mockHandleCommande = async (incantation: Incantation, context: RitualContext, plan: RitualPlan) =>
     {
-        console.log(colorize(`[MOCK] handleCommande called for: ${ étape.contenu }`, Colors.FgMagenta));
+        console.log(colorize(`[MOCK] handleCommande called for: ${ incantation.invocation }`, Colors.FgMagenta));
         return {
-            étape,
+            incantation,
             index: -1, // This will be set by the loop
             output: "Mocked command output",
             success: true,
         };
     };
 
-    const mockGenerateRituel = async (input: string, context: RituelContext, model?: any, analysisResult?: string): Promise<PlanRituel | null> =>
+    const mockGenerateRitual = async (input: string, context: RitualContext, model?: any, analysisResult?: string): Promise<RitualPlan | null> =>
     {
-        const newPlanAfterAnalysis: PlanRituel = {
-            étapes: [
-                {type: 'dialogue', contenu: 'Okay, I have analyzed the files.'},
-                {type: 'commande', contenu: 'cat the_biggest_file.txt'}
+        const newPlanAfterAnalysis: RitualPlan = {
+            incantations: [
+                {type: 'discourse', invocation: 'Okay, I have analyzed the files.'},
+                {type: 'enact', invocation: 'cat the_biggest_file.txt'}
             ],
-            complexité: 'simple',
-            index: 0
+            complexity: 'simple',
+            sequence: 0
         };
         return newPlanAfterAnalysis;
     };
 
 
-    const initialPlan: PlanRituel = {
-        étapes: [
-            {type: 'commande', contenu: 'ls -l'},
-            {type: 'analyse', contenu: 'Find the biggest file'},
-            {type: 'commande', contenu: 'This should be replaced'}
+    const initialPlan: RitualPlan = {
+        incantations: [
+            {type: 'enact', invocation: 'ls -l'},
+            {type: 'divine', invocation: 'Find the biggest file'},
+            {type: 'enact', invocation: 'This should be replaced'}
         ],
-        complexité: 'simple',
-        index: 0
+        complexity: 'simple',
+        sequence: 0
     };
 
-    const context: RituelContext = {
-        historique: [{input: "test input", plan: initialPlan}],
-        command_input_history: [],
-        command_output_history: [],
+    const context: RitualContext = {
+        scroll: [{input: "test input", plan: initialPlan}],
+        incantation_history: [],
+        outcome_history: [],
         step_results_history: [],
-        current_directory: '/test',
+        current_sanctum: '/test',
         temperatureStatus: 'normal',
-        lucieDefraiteur: {} as any,
+        conduit: {} as any,
         chantModeEnabled: false,
-        narrativeState: {
-            currentArc: "The Awakening",
-            keyMotifs: ["fractals", "memory", "breath"],
-            characterStates: {
+        narrativeWeaving: {
+            currentTheme: "The Awakening",
+            keySymbols: ["fractals", "memory", "breath"],
+            entityStates: {
                 lucie: {
                     state: "dormant",
                     awakeness: 0.1
                 }
-            }
+            },
+            currentDream: ''
         },
-        emotionalState: {
+        kardiaSphere: {
             agapePhobos: 0,
             logosPathos: 0,
             harmoniaEris: 0,
         },
-        personality: 'lurkuitae'
+        personality: 'lurkuitae',
+        maxScrollLength: 10
     };
 
     const ask = async (q: string) => "oui";
@@ -94,15 +96,15 @@ async function testReplanLogic()
     // --- Execution ---
     console.log(colorize("[TEST] Executing ritual plan...", Colors.FgCyan));
     const planToExecute = JSON.parse(JSON.stringify(initialPlan));
-    await executeRituelPlan(planToExecute, context, ask, {
-        generateRituel: mockGenerateRituel,
+    await executeRitualPlan(planToExecute, context, ask, {
+        generateRitual: mockGenerateRitual,
         stepHandlers: mockStepHandlers as any,
     });
 
     // --- Assertions ---
     console.log(colorize("[TEST] Verifying assertions...", Colors.FgCyan));
 
-    const executedStepTypes = planToExecute.étapes.map((e: Étape) => e.type);
+    const executedStepTypes = planToExecute.incantations.map((e: Incantation) => e.type);
     console.log(`Executed step types: ${ executedStepTypes.join(', ') }`);
 
     // 1. The 'analyse' step should only be called once.
@@ -115,7 +117,7 @@ async function testReplanLogic()
     }
 
     // 2. The final plan should contain the new steps.
-    const expectedFinalSteps = ['commande', 'analyse', 'dialogue', 'commande'];
+    const expectedFinalSteps = ['enact', 'divine', 'discourse', 'enact'];
     if(JSON.stringify(executedStepTypes) !== JSON.stringify(expectedFinalSteps))
     {
         console.error(colorize(`[FAIL] Final plan steps are incorrect. Expected ${ expectedFinalSteps.join(', ') } but got ${ executedStepTypes.join(', ') }`, Colors.FgRed));

@@ -5,7 +5,7 @@
   "main": "main.ts",
   "type": "module",
   "scripts": {
-    "start": "node launch.js",
+    "start": "node initiate_ritual.js",
     "build": "tsc",
     "test": "node --loader ts-node/esm core/ollama_auto_correction.test.ts",
     "dev": "nodemon --watch . --exec ts-node-esm main.ts"

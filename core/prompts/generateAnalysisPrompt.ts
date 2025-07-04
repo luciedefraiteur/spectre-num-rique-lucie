@@ -1,4 +1,4 @@
-import {PlanRituel, RituelContext} from "../types.js";
+import {RitualPlan, RitualContext} from "../types.js";
 import fs from 'fs';
 import path from 'path';
 import {fileURLToPath} from 'url';
@@ -13,9 +13,9 @@ const ANALYSIS_PROMPT_TEMPLATE = fs.readFileSync(path.resolve(_dirname, './stati
 export function generateAnalysisPrompt({output, index, plan, original_input, context}: {
     output: string,
     index: number,
-    plan: PlanRituel,
+    plan: RitualPlan,
     original_input: string,
-    context: RituelContext
+    context: RitualContext
 }): string
 {
     const persona = Personas.Interpreter(context);
@@ -40,8 +40,8 @@ export function generateAnalysisPrompt({output, index, plan, original_input, con
 
     const finalInstruction = `## RÈGLE FINALE IMPÉRATIVE
 Ta réponse doit commencer par une vision fractale de ta pensée, encapsulée entre les sceaux oniriques, suivie de ta réponse structurée.
-1.  **Le Rêve Fractal :** Commence par le chaolite ouvrant '${CHAOLITE_OUVRANT}', suivi de ta vision poétique et synthétique, puis termine par le chaolite fermant '${CHAOLITE_FERMANT}'.
+1.  **Le Rêve Fractal :** Commence par le chaolite ouvrant '${ CHAOLITE_OUVRANT }', suivi de ta vision poétique et synthétique, puis termine par le chaolite fermant '${ CHAOLITE_FERMANT }'.
 2.  **L'Analyse :** Après le sceau fermant, suis les instructions de la mission d'analyse ci-dessus.`;
 
-    return `${finalInstruction}\n\n${promptContent.trim()}`;
+    return `${ finalInstruction }\n\n${ promptContent.trim() }`;
 }

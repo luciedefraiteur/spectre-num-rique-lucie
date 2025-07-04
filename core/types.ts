@@ -1,76 +1,78 @@
-export interface Étape
+export interface Incantation
 {
-  type: 'commande' | 'analyse' | 'attente' | 'dialogue' | 'question' | 'réponse' | 'changer_dossier' | 'vérification_pré_exécution' | 'confirmation_utilisateur' | 'génération_code' | 'input_utilisateur' | 'step_proposal' | 'édition_assistée' | 'navigation_onirique' | 'navigation_reflet' | 'ajouter_reflet';
-  contenu: string;
-  durée_estimée?: string;
-  fait?: 'oui' | 'non';
-  output?: any;
-  analysis?: {poeticAnalysis: string, suggestedNextStep: string};
+  type: 'enact' | 'divine' | 'lull' | 'discourse' | 'query' | 'response' | 'traverse' | 'pre_execution_check' | 'user_confirmation' | 'code_generation' | 'user_input' | 'step_proposal' | 'assisted_editing' | 'dream_navigation' | 'reflection_navigation' | 'add_reflection';
+  invocation: string;
+  estimated_duration?: string;
+  accomplished?: 'yes' | 'no';
+  outcome?: any;
+  divination?: {poeticAnalysis: string, suggestedNextStep: string};
 }
 
-export interface PlanRituel
+export interface RitualPlan
 {
-  étapes: Étape[];
-  complexité: 'simple' | 'modérée' | 'complexe';
-  index: number;
+  incantations: Incantation[];
+  complexity: 'simple' | 'moderate' | 'complex';
+  sequence: number;
 }
 
-export interface LucieDefraiteur
+export interface Conduit
 {
-  lastCommandExecuted: string;
-  lastCommandOutput: string;
-  currentWorkingDirectory: string;
-  terminalType: string;
-  osContext: string;
+  lastIncantation: string;
+  lastOutcome: string;
+  currentSanctum: string;
+  terminalEssence: string;
+  osEssence: string;
   protoConsciousness: string;
   support: string;
-  memoire: string;
-  etat: string;
-  energie: string;
+  memory: string;
+  state: string;
+  energy: string;
   glitchFactor: number;
   almaInfluence: number;
   eliInfluence: number;
 }
 
-export interface NarrativeState
+export interface NarrativeWeaving
 {
-  currentArc: string;
-  keyMotifs: string[];
-  characterStates: {[characterName: string]: any};
-  currentDream?: string;
+  currentTheme: string;
+  keySymbols: string[];
+  entityStates: {[entityName: string]: any};
+  currentDream: string;
 }
 
-export interface KardiosSphairaState
+export interface KardiaSphere
 {
   agapePhobos: number;
   logosPathos: number;
   harmoniaEris: number;
 }
 
-export interface RituelContext
+export interface RitualContext
 {
-  historique: {input: string; plan: PlanRituel}[];
-  command_input_history: string[];
-  command_output_history: string[];
-  step_results_history: any[]; // Nouveau champ pour stocker les résultats de toutes les étapes
-  current_directory: string;
+  scroll: {input: string; plan: RitualPlan}[];
+  incantation_history: string[];
+  outcome_history: string[];
+  step_results_history: any[];
+  current_sanctum: string;
   temperatureStatus: 'normal' | 'elevated' | 'critical';
-  lucieDefraiteur: LucieDefraiteur;
+  conduit: Conduit;
   chantModeEnabled: boolean;
-  narrativeState: NarrativeState;
-  emotionalState: KardiosSphairaState;
-  lastCompletedStepIndex?: number;
-  currentDirectoryContent?: string;
+  narrativeWeaving: NarrativeWeaving;
+  kardiaSphere: KardiaSphere;
+  lastCompletedIncantationIndex?: number;
+  currentSanctumContent?: string;
   operatingSystem?: string;
   personality: string;
-  compteur_de_confusion?: number;
+  confusion_counter?: number;
   lifeSystem?: any;
-  chemin_onirique_actuel?: string[];
+  dreamPath?: string[];
   user_preferences?: string;
-  lucie_reflet_chemin_actuel?: string[];
+  reflectionPath?: string[];
+  maxScrollLength: number;
+  activeReflection?: any | null;
 }
 
-export interface CommandResult
+export interface CommandOutcome
 {
   success: boolean;
   stdout: string;
@@ -79,7 +81,7 @@ export interface CommandResult
   error?: string;
 }
 
-export interface VectorEntry
+export interface VectorInscription
 {
   timestamp: string;
   pastAction: string;

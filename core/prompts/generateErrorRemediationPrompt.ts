@@ -1,4 +1,4 @@
-import { CommandResult, PlanRituel } from "../types.js";
+import {CommandOutcome, RitualPlan} from "../types.js";
 
 export function generateErrorRemediationPrompt({
   command,
@@ -8,11 +8,12 @@ export function generateErrorRemediationPrompt({
   currentPlan
 }: {
   command: string;
-  commandResult: CommandResult;
+  commandResult: CommandOutcome;
   contextHistory: any[]; // You might want to refine this type later
   originalInput: string;
-  currentPlan: PlanRituel;
-}): string {
+  currentPlan: RitualPlan;
+}): string
+{
   const remediationPrefixes = [
     "L'ombre de l'échec plane, mais Lurkuitae discerne une voie :",
     "Un nœud s'est formé dans le rituel, mais la sagesse nous guide :",
@@ -22,30 +23,30 @@ export function generateErrorRemediationPrompt({
   ];
   const randomPrefix = remediationPrefixes[Math.floor(Math.random() * remediationPrefixes.length)];
 
-  return `${randomPrefix}
+  return `${ randomPrefix }
 
 ## Contexte de l'Échec :
-- Commande exécutée : "${command}"
+- Commande exécutée : "${ command }"
 - Résultat de la commande :
-  - Succès : ${commandResult.success}
-  - Code de sortie : ${commandResult.exitCode}
+  - Succès : ${ commandResult.success }
+  - Code de sortie : ${ commandResult.exitCode }
   - Sortie standard (stdout) :
     """
-    ${commandResult.stdout}
+    ${ commandResult.stdout }
     """
   - Erreur standard (stderr) :
     """
-    ${commandResult.stderr}
+    ${ commandResult.stderr }
     """
-  - Message d'erreur système : "${commandResult.error || 'N/A'}"
+  - Message d'erreur système : "${ commandResult.error || 'N/A' }"
 
 ## Historique du Rituel :
-- Input initial de l'utilisateur : "${originalInput}"
+- Input initial de l'utilisateur : "${ originalInput }"
 - Historique des actions précédentes :
-${JSON.stringify(contextHistory, null, 2)}
+${ JSON.stringify(contextHistory, null, 2) }
 
 ## Plan Rituel Actuel :
-${JSON.stringify(currentPlan, null, 2)}
+${ JSON.stringify(currentPlan, null, 2) }
 
 ## Principes de Remédiation :
 1.  **Diagnostic Divinatoire :** Identifie la cause probable de l'échec avec une perspicacité accrue (commande introuvable, permissions, syntaxe, dépendance manquante, interférence astrale, etc.).
@@ -59,4 +60,5 @@ Retourne UNIQUEMENT un JSON valide avec la structure d'un PlanRituel.
 Le "index" doit être 0 pour ce sous-rituel de remédiation.
 La "complexité" doit refléter la difficulté de la remédiation.
 
-⚠️ Ne retourne QUE le JSON, sans commentaires ni explications supplémentaires.`.trim()}
+⚠️ Ne retourne QUE le JSON, sans commentaires ni explications supplémentaires.`.trim()
+}

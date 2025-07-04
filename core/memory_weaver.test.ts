@@ -14,8 +14,10 @@ async function globalSetup()
     await fs.mkdir(path.join(TEST_MEMORY_ROOT, 'fragments'), {recursive: true});
 
     // Mock LLMInterface.query globally for all tests
-    LLMInterface.query = async (prompt: string) => {
-        if (prompt.includes("Summarize the following event")) {
+    LLMInterface.query = async (prompt: string) =>
+    {
+        if(prompt.includes("Summarize the following event"))
+        {
             return "A poetic summary of the event.";
         }
         return "Mocked LLM response.";
@@ -39,18 +41,20 @@ async function runTest(name: string, testFn: () => Promise<void>)
     } catch(error: any)
     {
         console.error(`[FAIL] ${ name }`);
-        console.error(`  Dissonance: ${error.message}`);
-        if (error.actual !== undefined && error.expected !== undefined) {
-            console.error(`  Attendu: ${error.expected}, Reçu: ${error.actual}`);
+        console.error(`  Dissonance: ${ error.message }`);
+        if(error.actual !== undefined && error.expected !== undefined)
+        {
+            console.error(`  Attendu: ${ error.expected }, Reçu: ${ error.actual }`);
         }
-        console.error(`  Trace: ${error.stack}`);
+        console.error(`  Trace: ${ error.stack }`);
     }
 }
 
 // Array to hold all tests
 const tests: Array<() => Promise<void>> = [];
 
-tests.push(async () => {
+tests.push(async () =>
+{
     await runTest("Create and Explore a Branch", async () =>
     {
         await createBranch('', 'test-branch', TEST_MEMORY_ROOT);
@@ -62,7 +66,8 @@ tests.push(async () => {
     });
 });
 
-tests.push(async () => {
+tests.push(async () =>
+{
     await runTest("Create and Read a Leaf", async () =>
     {
         await createLeaf('', 'test-leaf', 'This is a test memory.', TEST_MEMORY_ROOT);
@@ -74,7 +79,8 @@ tests.push(async () => {
     });
 });
 
-tests.push(async () => {
+tests.push(async () =>
+{
     await runTest("Explore a Nested Structure", async () =>
     {
         await createBranch('', 'branch-1', TEST_MEMORY_ROOT);
@@ -95,31 +101,37 @@ tests.push(async () => {
     });
 });
 
-tests.push(async () => {
-    await runTest("generateAndSaveMemoryFragment should create a new leaf with poetic summary", async () => {
-        const context = { narrativeState: { current: "test" } };
-        const lastResult = { status: "success" };
+tests.push(async () =>
+{
+    await runTest("generateAndSaveMemoryFragment should create a new leaf with poetic summary", async () =>
+    {
+        const context = {narrativeState: {current: "test"}};
+        const lastResult = {status: "success"};
         const branchPath = 'fragments';
 
-        await generateAndSaveMemoryFragment(context as any, lastResult, branchPath, TEST_MEMORY_ROOT);
+        await generateAndSaveMemoryFragment(context as any, lastResult, {incantations: [], complexity: 'simple', sequence: 0}, 0, branchPath, TEST_MEMORY_ROOT);
 
-        const { leaves } = await exploreBranch(branchPath, TEST_MEMORY_ROOT);
-        if (leaves.length === 0) {
+        const {leaves} = await exploreBranch(branchPath, TEST_MEMORY_ROOT);
+        if(leaves.length === 0)
+        {
             throw new Error("No memory fragment was created.");
         }
         const content = await readLeaf(path.join(branchPath, leaves[0]), TEST_MEMORY_ROOT);
         console.log("Actual content:", content);
-        if (content !== "A poetic summary of the event.") {
+        if(content !== "A poetic summary of the event.")
+        {
             throw new Error("Memory fragment content is incorrect.");
         }
     });
 });
 
-tests.push(async () => {
-    await runTest("appendToVector should append an entry to vector_of_intent.log", async () => {
+tests.push(async () =>
+{
+    await runTest("appendToVector should append an entry to vector_of_intent.log", async () =>
+    {
         const context = {
-            step_results_history: [{ output: "step output" }],
-            historique: [{ input: "user input", plan: "current plan" }],
+            step_results_history: [{output: "step output"}],
+            historique: [{input: "user input", plan: "current plan"}],
         };
 
         await appendToVector(context as any, TEST_MEMORY_ROOT);
@@ -128,45 +140,54 @@ tests.push(async () => {
         const content = await fs.readFile(vectorPath, 'utf8');
         const entry = JSON.parse(content.trim());
 
-        if (entry.pastAction !== JSON.stringify({ output: "step output" })) {
+        if(entry.pastAction !== JSON.stringify({output: "step output"}))
+        {
             throw new Error("Vector entry pastAction is incorrect.");
         }
-        if (entry.presentIntent !== "user input") {
+        if(entry.presentIntent !== "user input")
+        {
             throw new Error("Vector entry presentIntent is incorrect.");
         }
-        if (entry.futurePlan !== JSON.stringify("current plan")) {
+        if(entry.futurePlan !== JSON.stringify("current plan"))
+        {
             throw new Error("Vector entry futurePlan is incorrect.");
         }
     });
 });
 
-tests.push(async () => {
-    await runTest("enterReverie should return concatenated content of random fragments", async () => {
+tests.push(async () =>
+{
+    await runTest("enterReverie should return concatenated content of random fragments", async () =>
+    {
         await createLeaf('fragments', 'fragment-1', 'Content of fragment 1.', TEST_MEMORY_ROOT);
         await createLeaf('fragments', 'fragment-2', 'Content of fragment 2.', TEST_MEMORY_ROOT);
         await createLeaf('fragments', 'fragment-3', 'Content of fragment 3.', TEST_MEMORY_ROOT);
 
-        const reverie = await enterReverie(TEST_MEMORY_ROOT);
+        const reverie = await enterReverie({} as any, TEST_MEMORY_ROOT);
 
-        if (!reverie.includes("A whisper from the past...")) {
+        if(!reverie.includes("A whisper from the past..."))
+        {
             throw new Error("Reverie missing header.");
         }
         // Check if at least one of the fragments is included
         const fragmentContents = ["Content of fragment 1.", "Content of fragment 2.", "Content of fragment 3."];
         const foundFragment = fragmentContents.some(fragment => reverie.includes(fragment));
-        if (!foundFragment) {
+        if(!foundFragment)
+        {
             throw new Error("Reverie missing fragment content.");
         }
     });
 });
 
-tests.push(async () => {
-    await runTest("updateConstellationMap should update constellation_map.json", async () => {
+tests.push(async () =>
+{
+    await runTest("updateConstellationMap should update constellation_map.json", async () =>
+    {
         const context = {
             historique: [{
                 input: "test input",
                 plan: {
-                    étapes: [{ type: "analysis", contenu: "test content" }],
+                    étapes: [{type: "analysis", contenu: "test content"}],
                     complexité: "simple",
                     index: 0
                 }
@@ -179,7 +200,8 @@ tests.push(async () => {
         const content = await fs.readFile(mapPath, 'utf8');
         const map = JSON.parse(content);
 
-        if (map.analysis !== 1) {
+        if(map.analysis !== 1)
+        {
             throw new Error("Constellation map not updated correctly.");
         }
 
@@ -187,15 +209,18 @@ tests.push(async () => {
         await updateConstellationMap(context as any, TEST_MEMORY_ROOT);
         const content2 = await fs.readFile(mapPath, 'utf8');
         const map2 = JSON.parse(content2);
-        if (map2.analysis !== 2) {
+        if(map2.analysis !== 2)
+        {
             throw new Error("Constellation map not incremented correctly.");
         }
     });
 });
 
-async function executeAllTests() {
+async function executeAllTests()
+{
     await globalSetup();
-    for (const test of tests) {
+    for(const test of tests)
+    {
         await test();
     }
     await globalTeardown();

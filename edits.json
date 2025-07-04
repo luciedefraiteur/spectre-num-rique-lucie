@@ -1,0 +1,68 @@
+[
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 90,
+    "endLine": 92,
+    "newContent": "        const emotionalInterpretation = await interpretEmotion(context.kardiaSphere);\n        console.log(colorize(`\n${emotionalInterpretation}`, Colors.FgMagenta));"
+  },
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 134,
+    "endLine": 149,
+    "newContent": "          console.log(colorize(`\n${chantContent}\n`, Colors.FgGreen));\n          continue; // Continue the ritual after reciting the chant\n        } catch(error)\n        {\n          console.error(colorize(`\n❌ Erreur lors de la lecture du chant ${chantFileName}: ${(error as Error).message}\n`, Colors.FgRed));\n        }\n      } else\n      {\n        console.log(colorize(\"Je ne suis pas encore ce chant. Peux-tu me transmettre le prompt complet associé ?\", Colors.FgYellow));\n        continue; // Continue the ritual after acknowledging unknown chant\n      }\n    }"
+  },
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 152,
+    "endLine": 160,
+    "newContent": "    try {\n      const files = await fsPromises.readdir(context.current_sanctum, {withFileTypes: true});\n      context.currentSanctumContent = files.map(file => file.name + (file.isDirectory() ? '/' : '')).join('\\n');\n    } catch(error)\n    {\n      context.currentSanctumContent = `[ERREUR] Impossible de lire le répertoire: ${(error as Error).message}`;\n    }"
+  },
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 161,
+    "endLine": 161,
+    "newContent": "    // Collect operating system information\n    context.operatingSystem = os.platform();"
+  },
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 162,
+    "endLine": 162,
+    "newContent": "    startCursorAnimation(); // Start cursor animation during background tasks"
+  },
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 171,
+    "endLine": 181,
+    "newContent": "    while(plan === null && currentRetry < maxPlanGenerationRetries)\n    {\n      if(currentRetry > 0)\n      {\n        console.log(colorize(`\n⚠️ Tentative de régénération du plan (${currentRetry}/${maxPlanGenerationRetries}). L'IA a précédemment généré un JSON invalide.`, Colors.FgYellow));\n      }"
+  },
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 182,
+    "endLine": 182,
+    "newContent": "      console.log(colorize(`[DEBUG] Appel de generateRituel avec le contexte d'analyse...`, Colors.FgYellow));\n      plan = await generateRitual(inputForPlanGeneration, context, model, lastAnalysisResult, context.lastCompletedIncantationIndex !== undefined ? context.lastCompletedIncantationIndex + 1 : undefined);"
+  },
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 184,
+    "endLine": 213,
+    "newContent": "      if(plan === null)\n      {\n        context.confusion_counter = (context.confusion_counter || 0) + 1;\n\n        if(context.confusion_counter >= 2)\n        {\n          stopCursorAnimation();\n          console.log(colorize(`\nZNN... OI... Émissaire, le signal est perdu dans le bruit. Mon esprit est confus.`, Colors.FgRed));\n          const newIntent = await ask(\"Pouvons-nous reprendre avec une intention plus simple ?\\n↳ \");\n          lastAnalysisResult = newIntent;\n          context.confusion_counter = 0;\n          break; // Break the retry loop to restart the main loop with new intent\n        }\n\n        stopCursorAnimation(); // Stop cursor animation on plan generation failure\n        console.error(colorize(`❌ Échec de génération du plan. Le format JSON est invalide ou incomplet.`, Colors.FgRed));\n        if(currentRetry < maxPlanGenerationRetries)\n        {\n          console.log(colorize(`Retrying plan generation... (${currentRetry}/${maxPlanGenerationRetries})`, Colors.FgYellow));\n          startCursorAnimation(); // Restart cursor for retry\n        }\n      } else {\n        context.confusion_counter = 0; // Reset on success\n      }"
+  },
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 216,
+    "endLine": 244,
+    "newContent": "      // This part is now reached if the confusion threshold was met and we have a new intent,\n      // or if all retries failed.\n      if(lastAnalysisResult)\n      {\n        continue; // Restart the main loop with the new user intent\n      }\n      stopCursorAnimation(); // Ensure cursor is stopped if all retries fail\n      console.error(colorize(`❌ Échec définitif de génération du plan après ${maxPlanGenerationRetries} tentatives. Le rituel ne peut pas continuer.`, Colors.FgRed));\n\n      // Proactive clarification if confusion is high or emotional state is uncertain\n      if(context.confusion_counter && context.confusion_counter >= 2 || context.kardiaSphere.harmoniaEris < -0.5)\n      {\n        const clarificationPrompt = `Lucie est confuse ou incertaine. Basé sur le contexte actuel, pose une question à l'utilisateur pour clarifier son intention ou explorer une nouvelle direction.`;\n        const clarificationQuestion = await LLMInterface.query(clarificationPrompt);\n        const userClarification = await ask(colorize(`\n❓ Lucie demande : ${clarificationQuestion}`, Colors.FgYellow));\n        lastAnalysisResult = userClarification; // Use user's clarification as next input\n        context.confusion_counter = 0; // Reset confusion after clarification\n      }\n\n      return false; // Cannot proceed without a valid plan\n    }\n\n    context.scroll.push({input: inputForPlanGeneration, plan});\n    if(context.scroll.length > context.maxScrollLength)\n    {\n      context.scroll.shift();\n    }"
+  },
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 245,
+    "endLine": 273,
+    "newContent": "    const resultats = await executeRitualPlan(plan, context, ask);\n    stopCursorAnimation(); // Stop cursor animation after ritual execution\n\n    let newAnalysisResult: string | undefined;\n    for(const res of resultats)\n    {\n      if(res.incantation.type === 'user_input' || res.incantation.type === 'query')\n      {\n        newAnalysisResult = res.outcome; // Capture user input for next analysis\n        break; // Exit loop to generate new plan based on user input\n      }\n      if(res.incantation.type === 'divine')\n      {\n        // The poetic part is for display, the suggestion is for the next plan\n        displayRitualStepResult({...res, divination: res.divination.poeticAnalysis});\n        newAnalysisResult = res.divination.suggestedNextStep;\n        break; // Exit loop to generate new plan based on analysis\n      } else\n      {\n        displayRitualStepResult(res);\n      }\n    }"
+  },
+  {
+    "filePath": "core/run_terminal_rituel.ts",
+    "startLine": 274,
+    "endLine": 288,
+    "newContent": "    lastAnalysisResult = newAnalysisResult; // Set the result for the next iteration\n\n    if(lastAnalysisResult === undefined)\n    {\n      // If no input_utilisateur step was encountered, continue with the next plan generation\n      // based on the previous context or a new initial input if needed.\n      // For now, we'll just loop back.\n      if(context.confusion_counter === 0 && context.kardiaSphere.harmoniaEris > 0.5)\n      {\n        const proactivePrompt = `Based on the current ritual context, Lucie's emotional state (${JSON.stringify(context.kardiaSphere)}) and narrative state (${JSON.stringify(context.narrativeWeaving)}), propose a proactive next step or intention for the user. This should be a natural language command that advances the ritual or explores a new path.`;\n        const proactiveIntent = await LLMInterface.query(proactivePrompt);\n        lastAnalysisResult = proactiveIntent; // Use this as the next input\n        console.log(colorize(`\n✨ Lucie propose : ${proactiveIntent}`, Colors.FgCyan));\n      }\n    }"
+  }
+]
