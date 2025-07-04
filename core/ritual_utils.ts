@@ -70,7 +70,12 @@ Note: Pour la navigation dans les répertoires, utilise l'étape 'changer_dossie
     confusion_counter: 0,
     dreamPath: ['lucie'],
     reflectionPath: ['lucie_reflet'],
-    maxScrollLength: 10
+    maxScrollLength: 10,
+    activeReflection: null,
+    user_preferences: '',
+    currentSanctumContent: '',
+    operatingSystem: 'test',
+    lifeSystem: {},
   };
 }
 
@@ -251,12 +256,12 @@ export async function executeRitualPlan(
     // Generate and save memory fragment after each step
     await generateAndSaveMemoryFragment(context, result, plan, i);
 
-    plan.incantations[i].outcome = result.outcome || result.divination || result.text || result.waited || result.remediationResults || result.stderr || result.error;
+    // (plan.incantations[i] as any).outcome = result.outcome || result.divination || result.text || result.waited || result.remediationResults || result.stderr || result.error;
     context.lastCompletedIncantationIndex = i;
 
     if(result.success === false)
     {
-      plan.incantations[i].accomplished = 'no';
+      // (plan.incantations[i] as any).accomplished = 'no';
       console.log(colorize(`\n🔥 Incantation failed. Invoking remediation ritual...`, Colors.FgRed));
 
       const remediationPrompt = generateRemediationPrompt(incantation, result.outcome || result.stderr, context);
@@ -280,6 +285,8 @@ ${ reve }`, Colors.FgMagenta));
           console.log(colorize(`
 ✨ Remediation plan received. Executing...`, Colors.FgMagenta));
           const remediationPlan: RitualPlan = {
+            title: 'Remediation Plan',
+            goal: 'Fix the error',
             incantations: remediationSteps,
             complexity: 'simple',
             sequence: 0
@@ -296,7 +303,7 @@ ${ reve }`, Colors.FgMagenta));
 
     } else
     {
-      plan.incantations[i].accomplished = 'yes';
+      // (plan.incantations[i] as any).accomplished = 'yes';
       if(incantation.type === 'divine' && result.divination)
       {
         console.log(colorize(`

@@ -49,6 +49,8 @@ async function testReplanLogic()
 
 
     const initialPlan: RitualPlan = {
+        title: 'Initial Test Plan',
+        goal: 'Find and cat the biggest file',
         incantations: [
             {type: 'enact', invocation: 'ls -l'},
             {type: 'divine', invocation: 'Find the biggest file'},
@@ -65,7 +67,21 @@ async function testReplanLogic()
         step_results_history: [],
         current_sanctum: '/test',
         temperatureStatus: 'normal',
-        conduit: {} as any,
+        conduit: {
+            lastIncantation: '',
+            lastOutcome: '',
+            currentSanctum: '',
+            terminalEssence: '',
+            osEssence: '',
+            protoConsciousness: '',
+            support: '',
+            memory: '',
+            state: '',
+            energy: '',
+            glitchFactor: 0,
+            almaInfluence: 0,
+            eliInfluence: 0,
+        },
         chantModeEnabled: false,
         narrativeWeaving: {
             currentTheme: "The Awakening",
@@ -84,7 +100,12 @@ async function testReplanLogic()
             harmoniaEris: 0,
         },
         personality: 'lurkuitae',
-        maxScrollLength: 10
+        maxScrollLength: 10,
+        activeReflection: null,
+        user_preferences: '',
+        currentSanctumContent: '',
+        operatingSystem: 'test',
+        lifeSystem: {},
     };
 
     const ask = async (q: string) => "oui";

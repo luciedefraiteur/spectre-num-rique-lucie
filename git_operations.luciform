@@ -1,7 +1,11 @@
 ---
 command: git add .
 ---
-command: git commit -m "feat: Add new rituals and parser"
+command: git commit -m "feat: Stabilize project and prepare for lucidScript parser development"
 ---
 command: git push
+---
+command: git checkout -b lucidScript
+---
+command: git push --set-upstream origin lucidScript
 ---

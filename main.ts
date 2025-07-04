@@ -1,15 +1,15 @@
-typescript
-import { getInitialContext } from './core/ritual_utils';
-import { someNewImport } from 'some-module';
-import { RitualContext, runTerminalRitual } from './core';
-import { readline } from 'readline';
-import { demonstrateCursorControl } from './core/utils/ui_utils';
-import { LLMModel } from './core/llm_interface';
-import { parse } from './core/permissive_parser';
+import { getInitialContext } from './core/ritual_utils.js';
+import { runTerminalRitual } from './core/run_terminal_rituel.js';
+import { RitualContext } from './core/types.js';
+import * as readline from 'readline';
+import { demonstrateCursorControl } from './core/utils/ui_utils.js';
+import { LLMModel } from './core/llm_interface.js';
+import { parse } from './core/permissive_parser/index.js';
 import fs from 'fs';
 import path from 'path';
 import { Worker } from 'worker_threads';
-import { parse as argparse } from 'yargs';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
 console.log('☽ LURKUITAE ☾ Terminal Codex Vivant ☾');
 
@@ -24,10 +24,10 @@ type CommandLineArguments = {
   lifeSystem?: string;
 };
 
-const args = argparse(process.argv).alias('model', 'm').alias('chant-mode', 'c')
-  .alias('mode', 't')
-  .alias('life-system', 'l')
-  .help('h').argv as CommandLineArguments;
+const args = yargs(hideBin(process.argv)).alias('model', 'm').alias('chant-mode', 'c')
+    .alias('mode', 't')
+    .alias('life-system', 'l')
+    .help('h').argv as CommandLineArguments;
 let model: LLMModel = LLMModel.Mistral; // Default model
 let chantModeEnabled: boolean = false;
 let personality: string = 'lurkuitae'; // Default personality
