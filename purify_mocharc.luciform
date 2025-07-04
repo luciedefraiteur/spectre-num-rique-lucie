@@ -1,0 +1,11 @@
+
+---
+file: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\.mocharc.json
+<<<<<<< DELETE
+{
+  "require": "ts-node/register",
+  "loader": "ts-node/esm",
+  "extensions": ["ts", "tsx"],
+  "spec": "core/**/*.test.ts"
+}
+>>>>>>> DELETE

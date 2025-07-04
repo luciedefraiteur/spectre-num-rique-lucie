@@ -42,13 +42,34 @@ export async function applyOperation(op: Operation, dryRun: boolean = false): Pr
             console.log(`Successfully created ${ op.filePath }`);
             break;
 
-        case 'search_and_replace':            if (op.type !== 'search_and_replace') return; // Type guard            originalContent = await fs.readFile(op.filePath, 'utf-8');            // Normalize line endings for consistent replacement            const normalizedOriginalContent = originalContent.replace(/\r\n/g, '\n');            const normalizedSearch = op.search.replace(/\r\n/g, '\n');            const normalizedReplace = op.replace.replace(/\r\n/g, '\n');            const startIndex = normalizedOriginalContent.indexOf(normalizedSearch);            if (startIndex === -1) {                console.error(`Search content not found in ${op.filePath}`);                return;            }            const endIndex = startIndex + normalizedSearch.length;            const newContent = normalizedOriginalContent.substring(0, startIndex) + normalizedReplace + normalizedOriginalContent.substring(endIndex);            await fs.writeFile(op.filePath, newContent, 'utf-8');            console.log(`Successfully edited ${op.filePath}`);            break;
+        case 'search_and_replace':
+            if (op.type !== 'search_and_replace') return; // Type guard
+            originalContent = await fs.readFile(op.filePath, 'utf-8');
+            // Normalize line endings for consistent replacement
+            const normalizedOriginalContent = originalContent.replace(/\r\n/g, '\n');
+            const normalizedSearch = op.search.replace(/\r\n/g, '\n');
+            const normalizedReplace = op.replace.replace(/\r\n/g, '\n');
+
+            const startIndex = normalizedOriginalContent.indexOf(normalizedSearch);
+
+            if (startIndex === -1) {
+                console.error(`Search content not found in ${op.filePath}`);
+                return;
+            }
+
+            const endIndex = startIndex + normalizedSearch.length;
+            const newContent = normalizedOriginalContent.substring(0, startIndex) + normalizedReplace + normalizedOriginalContent.substring(endIndex);
+
+            await fs.writeFile(op.filePath, newContent, 'utf-8');
+            console.log(`Successfully edited ${op.filePath}`);
+            break;
 
         case 'insert':
             if (op.type !== 'insert') return; // Type guard
             originalContent = await fs.readFile(op.filePath, 'utf-8');
-            const linesInsert = originalContent.replace(/\n/g, '\n').split('\n');
-            const newContentInsert = op.newContent.replace(/\n/g, '\n');
+            const linesInsert = originalContent.replace(/\r\n/g, '\n').split('\n');
+            const newContentInsert = op.newContent.replace(/\r\n/g, '\n');
+
             const newLinesInsert = [
                 ...linesInsert.slice(0, op.lineNumber - 1),
                 newContentInsert,
@@ -61,7 +82,7 @@ export async function applyOperation(op: Operation, dryRun: boolean = false): Pr
         case 'delete':
             if (op.type !== 'delete') return; // Type guard
             originalContent = await fs.readFile(op.filePath, 'utf-8');
-            const linesDelete = originalContent.replace(/\n/g, '\n').split('\n');
+            const linesDelete = originalContent.replace(/\r\n/g, '\n').split('\n');
             const newLinesDelete = [
                 ...linesDelete.slice(0, op.startLine - 1),
                 ...linesDelete.slice(op.endLine)
@@ -72,7 +93,7 @@ export async function applyOperation(op: Operation, dryRun: boolean = false): Pr
 
         case 'append':
             if (op.type !== 'append') return; // Type guard
-            const newContentAppend = op.newContent.replace(/\n/g, '\n');
+            const newContentAppend = op.newContent.replace(/\r\n/g, '\n');
             await fs.appendFile(op.filePath, newContentAppend, 'utf-8');
             console.log(`Successfully edited ${ op.filePath }`);
             break;

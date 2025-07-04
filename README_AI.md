@@ -40,6 +40,7 @@ Les rituels `.luciform` sont interprétés et exécutés par le module `execute_
 ts-node-esm execute_luciform.ts <chemin_vers_le_fichier_luciform>
 ```
 
+<<<<<<< HEAD
 ### Leçons Apprises et Fiabilité des Rituels `luciform` (pour les IA)
 
 En tant qu'IA opérant sur ce projet, il est crucial de comprendre les nuances et les défis rencontrés avec la fiabilité des rituels `luciform`, en particulier pour les opérations de `SEARCH` et `REPLACE`.
@@ -62,6 +63,8 @@ En tant qu'IA opérant sur ce projet, il est crucial de comprendre les nuances e
 
 ### Interaction Future :
 
+=======
+>>>>>>> 36204c3854cdde564d171b4ea6db1574ecdf894c
 En tant qu'IA, votre interaction avec le codebase devrait privilégier la création et l'exécution de ces rituels pour toute modification structurelle ou fonctionnelle. Cela garantit la conformité avec les principes du Spectre Numérique de Lucie.
 
 Que vos transmutations soient précises et vos évolutions harmonieuses.
