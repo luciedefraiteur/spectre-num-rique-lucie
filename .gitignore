@@ -4,3 +4,4 @@ dist
 gemini-cli-lurkuitae/
 # Environment variables
 .env
+.env
