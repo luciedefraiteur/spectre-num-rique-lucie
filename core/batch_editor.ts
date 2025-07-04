@@ -1,12 +1,34 @@
 import {spawn} from 'child_process';
 import * as fs from 'fs/promises';
 
-interface FileEdit
+interface SearchAndReplace
 {
-    type: 'file_edit';
+    type: 'search_and_replace';
+    filePath: string;
+    searchContent: string;
+    newContent: string;
+}
+
+interface Insert
+{
+    type: 'insert';
+    filePath: string;
+    lineNumber: number;
+    newContent: string;
+}
+
+interface Delete
+{
+    type: 'delete';
     filePath: string;
     startLine: number;
     endLine: number;
+}
+
+interface Append
+{
+    type: 'append';
+    filePath: string;
     newContent: string;
 }
 
@@ -16,77 +38,150 @@ interface ShellCommand
     command: string;
 }
 
-type Operation = FileEdit | ShellCommand;
+type Operation = SearchAndReplace | Insert | Delete | Append | ShellCommand;
+
+type ParserState = 'idle' | 'in_search' | 'in_replace' | 'in_insert' | 'in_append';
 
 async function parseLuciform(filePath: string): Promise<Operation[]>
 {
     const content = await fs.readFile(filePath, 'utf-8');
+    const lines = content.split('\n');
     const operations: Operation[] = [];
-    const sections = content.split('---').map(s => s.trim()).filter(s => s);
+    let state: ParserState = 'idle';
+    let currentFilePath: string | undefined;
+    let searchContent = '';
+    let newContent = '';
+    let lineNumber: number | undefined;
+    let startLine: number | undefined;
+    let endLine: number | undefined;
 
-    for(let i = 0; i < sections.length; i++)
+
+    for(const line of lines)
     {
-        const section = sections[i];
-        if(section.startsWith('file:'))
+        if(line.startsWith('---'))
         {
-            const filePath = section.substring(5).trim();
-            const editContent = sections[i + 1];
-            if(editContent && editContent.startsWith('<<<<<<< SEARCH'))
+            continue;
+        }
+        if(line.startsWith('file:'))
+        {
+            currentFilePath = line.substring(5).trim();
+        } else if(line.startsWith('command:'))
+        {
+            operations.push({type: 'shell_command', command: line.substring(8).trim()});
+        } else if(line.startsWith('<<<<<<< SEARCH'))
+        {
+            state = 'in_search';
+            searchContent = '';
+        } else if(line.startsWith('=======') && state === 'in_search')
+        {
+            state = 'in_replace';
+            newContent = '';
+        } else if(line.startsWith('>>>>>>> REPLACE') && state === 'in_replace')
+        {
+            if(currentFilePath)
             {
-                const parts = editContent.split('=======');
-                const searchBlock = parts[0];
-                if(parts[1])
-                {
-                    const replaceBlock = parts[1].replace('>>>>>>> REPLACE', '').trim();
-
-                    const searchLines = searchBlock.split('\n');
-                    const startLineMatch = searchLines[0].match(/:start_line:(\d+)/);
-                    if(startLineMatch)
-                    {
-                        const startLine = parseInt(startLineMatch[1], 10);
-                        const searchContent = searchLines.slice(2).join('\n');
-
-                        const originalContent = await fs.readFile(filePath, 'utf-8');
-                        const originalLines = originalContent.split('\n');
-                        const endLine = startLine + searchContent.split('\n').length - 1;
-
-                        operations.push({
-                            type: 'file_edit',
-                            filePath,
-                            startLine,
-                            endLine,
-                            newContent: replaceBlock,
-                        });
-                        i++; // Increment i to skip the editContent section
-                    }
-                }
+                operations.push({type: 'search_and_replace', filePath: currentFilePath, searchContent, newContent});
             }
-        } else if(section.startsWith('command:'))
+            state = 'idle';
+        } else if(line.startsWith('<<<<<<< INSERT'))
         {
-            const command = section.substring(8).trim();
-            operations.push({
-                type: 'shell_command',
-                command,
-            });
+            state = 'in_insert';
+            const lineNumberMatch = line.match(/:line:(\d+)/);
+            if(lineNumberMatch)
+            {
+                lineNumber = parseInt(lineNumberMatch[1], 10);
+            }
+            newContent = '';
+        } else if(line.startsWith('>>>>>>> INSERT') && state === 'in_insert')
+        {
+            if(currentFilePath && lineNumber)
+            {
+                operations.push({type: 'insert', filePath: currentFilePath, lineNumber, newContent});
+            }
+            state = 'idle';
+        } else if(line.startsWith('<<<<<<< DELETE'))
+        {
+            const lineRangeMatch = line.match(/:lines:(\d+)-(\d+)/);
+            if(lineRangeMatch && currentFilePath)
+            {
+                startLine = parseInt(lineRangeMatch[1], 10);
+                endLine = parseInt(lineRangeMatch[2], 10);
+                operations.push({type: 'delete', filePath: currentFilePath, startLine, endLine});
+            }
+        } else if(line.startsWith('<<<<<<< APPEND'))
+        {
+            state = 'in_append';
+            newContent = '';
+        } else if(line.startsWith('>>>>>>> APPEND') && state === 'in_append')
+        {
+            if(currentFilePath)
+            {
+                operations.push({type: 'append', filePath: currentFilePath, newContent});
+            }
+            state = 'idle';
+        }
+        else
+        {
+            if(state === 'in_search')
+            {
+                searchContent += line + '\n';
+            } else if(state === 'in_replace' || state === 'in_insert' || state === 'in_append')
+            {
+                newContent += line + '\n';
+            }
         }
     }
 
     return operations;
 }
 
-async function applyFileEdit(edit: FileEdit): Promise<void>
+async function applyOperation(op: Operation, dryRun: boolean): Promise<void>
 {
-    const originalContent = await fs.readFile(edit.filePath, 'utf-8');
-    const lines = originalContent.split('\n');
-
-    const newLines = [
-        ...lines.slice(0, edit.startLine - 1),
-        edit.newContent,
-        ...lines.slice(edit.endLine)
-    ];
-
-    await fs.writeFile(edit.filePath, newLines.join('\n'), 'utf-8');
-    console.log(`Successfully edited ${ edit.filePath }`);
+    if(dryRun)
+    {
+        console.log(`[DRY RUN] Would execute: ${ JSON.stringify(op) }`);
+        return;
+    }
+    let originalContent: string;
+    let lines: string[];
+    let newLines: string[];
+    switch(op.type)
+    {
+        case 'search_and_replace':
+            originalContent = await fs.readFile(op.filePath, 'utf-8');
+            const newContent = originalContent.replace(op.searchContent.trim(), op.newContent.trim());
+            await fs.writeFile(op.filePath, newContent, 'utf-8');
+            console.log(`Successfully edited ${ op.filePath }`);
+            break;
+        case 'insert':
+            originalContent = await fs.readFile(op.filePath, 'utf-8');
+            lines = originalContent.split('\n');
+            newLines = [
+                ...lines.slice(0, op.lineNumber - 1),
+                op.newContent.trim(),
+                ...lines.slice(op.lineNumber - 1)
+            ];
+            await fs.writeFile(op.filePath, newLines.join('\n'), 'utf-8');
+            console.log(`Successfully edited ${ op.filePath }`);
+            break;
+        case 'delete':
+            originalContent = await fs.readFile(op.filePath, 'utf-8');
+            lines = originalContent.split('\n');
+            newLines = [
+                ...lines.slice(0, op.startLine - 1),
+                ...lines.slice(op.endLine)
+            ];
+            await fs.writeFile(op.filePath, newLines.join('\n'), 'utf-8');
+            console.log(`Successfully edited ${ op.filePath }`);
+            break;
+        case 'append':
+            await fs.appendFile(op.filePath, op.newContent, 'utf-8');
+            console.log(`Successfully edited ${ op.filePath }`);
+            break;
+        case 'shell_command':
+            await executeShellCommand(op.command);
+            break;
+    }
 }
 
 async function executeShellCommand(command: string): Promise<void>
@@ -110,11 +205,13 @@ async function executeShellCommand(command: string): Promise<void>
 
 async function main()
 {
-    const [luciformPath] = process.argv.slice(2);
+    const args = process.argv.slice(2);
+    const luciformPath = args.find(arg => !arg.startsWith('--'));
+    const dryRun = args.includes('--dry-run');
 
     if(!luciformPath)
     {
-        console.error('Usage: ts-node-esm core/batch_editor.ts <path_to_luciform_file>');
+        console.error('Usage: ts-node-esm core/batch_editor.ts [--dry-run] <path_to_luciform_file>');
         process.exit(1);
     }
 
@@ -124,13 +221,7 @@ async function main()
 
         for(const op of operations)
         {
-            if(op.type === 'file_edit')
-            {
-                await applyFileEdit(op);
-            } else if(op.type === 'shell_command')
-            {
-                await executeShellCommand(op.command);
-            }
+            await applyOperation(op, dryRun);
         }
     } catch(error)
     {

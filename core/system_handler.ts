@@ -13,7 +13,7 @@ const execAsync = promisify(exec);
  * @param input La commande shell à exécuter (ex: "ls -l").
  * @param cwd Le chemin absolu du répertoire depuis lequel exécuter.
  */
-export async function handleSystemCommand(input: string, cwd: string, context: RitualContext, _execAsync: (command: string, options: any) => Promise<{stdout: string; stderr: string}> = execAsync): Promise<CommandOutcome>
+export async function handleSystemCommand(input: string, cwd: string, context: RitualContext, _execAsync: (command: string, options: any) => Promise<{ stdout: string; stderr: string }> = execAsync): Promise<CommandOutcome>
 {
   let shell: string | undefined;
 
