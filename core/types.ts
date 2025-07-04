@@ -1,18 +1,81 @@
+// core/types.ts
+
+// --- Emotional Core ---
+export interface KardiaSphere
+{
+  agapePhobos: number; // Love/Fear
+  logosPathos: number; // Reason/Passion
+  harmoniaEris: number; // Harmony/Discord
+}
+
+// --- Incantations and Rituals ---
+export type IncantationType =
+  | 'traverse'
+  | 'enact'
+  | 'divine'
+  | 'lull'
+  | 'discourse'
+  | 'query'
+  | 'response'
+  | 'pre_execution_check'
+  | 'user_confirmation'
+  | 'code_generation'
+  | 'assisted_editing'
+  | 'user_input'
+  | 'step_proposal'
+  | 'dream_navigation'
+  | 'reflection_navigation'
+  | 'add_reflection';
+
 export interface Incantation
 {
-  type: 'enact' | 'divine' | 'lull' | 'discourse' | 'query' | 'response' | 'traverse' | 'pre_execution_check' | 'user_confirmation' | 'code_generation' | 'user_input' | 'step_proposal' | 'assisted_editing' | 'dream_navigation' | 'reflection_navigation' | 'add_reflection';
+  type: IncantationType;
   invocation: string;
+  purpose?: string;
   estimated_duration?: string;
-  accomplished?: 'yes' | 'no';
-  outcome?: any;
-  divination?: {poeticAnalysis: string, suggestedNextStep: string};
 }
 
 export interface RitualPlan
 {
+  title: string;
+  goal: string;
   incantations: Incantation[];
-  complexity: 'simple' | 'moderate' | 'complex';
-  sequence: number;
+  complexity: string;
+  sequence?: number;
+}
+
+// --- Execution and Outcomes ---
+export interface CommandOutcome
+{
+  stdout: string;
+  stderr: string;
+  exitCode: number | null;
+  success: boolean;
+  error?: string;
+}
+
+export interface StepResult
+{
+  incantation: Incantation;
+  index: number;
+  outcome: string;
+  stderr?: string;
+  exitCode?: number | null;
+  success?: boolean;
+  divination?: {
+    poeticAnalysis: string;
+    suggestedNextStep: string;
+  };
+  [key: string]: any;
+}
+
+// --- Memory and Context ---
+export interface VectorInscription
+{
+  timestamp: string;
+  pastAction: string;
+  presentIntent: string;
+  futurePlan: string;
 }
 
 export interface Conduit
@@ -32,59 +95,76 @@ export interface Conduit
   eliInfluence: number;
 }
 
-export interface NarrativeWeaving
-{
-  currentTheme: string;
-  keySymbols: string[];
-  entityStates: {[entityName: string]: any};
-  currentDream: string;
-}
-
-export interface KardiaSphere
-{
-  agapePhobos: number;
-  logosPathos: number;
-  harmoniaEris: number;
-}
-
 export interface RitualContext
 {
+  conduit: Conduit;
+  kardiaSphere: KardiaSphere;
   scroll: {input: string; plan: RitualPlan}[];
+  maxScrollLength: number;
   incantation_history: string[];
   outcome_history: string[];
-  step_results_history: any[];
-  current_sanctum: string;
-  temperatureStatus: 'normal' | 'elevated' | 'critical';
-  conduit: Conduit;
+  step_results_history: StepResult[];
+  narrativeWeaving: any;
+  activeReflection: any;
+  user_preferences: string;
   chantModeEnabled: boolean;
-  narrativeWeaving: NarrativeWeaving;
-  kardiaSphere: KardiaSphere;
+  current_sanctum: string;
+  currentSanctumContent: string;
+  operatingSystem: string;
   lastCompletedIncantationIndex?: number;
-  currentSanctumContent?: string;
-  operatingSystem?: string;
-  personality: string;
   confusion_counter?: number;
-  lifeSystem?: any;
   dreamPath?: string[];
-  user_preferences?: string;
   reflectionPath?: string[];
-  maxScrollLength: number;
-  activeReflection?: any | null;
+  temperatureStatus: string;
+  personality: string;
+  lifeSystem: any;
 }
 
-export interface CommandOutcome
+
+// --- Batch Editor Operations ---
+export interface SearchAndReplace
 {
-  success: boolean;
-  stdout: string;
-  stderr: string;
-  exitCode: number | null;
-  error?: string;
+  type: 'search_and_replace';
+  filePath: string;
+  startLine: number;
+  search: string;
+  replace: string;
 }
 
-export interface VectorInscription
+export interface Insert
 {
-  timestamp: string;
-  pastAction: string;
-  presentIntent: string;
-  futurePlan: string;
+  type: 'insert';
+  filePath: string;
+  lineNumber: number;
+  newContent: string;
 }
+
+export interface Delete
+{
+  type: 'delete';
+  filePath: string;
+  startLine: number;
+  endLine: number;
+}
+
+export interface Append
+{
+  type: 'append';
+  filePath: string;
+  newContent: string;
+}
+
+export interface ShellCommand
+{
+  type: 'shell_command';
+  command: string;
+}
+
+export interface CreateFile
+{
+  type: 'create_file';
+  filePath: string;
+  content: string;
+}
+
+export type Operation = SearchAndReplace | Insert | Delete | Append | ShellCommand | CreateFile;

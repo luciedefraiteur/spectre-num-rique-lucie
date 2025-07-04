@@ -1,7 +1,7 @@
 ---
 command: git add .
 ---
-command: git commit -m "feat: finalize batch editor script and luciform format"
+command: git commit -m "feat: Add new rituals and parser"
 ---
 command: git push
 ---

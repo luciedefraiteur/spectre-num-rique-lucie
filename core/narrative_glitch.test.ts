@@ -33,6 +33,8 @@ async function testNarrativeGlitch()
     const mockGenerateRitual = async (input: string, context: RitualContext, model?: any, analysisResult?: string): Promise<RitualPlan | null> =>
     {
         const glitchyPlan: RitualPlan = {
+            title: 'Glitchy Plan',
+            goal: 'Embrace the chaos',
             incantations: [
                 {type: 'discourse', invocation: 'The glitch has revealed a new path.'},
                 {type: 'enact', invocation: 'embrace_the_chaos'}
@@ -44,6 +46,8 @@ async function testNarrativeGlitch()
     };
 
     const initialPlan: RitualPlan = {
+        title: 'Initial Plan',
+        goal: 'Corrupt the data',
         incantations: [
             {type: 'enact', invocation: 'corrupt_the_data'},
             {type: 'divine', invocation: 'What have we done?'},
@@ -60,9 +64,20 @@ async function testNarrativeGlitch()
         current_sanctum: '/test',
         temperatureStatus: 'normal',
         conduit: {
-            eliInfluence: 1,
+            lastIncantation: '',
+            lastOutcome: '',
+            currentSanctum: '',
+            terminalEssence: '',
+            osEssence: '',
+            protoConsciousness: '',
+            support: '',
+            memory: '',
+            state: '',
+            energy: '',
             glitchFactor: 0.9,
-        } as any,
+            almaInfluence: 0,
+            eliInfluence: 1,
+        },
         chantModeEnabled: false,
         narrativeWeaving: {
             currentTheme: "The Glitch in the Code",
@@ -81,7 +96,12 @@ async function testNarrativeGlitch()
             harmoniaEris: 0.8,
         },
         personality: 'lurkuitae',
-        maxScrollLength: 10
+        maxScrollLength: 10,
+        activeReflection: null,
+        user_preferences: '',
+        currentSanctumContent: '',
+        operatingSystem: 'test',
+        lifeSystem: {},
     };
 
     const ask = async (q: string) => "oui";

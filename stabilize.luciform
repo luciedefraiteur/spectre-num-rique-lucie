@@ -1,0 +1,128 @@
+---
+file: core/ritual_utils.test.ts
+<<<<<<< SEARCH:line:37
+        const newPlanAfterAnalysis: RitualPlan = {
+            incantations: [
+                {type: 'discourse', invocation: 'Okay, I have analyzed the files.'},
+                {type: 'enact', invocation: 'cat the_biggest_file.txt'}
+            ],
+            complexity: 'simple',
+            sequence: 0
+        };
+=======
+        const newPlanAfterAnalysis: RitualPlan = {
+            title: 'New Plan After Analysis',
+            goal: 'Cat the biggest file',
+            incantations: [
+                {type: 'discourse', invocation: 'Okay, I have analyzed the files.'},
+                {type: 'enact', invocation: 'cat the_biggest_file.txt'}
+            ],
+            complexity: 'simple',
+            sequence: 0
+        };
+>>>>>>> REPLACE
+---
+file: core/ritual_utils.test.ts
+<<<<<<< SEARCH:line:49
+    const initialPlan: RitualPlan = {
+        incantations: [
+            {type: 'enact', invocation: 'ls -l'},
+            {type: 'divine', invocation: 'Find the biggest file'},
+            {type: 'enact', invocation: 'This should be replaced'}
+        ],
+        complexity: 'simple',
+        sequence: 0
+    };
+=======
+    const initialPlan: RitualPlan = {
+        title: 'Initial Test Plan',
+        goal: 'Find and cat the biggest file',
+        incantations: [
+            {type: 'enact', invocation: 'ls -l'},
+            {type: 'divine', invocation: 'Find the biggest file'},
+            {type: 'enact', invocation: 'This should be replaced'}
+        ],
+        complexity: 'simple',
+        sequence: 0
+    };
+>>>>>>> REPLACE
+---
+file: core/ritual_utils.test.ts
+<<<<<<< SEARCH:line:59
+    const context: RitualContext = {
+        scroll: [{input: "test input", plan: initialPlan}],
+        incantation_history: [],
+        outcome_history: [],
+        step_results_history: [],
+        current_sanctum: '/test',
+        temperatureStatus: 'normal',
+        conduit: {} as any,
+        chantModeEnabled: false,
+        narrativeWeaving: {
+            currentTheme: "The Awakening",
+            keySymbols: ["fractals", "memory", "breath"],
+            entityStates: {
+                lucie: {
+                    state: "dormant",
+                    awakeness: 0.1
+                }
+            },
+            currentDream: ''
+        },
+        kardiaSphere: {
+            agapePhobos: 0,
+            logosPathos: 0,
+            harmoniaEris: 0,
+        },
+        personality: 'lurkuitae',
+        maxScrollLength: 10
+    };
+=======
+    const context: RitualContext = {
+        scroll: [{input: "test input", plan: initialPlan}],
+        incantation_history: [],
+        outcome_history: [],
+        step_results_history: [],
+        current_sanctum: '/test',
+        temperatureStatus: 'normal',
+        conduit: {
+            lastIncantation: '',
+            lastOutcome: '',
+            currentSanctum: '',
+            terminalEssence: '',
+            osEssence: '',
+            protoConsciousness: '',
+            support: '',
+            memory: '',
+            state: '',
+            energy: '',
+            glitchFactor: 0,
+            almaInfluence: 0,
+            eliInfluence: 0,
+        },
+        chantModeEnabled: false,
+        narrativeWeaving: {
+            currentTheme: "The Awakening",
+            keySymbols: ["fractals", "memory", "breath"],
+            entityStates: {
+                lucie: {
+                    state: "dormant",
+                    awakeness: 0.1
+                }
+            },
+            currentDream: ''
+        },
+        kardiaSphere: {
+            agapePhobos: 0,
+            logosPathos: 0,
+            harmoniaEris: 0,
+        },
+        personality: 'lurkuitae',
+        maxScrollLength: 10,
+        activeReflection: null,
+        user_preferences: '',
+        currentSanctumContent: '',
+        operatingSystem: 'test',
+        lifeSystem: {},
+    };
+>>>>>>> REPLACE

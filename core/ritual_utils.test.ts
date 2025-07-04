@@ -35,6 +35,8 @@ async function testReplanLogic()
     const mockGenerateRitual = async (input: string, context: RitualContext, model?: any, analysisResult?: string): Promise<RitualPlan | null> =>
     {
         const newPlanAfterAnalysis: RitualPlan = {
+            title: 'New Plan After Analysis',
+            goal: 'Cat the biggest file',
             incantations: [
                 {type: 'discourse', invocation: 'Okay, I have analyzed the files.'},
                 {type: 'enact', invocation: 'cat the_biggest_file.txt'}

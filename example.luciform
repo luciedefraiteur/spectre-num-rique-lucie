@@ -1,0 +1,38 @@
+---
+file: example_project/index.html
+<<<<<<< CREATE
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luciform Example</title>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <h1>Welcome to the Luciform Example Project</h1>
+    <button id="myButton">Click Me</button>
+</body>
+</html>
+>>>>>>> CREATE
+---
+file: example_project/script.js
+<<<<<<< CREATE
+console.log("Script loaded!");
+>>>>>>> CREATE
+---
+file: example_project/index.html
+<<<<<<< SEARCH:line:10
+    <h1>Welcome to the Luciform Example Project</h1>
+=======
+    <h1>Welcome to the Modified Luciform Example Project</h1>
+    <p>This project was created and modified entirely with a luciform file.</p>
+>>>>>>> REPLACE
+---
+file: example_project/script.js
+<<<<<<< APPEND
+const button = document.getElementById('myButton');
+button.addEventListener('click', () => {
+    alert('Button clicked!');
+});
+>>>>>>> APPEND

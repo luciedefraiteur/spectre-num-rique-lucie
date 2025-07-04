@@ -1,0 +1,6 @@
+{
+    "ritual": "perform_healing_ritual",
+    "parameters": {
+        "output": "healing.scryingOrb"
+    }
+}

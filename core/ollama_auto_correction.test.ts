@@ -100,6 +100,11 @@ async function runChangerDossierTest()
     kardiaSphere: {agapePhobos: 0, logosPathos: 0, harmoniaEris: 0},
     personality: 'lurkuitae',
     maxScrollLength: 10,
+    activeReflection: null,
+    user_preferences: '',
+    currentSanctumContent: '',
+    operatingSystem: 'test',
+    lifeSystem: {},
   };
 
   const etape: Incantation = {

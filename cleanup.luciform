@@ -1,0 +1,3 @@
+---
+command: rmdir /s /q example_project
+---

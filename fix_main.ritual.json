@@ -1,0 +1,6 @@
+{
+    "ritual": "fix_compilation_errors",
+    "parameters": {
+        "filePath": "main.ts"
+    }
+}

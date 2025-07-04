@@ -53,6 +53,8 @@ function adaptToPlanRituel(data: any): RitualPlan | null
     if(newIncantations.length > 0)
     {
       return {
+        title: 'Adapted Plan',
+        goal: 'Adapt from a loosely structured object',
         incantations: newIncantations,
         complexity: 'simple', // Default complexity
         sequence: (potentialArray[0] && potentialArray[0].sequence) || 0, // Try to get sequence from first step, or default to 0
@@ -68,6 +70,8 @@ function adaptToPlanRituel(data: any): RitualPlan | null
       invocation: data.invocation,
     };
     return {
+      title: 'Adapted Single Step Plan',
+      goal: 'Adapt from a single step object',
       incantations: [incantation],
       complexity: data.complexity || 'simple',
       sequence: data.sequence || 0,

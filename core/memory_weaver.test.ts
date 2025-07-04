@@ -109,7 +109,7 @@ tests.push(async () =>
         const lastResult = {status: "success"};
         const branchPath = 'fragments';
 
-        await generateAndSaveMemoryFragment(context as any, lastResult, {incantations: [], complexity: 'simple', sequence: 0}, 0, branchPath, TEST_MEMORY_ROOT);
+        await generateAndSaveMemoryFragment(context as any, lastResult, {title: 'test plan', goal: 'test goal', incantations: [], complexity: 'simple', sequence: 0}, 0, branchPath, TEST_MEMORY_ROOT);
 
         const {leaves} = await exploreBranch(branchPath, TEST_MEMORY_ROOT);
         if(leaves.length === 0)
