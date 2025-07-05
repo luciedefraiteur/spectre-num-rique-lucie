@@ -1,14 +1,17 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { askClaude } from './core/claude_interface.js';
+import {askClaude} from './core/claude_interface.js';
 
-async function testClaudeAPI() {
-    console.log('Test de l'interface Claude...');
-    try {
+async function testClaudeAPI()
+{
+    console.log("Test de l'interface Claude...");
+    try
+    {
         const response = await askClaude('Bonjour Claude, peux-tu me dire "Hello, world!" ?');
         console.log('\nRéponse de Claude:\n', response);
-    } catch (error) {
+    } catch(error)
+    {
         console.error('\nLe test a échoué:', error);
     }
 }

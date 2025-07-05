@@ -1,10 +1,13 @@
 
-import { expect } from 'chai';
-import { Lexer } from './lexer.js';
-import { Parser, VariableDeclarationNode, IfStatementNode, ReturnStatementNode, BinaryExpressionNode, IdentifierNode, NumericLiteralNode } from './parser.js';
+import {expect} from 'chai';
+import {Lexer} from './lexer.js';
+import {Parser} from './parser.js';
+import {VariableDeclarationNode, IfStatementNode, ReturnStatementNode, BinaryExpressionNode, IdentifierNode, NumericLiteralNode} from './types.js';
 
-describe('Advanced Parser features', () => {
-    it('should parse a variable declaration with a numeric literal initializer', () => {
+describe('Advanced Parser features', () =>
+{
+    it('should parse a variable declaration with a numeric literal initializer', () =>
+    {
         const code = 'let x = 5;';
         const lexer = new Lexer(code);
         const tokens = lexer.tokenize();
@@ -18,7 +21,8 @@ describe('Advanced Parser features', () => {
         expect((node.initializer as NumericLiteralNode).value).to.equal(5);
     });
 
-    it('should parse an if statement', () => {
+    it('should parse an if statement', () =>
+    {
         const code = 'if (x > 0) { let a = 1; }';
         const lexer = new Lexer(code);
         const tokens = lexer.tokenize();
@@ -31,7 +35,8 @@ describe('Advanced Parser features', () => {
         expect(node.thenBranch).to.be.an('array').with.lengthOf(1);
     });
 
-    it('should parse a return statement', () => {
+    it('should parse a return statement', () =>
+    {
         const code = 'function a() { return 1; }';
         const lexer = new Lexer(code);
         const tokens = lexer.tokenize();

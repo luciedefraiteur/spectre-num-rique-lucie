@@ -1,4 +1,4 @@
-import { ASTNode } from './parser.js';
+import { ASTNode } from './types.js';
 export declare class CodeGenerator {
     private indentLevel;
     private indent;

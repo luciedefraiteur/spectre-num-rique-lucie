@@ -1,0 +1,3 @@
+§X: git add .
+§X: git commit -m "Kilo Code: Correction des erreurs de compilation"
+§X: git push

@@ -10,7 +10,7 @@ function askQuestion(query) {
         resolve(ans);
     }));
 }
-async function parseLuciform(filePath) {
+async function parseLuciform(filePath, args) {
     const content = await fs.readFile(filePath, 'utf-8');
     const lines = content.replace(/\r\n/g, '\n').split('\n');
     const operations = [];
@@ -26,13 +26,18 @@ async function parseLuciform(filePath) {
         if (line.startsWith('---')) {
             continue;
         }
-        if (line.startsWith('§F:')) {
-            currentFilePath = line.substring(3).trim();
+        let processedLine = line;
+        for (let i = 0; i < args.length; i++) {
+            processedLine = processedLine.replace(new RegExp(`\\$${i + 1}`, 'g'), args[i]);
         }
-        else if (line.startsWith('§X:')) {
-            operations.push({ type: 'shell_command', command: line.substring(3).trim() });
+        processedLine = processedLine.replace(/\s*\$\d+/g, '');
+        if (processedLine.startsWith('§F:')) {
+            currentFilePath = processedLine.substring(3).trim();
         }
-        else if (line.startsWith('§Q:')) {
+        else if (processedLine.startsWith('§X:')) {
+            operations.push({ type: 'shell_command', command: processedLine.substring(3).trim() });
+        }
+        else if (processedLine.startsWith('§Q:')) {
             const question = line.substring(3).trim();
             const answer = await askQuestion(question + ' ');
             console.log(`Réponse de l'utilisateur : ${answer}`);
@@ -116,15 +121,16 @@ async function parseLuciform(filePath) {
     return operations;
 }
 async function main() {
-    const args = process.argv.slice(2);
-    const luciformPath = args.find(arg => !arg.startsWith('--'));
-    const dryRun = args.includes('--dry-run');
+    const cliArgs = process.argv.slice(2);
+    const luciformPath = cliArgs.find(arg => !arg.startsWith('--'));
+    const dryRun = cliArgs.includes('--dry-run');
+    const ritualArgs = cliArgs.filter(arg => arg !== luciformPath && !arg.startsWith('--'));
     if (!luciformPath) {
-        console.error('Usage: npm run ritual [--dry-run] <path_to_luciform_file>');
+        console.error('Usage: npm run ritual [--dry-run] <path_to_luciform_file> [args...]');
         process.exit(1);
     }
     try {
-        const operations = await parseLuciform(luciformPath);
+        const operations = await parseLuciform(luciformPath, ritualArgs);
         for (const op of operations) {
             try {
                 await applyOperation(op, dryRun);

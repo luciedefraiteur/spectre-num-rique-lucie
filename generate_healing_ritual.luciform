@@ -1,0 +1,1 @@
+§X: node --loader ts-node/esm create_healing_ritual.ts

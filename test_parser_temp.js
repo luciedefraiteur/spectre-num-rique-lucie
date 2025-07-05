@@ -1,5 +1,6 @@
 import { Lexer } from './core/ts_parser/lexer.js';
-import { Parser, FunctionDeclarationNode, ReturnStatementNode, NumericLiteralNode } from './core/ts_parser/parser.js';
+import { Parser } from './core/ts_parser/parser.js';
+import { FunctionDeclarationNode, ReturnStatementNode, NumericLiteralNode } from './core/ts_parser/types.js';
 function runTest() {
     const code = 'function a() { return 1; }';
     const lexer = new Lexer(code);

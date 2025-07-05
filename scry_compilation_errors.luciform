@@ -1,0 +1,1 @@
+§X: npm run build 2>&1 | node --loader ts-node/esm scry_orb_generator.ts > compilation_errors.scryOrb

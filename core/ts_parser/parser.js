@@ -1,145 +1,5 @@
 import { TokenType } from './lexer.js';
-export class ASTNode {
-}
-export class IdentifierNode extends ASTNode {
-    name;
-    constructor(name) {
-        super();
-        this.name = name;
-    }
-}
-export class StringLiteralNode extends ASTNode {
-    value;
-    constructor(value) {
-        super();
-        this.value = value;
-    }
-}
-export class NumericLiteralNode extends ASTNode {
-    value;
-    constructor(value) {
-        super();
-        this.value = value;
-    }
-}
-export class BinaryExpressionNode extends ASTNode {
-    left;
-    operator;
-    right;
-    constructor(left, operator, right) {
-        super();
-        this.left = left;
-        this.operator = operator;
-        this.right = right;
-    }
-}
-export class VariableDeclarationNode extends ASTNode {
-    keyword;
-    identifier;
-    initializer;
-    constructor(keyword, identifier, initializer) {
-        super();
-        this.keyword = keyword;
-        this.identifier = identifier;
-        this.initializer = initializer;
-    }
-}
-export class FunctionDeclarationNode extends ASTNode {
-    name;
-    params;
-    body;
-    constructor(name, params, body) {
-        super();
-        this.name = name;
-        this.params = params;
-        this.body = body;
-    }
-}
-export class IfStatementNode extends ASTNode {
-    condition;
-    thenBranch;
-    elseBranch;
-    constructor(condition, thenBranch, elseBranch) {
-        super();
-        this.condition = condition;
-        this.thenBranch = thenBranch;
-        this.elseBranch = elseBranch;
-    }
-}
-export class ReturnStatementNode extends ASTNode {
-    argument;
-    constructor(argument) {
-        super();
-        this.argument = argument;
-    }
-}
-export class WhileStatementNode extends ASTNode {
-    condition;
-    body;
-    constructor(condition, body) {
-        super();
-        this.condition = condition;
-        this.body = body;
-    }
-}
-export class ForStatementNode extends ASTNode {
-    initializer;
-    condition;
-    increment;
-    body;
-    constructor(initializer, condition, increment, body) {
-        super();
-        this.initializer = initializer;
-        this.condition = condition;
-        this.increment = increment;
-        this.body = body;
-    }
-}
-export class ExpressionStatementNode extends ASTNode {
-    expression;
-    constructor(expression) {
-        super();
-        this.expression = expression;
-    }
-}
-export class CallExpressionNode extends ASTNode {
-    callee;
-    args;
-    constructor(callee, args) {
-        super();
-        this.callee = callee;
-        this.args = args;
-    }
-}
-export class PropertyAccessNode extends ASTNode {
-    expression;
-    name;
-    constructor(expression, name) {
-        super();
-        this.expression = expression;
-        this.name = name;
-    }
-}
-export class AssignmentExpressionNode extends ASTNode {
-    left;
-    operator;
-    right;
-    constructor(left, operator, right) {
-        super();
-        this.left = left;
-        this.operator = operator;
-        this.right = right;
-    }
-}
-export class ImportDeclarationNode extends ASTNode {
-    imports;
-    moduleSpecifier;
-    constructor(imports, moduleSpecifier) {
-        super();
-        this.imports = imports;
-        this.moduleSpecifier = moduleSpecifier;
-    }
-}
+import { IdentifierNode, StringLiteralNode, NumericLiteralNode, BinaryExpressionNode, VariableDeclarationNode, FunctionDeclarationNode, IfStatementNode, ReturnStatementNode, WhileStatementNode, ForStatementNode, ExpressionStatementNode, CallExpressionNode, PropertyAccessNode, AssignmentExpressionNode, ImportDeclarationNode, UnaryExpressionNode } from './types.js';
 export class Parser {
     tokens;
     current = 0;
@@ -243,35 +103,87 @@ export class Parser {
         return new ExpressionStatementNode(expr);
     }
     expression() {
-        // This is a very simplified expression parser. A real one would handle precedence.
+        return this.assignment();
+    }
+    assignment() {
+        let expr = this.equality();
+        if (this.match(TokenType.Operator, '=', '+=', '-=', '*=', '/=')) {
+            const operator = this.previous();
+            const value = this.assignment();
+            if (expr instanceof IdentifierNode || expr instanceof PropertyAccessNode) {
+                return new AssignmentExpressionNode(expr, operator, value);
+            }
+            this.parseErrors.push(`Invalid assignment target at line ${operator.line}, column ${operator.column}`);
+        }
+        return expr;
+    }
+    equality() {
+        let expr = this.comparison();
+        while (this.match(TokenType.Operator, '==', '!=', '===', '!==')) {
+            const operator = this.previous();
+            const right = this.comparison();
+            expr = new BinaryExpressionNode(expr, operator, right);
+        }
+        return expr;
+    }
+    comparison() {
+        let expr = this.term();
+        while (this.match(TokenType.Operator, '>', '>=', '<', '<=')) {
+            const operator = this.previous();
+            const right = this.term();
+            expr = new BinaryExpressionNode(expr, operator, right);
+        }
+        return expr;
+    }
+    term() {
+        let expr = this.factor();
+        while (this.match(TokenType.Operator, '+', '-')) {
+            const operator = this.previous();
+            const right = this.factor();
+            expr = new BinaryExpressionNode(expr, operator, right);
+        }
+        return expr;
+    }
+    factor() {
+        let expr = this.unary();
+        while (this.match(TokenType.Operator, '*', '/')) {
+            const operator = this.previous();
+            const right = this.unary();
+            expr = new BinaryExpressionNode(expr, operator, right);
+        }
+        return expr;
+    }
+    unary() {
+        if (this.match(TokenType.Operator, '!', '-', '++', '--')) {
+            const operator = this.previous();
+            const right = this.unary();
+            return new UnaryExpressionNode(operator, right);
+        }
+        return this.call();
+    }
+    call() {
         let expr = this.primary();
         while (true) {
             if (this.match(TokenType.Punctuation, '(')) {
                 expr = this.callExpression(expr);
             }
             else if (this.match(TokenType.Punctuation, '.')) {
-                const name = this.consume(TokenType.Identifier, 'Expect property name after \'.\'.');
+                const name = this.consume(TokenType.Identifier, "Expect property name after '.'");
                 expr = new PropertyAccessNode(expr, new IdentifierNode(name.text));
-            }
-            else if (this.match(TokenType.Operator)) {
-                const operator = this.previous();
-                const right = this.primary();
-                expr = new BinaryExpressionNode(expr, operator, right);
             }
             else {
                 break;
             }
         }
-        if (this.match(TokenType.Operator, '=')) {
-            const operator = this.previous();
-            const value = this.expression();
-            return new AssignmentExpressionNode(expr, operator, value);
-        }
         return expr;
     }
     primary() {
         if (this.match(TokenType.Identifier)) {
-            return new IdentifierNode(this.previous().text);
+            const identifierToken = this.previous();
+            if (identifierToken.text === 'require') {
+                return this.requireCall();
+            }
+            return new IdentifierNode(identifierToken.text);
         }
         if (this.match(TokenType.StringLiteral)) {
             return new StringLiteralNode(this.previous().text);
@@ -279,8 +191,18 @@ export class Parser {
         if (this.match(TokenType.NumericLiteral)) {
             return new NumericLiteralNode(parseFloat(this.previous().text));
         }
-        // Add other primary expression types
-        throw new Error(`Unexpected token: ${this.peek().text}`);
+        if (this.match(TokenType.Punctuation, '(')) {
+            const expr = this.expression();
+            this.consume(TokenType.Punctuation, ')', "Expect ')' after expression.");
+            return expr;
+        }
+        throw new Error(`Unexpected token: ${this.peek().text} at line ${this.peek().line}, column ${this.peek().column}`);
+    }
+    requireCall() {
+        this.consume(TokenType.Punctuation, '(', "Expect '(' after 'require'.");
+        const modulePath = this.consume(TokenType.StringLiteral, 'Expect string literal module path.');
+        this.consume(TokenType.Punctuation, ')', "Expect ')' after module path.");
+        return new CallExpressionNode(new IdentifierNode('require'), [new StringLiteralNode(modulePath.text)]);
     }
     ifStatement() {
         this.consume(TokenType.Punctuation, '(', 'Expect \'(\' after \'if\'.');

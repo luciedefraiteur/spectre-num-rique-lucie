@@ -3,7 +3,8 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import {spawn} from 'child_process';
 import {Lexer} from '../ts_parser/lexer.js';
-import {Parser, ASTNode, FunctionDeclarationNode} from '../ts_parser/parser.js';
+import {Parser} from '../ts_parser/parser.js';
+import {ASTNode, FunctionDeclarationNode} from '../ts_parser/types.js';
 
 interface HealingParameters
 {

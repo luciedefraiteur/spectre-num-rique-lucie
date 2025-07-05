@@ -1,3 +1,4 @@
+"use strict";
 try {
     require('dotenv').config();
 }
@@ -13,5 +14,4 @@ else {
     console.error('❌ La variable d\'environnement GEMINI_API_KEY n\'est pas définie.');
     console.log('Veuillez créer un fichier .env et y ajouter votre clé, ou la définir dans votre environnement système.');
 }
-export {};
 //# sourceMappingURL=check_gemini_key.js.map

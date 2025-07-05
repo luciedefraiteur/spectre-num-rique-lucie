@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import * as readline from 'readline';
 import { LLMModel } from './core/llm_interface.js';
 import fs from 'fs';

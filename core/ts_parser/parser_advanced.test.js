@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { Lexer } from './lexer.js';
-import { Parser, VariableDeclarationNode, IfStatementNode, ReturnStatementNode, BinaryExpressionNode, NumericLiteralNode } from './parser.js';
+import { Parser } from './parser.js';
+import { VariableDeclarationNode, IfStatementNode, ReturnStatementNode, BinaryExpressionNode, NumericLiteralNode } from './types.js';
 describe('Advanced Parser features', () => {
     it('should parse a variable declaration with a numeric literal initializer', () => {
         const code = 'let x = 5;';

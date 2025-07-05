@@ -1,11 +1,14 @@
 
-import { expect } from 'chai';
-import { Lexer } from './lexer.js';
-import { Parser, FunctionDeclarationNode, IfStatementNode, ReturnStatementNode } from './parser.js';
-import { Token, TokenType } from './lexer.js';
+import {expect} from 'chai';
+import {Lexer} from './lexer.js';
+import {Parser} from './parser.js';
+import {FunctionDeclarationNode, IfStatementNode, ReturnStatementNode} from './types.js';
+import {Token, TokenType} from './lexer.js';
 
-describe('Parser', () => {
-    it('should parse a simple function declaration', () => {
+describe('Parser', () =>
+{
+    it('should parse a simple function declaration', () =>
+    {
         const code = 'function myFunction() {}';
         const lexer = new Lexer(code);
         const tokens = lexer.tokenize();

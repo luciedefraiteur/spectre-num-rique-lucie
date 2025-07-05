@@ -12,7 +12,7 @@
     "lib": ["ES2023"],
     "module": "NodeNext",
     "moduleResolution": "nodenext",
-    "target": "es2022",
+    "target": "esnext",
     "types": ["node", "vitest/globals"],
     "jsx": "react-jsx"
   },
@@ -21,6 +21,7 @@
     "server.js",
     "server.js.map",
     "gemini-cli-lurkuitae/",
-    "lurkuitae/"
+    "lurkuitae/",
+    "parser-ts/"
   ]
 }

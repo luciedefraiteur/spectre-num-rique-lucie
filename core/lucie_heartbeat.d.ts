@@ -1,1 +1,1 @@
-export {};
+declare function heartbeat(): void;

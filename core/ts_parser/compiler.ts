@@ -1,4 +1,4 @@
-import {ASTNode, BinaryExpressionNode, FunctionDeclarationNode, IdentifierNode, NumericLiteralNode, StringLiteralNode, VariableDeclarationNode} from './parser.js';
+import {ASTNode, BinaryExpressionNode, FunctionDeclarationNode, IdentifierNode, NumericLiteralNode, StringLiteralNode, VariableDeclarationNode} from './types.js';
 
 export class Compiler
 {
@@ -48,7 +48,7 @@ export class Compiler
 
     private visitFunctionDeclaration(node: FunctionDeclarationNode): string
     {
-        const params = node.params.map(p => p.name).join(', ');
+        const params = node.params.map((p: IdentifierNode) => p.name).join(', ');
         const body = this.compile(node.body);
         return `function ${ node.name.name }(${ params }) {\n${ body }\n}`;
     }

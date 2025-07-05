@@ -12,12 +12,15 @@
     "ritual": "node --loader ts-node/esm execute_luciform.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.56.0",
+    "@babel/code-frame": "^7.27.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
+    "fp-ts": "^2.16.10",
     "json5": "^2.2.3",
     "latest": "^0.2.0",
     "node-fetch": "^3.3.2",
@@ -30,7 +33,6 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^20.19.1",
     "@types/node-fetch": "^3.0.3",
-    "@types/whatwg-fetch": "^0.0.33",
     "@types/yargs": "^17.0.32",
     "chai": "^5.2.0",
     "cross-env": "^7.0.3",

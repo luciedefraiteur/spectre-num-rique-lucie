@@ -35,5 +35,6 @@ export declare class Lexer {
     private advance;
     private peek;
     private peekNext;
+    private matchAndAdvance;
     private isAtEnd;
 }

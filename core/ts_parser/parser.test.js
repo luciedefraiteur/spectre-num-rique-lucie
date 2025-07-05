@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { Lexer } from './lexer.js';
-import { Parser, FunctionDeclarationNode } from './parser.js';
+import { Parser } from './parser.js';
+import { FunctionDeclarationNode } from './types.js';
 describe('Parser', () => {
     it('should parse a simple function declaration', () => {
         const code = 'function myFunction() {}';
