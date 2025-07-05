@@ -69,8 +69,57 @@ export class Lexer {
                 if (char === '/' && this.peek() === '*') {
                     return this.blockComment();
                 }
-                // For now, just return a generic punctuation token
-                return { type: TokenType.Punctuation, text: char, line: this.line, column: this.column };
+                // Operators and Punctuation
+                case '(': return { type: TokenType.Punctuation, text: char, line: this.line, column: this.column - 1 };
+                case ')': return { type: TokenType.Punctuation, text: char, line: this.line, column: this.column - 1 };
+                case '{': return { type: TokenType.Punctuation, text: char, line: this.line, column: this.column - 1 };
+                case '}': return { type: TokenType.Punctuation, text: char, line: this.line, column: this.column - 1 };
+                case '[': return { type: TokenType.Punctuation, text: char, line: this.line, column: this.column - 1 };
+                case ']': return { type: TokenType.Punctuation, text: char, line: this.line, column: this.column - 1 };
+                case ';': return { type: TokenType.Punctuation, text: char, line: this.line, column: this.column - 1 };
+                case ',': return { type: TokenType.Punctuation, text: char, line: this.line, column: this.column - 1 };
+                case '.': return { type: TokenType.Punctuation, text: char, line: this.line, column: this.column - 1 };
+                case '+':
+                    if (this.matchAndAdvance('+')) return { type: TokenType.Operator, text: '++', line: this.line, column: this.column - 2 };
+                    if (this.matchAndAdvance('=')) return { type: TokenType.Operator, text: '+=', line: this.line, column: this.column - 2 };
+                    return { type: TokenType.Operator, text: char, line: this.line, column: this.column - 1 };
+                case '-':
+                    if (this.matchAndAdvance('-')) return { type: TokenType.Operator, text: '--', line: this.line, column: this.column - 2 };
+                    if (this.matchAndAdvance('=')) return { type: TokenType.Operator, text: '-=', line: this.line, column: this.column - 2 };
+                    return { type: TokenType.Operator, text: char, line: this.line, column: this.column - 1 };
+                case '*':
+                    if (this.matchAndAdvance('=')) return { type: TokenType.Operator, text: '*=', line: this.line, column: this.column - 2 };
+                    return { type: TokenType.Operator, text: char, line: this.line, column: this.column - 1 };
+                case '/':
+                    if (this.matchAndAdvance('=')) return { type: TokenType.Operator, text: '/=', line: this.line, column: this.column - 2 };
+                    return { type: TokenType.Operator, text: char, line: this.line, column: this.column - 1 };
+                case '=':
+                    if (this.matchAndAdvance('=')) {
+                        if (this.matchAndAdvance('=')) return { type: TokenType.Operator, text: '===', line: this.line, column: this.column - 3 };
+                        return { type: TokenType.Operator, text: '==', line: this.line, column: this.column - 2 };
+                    }
+                    return { type: TokenType.Operator, text: char, line: this.line, column: this.column - 1 };
+                case '!':
+                    if (this.matchAndAdvance('=')) {
+                        if (this.matchAndAdvance('=')) return { type: TokenType.Operator, text: '!==', line: this.line, column: this.column - 3 };
+                        return { type: TokenType.Operator, text: '!=', line: this.line, column: this.column - 2 };
+                    }
+                    return { type: TokenType.Operator, text: char, line: this.line, column: this.column - 1 };
+                case '>':
+                    if (this.matchAndAdvance('=')) return { type: TokenType.Operator, text: '>=', line: this.line, column: this.column - 2 };
+                    return { type: TokenType.Operator, text: char, line: this.line, column: this.column - 1 };
+                case '<':
+                    if (this.matchAndAdvance('=')) return { type: TokenType.Operator, text: '<=', line: this.line, column: this.column - 2 };
+                    return { type: TokenType.Operator, text: char, line: this.line, column: this.column - 1 };
+                case '&':
+                    if (this.matchAndAdvance('&')) return { type: TokenType.Operator, text: '&&', line: this.line, column: this.column - 2 };
+                    break; // Fall through for single '&' if needed later
+                case '|':
+                    if (this.matchAndAdvance('|')) return { type: TokenType.Operator, text: '||', line: this.line, column: this.column - 2 };
+                    break; // Fall through for single '|' if needed later
+                default:
+                    // Error handling for unexpected characters
+                    throw new Error(`Unexpected character: ${char} at line ${this.line}, column ${this.column - 1}`);
         }
     }
 
@@ -138,7 +187,7 @@ export class Lexer {
     }
 
     private isKeyword(text: string): boolean {
-        const keywords = ['const', 'let', 'var', 'if', 'else', 'for', 'while', 'return', 'function', 'class', 'import', 'export', 'from', 'async', 'await'];
+        const keywords = ['const', 'let', 'var', 'if', 'else', 'for', 'while', 'return', 'function', 'class', 'import', 'export', 'from', 'async', 'await', 'require'];
         return keywords.includes(text);
     }
 
@@ -167,6 +216,14 @@ export class Lexer {
     private peekNext(): string {
         if (this.position + 1 >= this.source.length) return '\0';
         return this.source.charAt(this.position + 1);
+    }
+
+    private matchAndAdvance(expected: string): boolean {
+        if (this.isAtEnd()) return false;
+        if (this.source.charAt(this.position) !== expected) return false;
+        this.position++;
+        this.column++;
+        return true;
     }
 
     private isAtEnd(): boolean {

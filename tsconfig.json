@@ -21,7 +21,6 @@
     "server.js",
     "server.js.map",
     "gemini-cli-lurkuitae/",
-    "lurkuitae/",
-    "**/*.test.ts"
+    "lurkuitae/"
   ]
 }

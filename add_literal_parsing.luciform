@@ -1,0 +1,152 @@
+file: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\ts_parser\types.ts
+<<<<<<< REPLACE
+export class ImportDeclarationNode extends ASTNode {
+    constructor(public imports: (IdentifierNode | { alias: IdentifierNode, name: IdentifierNode })[], public moduleSpecifier: StringLiteralNode) {
+        super();
+    }
+}
+
+export class UnaryExpressionNode extends ASTNode {
+    constructor(public operator: Token, public right: ASTNode) {
+        super();
+    }
+}
+=======
+export class ObjectLiteralNode extends ASTNode {
+    constructor(public properties: PropertyNode[]) {
+        super();
+    }
+}
+
+export class PropertyNode extends ASTNode {
+    constructor(public name: IdentifierNode | StringLiteralNode, public value: ASTNode) {
+        super();
+    }
+}
+
+export class ArrayLiteralNode extends ASTNode {
+    constructor(public elements: ASTNode[]) {
+        super();
+    }
+}
+
+export class BooleanLiteralNode extends ASTNode {
+    constructor(public value: boolean) {
+        super();
+    }
+}
+
+export class NullLiteralNode extends ASTNode {
+    constructor() {
+        super();
+    }
+}
+
+export class UndefinedLiteralNode extends ASTNode {
+    constructor() {
+        super();
+    }
+}
+
+export class ImportDeclarationNode extends ASTNode {
+    constructor(public imports: (IdentifierNode | { alias: IdentifierNode, name: IdentifierNode })[], public moduleSpecifier: StringLiteralNode) {
+        super();
+    }
+}
+
+export class UnaryExpressionNode extends ASTNode {
+    constructor(public operator: Token, public right: ASTNode) {
+        super();
+    }
+}
+>>>>>>> REPLACE
+---
+file: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\ts_parser\parser.ts
+<<<<<<< SEARCH
+        if (this.match(TokenType.NumericLiteral)) {
+            return new NumericLiteralNode(parseFloat(this.previous().text));
+        }
+        if (this.match(TokenType.Punctuation, '(')) {
+            const expr = this.expression();
+            this.consume(TokenType.Punctuation, ')', 'Expect ')' after expression.');
+            return expr;
+        }
+        throw new Error(`Unexpected token: ${this.peek().text} at line ${this.peek().line}, column ${this.peek().column}`);
+=======
+        if (this.match(TokenType.NumericLiteral)) {
+            return new NumericLiteralNode(parseFloat(this.previous().text));
+        }
+        if (this.match(TokenType.Keyword, 'true')) {
+            return new BooleanLiteralNode(true);
+        }
+        if (this.match(TokenType.Keyword, 'false')) {
+            return new BooleanLiteralNode(false);
+        }
+        if (this.match(TokenType.Keyword, 'null')) {
+            return new NullLiteralNode();
+        }
+        if (this.match(TokenType.Keyword, 'undefined')) {
+            return new UndefinedLiteralNode();
+        }
+        if (this.match(TokenType.Punctuation, '(')) {
+            const expr = this.expression();
+            this.consume(TokenType.Punctuation, ')', 'Expect ')' after expression.');
+            return expr;
+        }
+        if (this.match(TokenType.Punctuation, '{')) {
+            return this.objectLiteral();
+        }
+        if (this.match(TokenType.Punctuation, '[')) {
+            return this.arrayLiteral();
+        }
+        throw new Error(`Unexpected token: ${this.peek().text} at line ${this.peek().line}, column ${this.peek().column}`);
+>>>>>>> REPLACE
+---
+file: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\ts_parser\parser.ts
+<<<<<<< SEARCH
+    private requireCall(): ASTNode {
+        this.consume(TokenType.Punctuation, '(', 'Expect '(' after 'require'.');
+        const modulePath = this.consume(TokenType.StringLiteral, 'Expect string literal module path.');
+        this.consume(TokenType.Punctuation, ')', 'Expect ')' after module path.');
+        return new CallExpressionNode(new IdentifierNode('require'), [new StringLiteralNode(modulePath.text)]);
+    }
+=======
+    private objectLiteral(): ASTNode {
+        const properties: PropertyNode[] = [];
+        if (!this.check(TokenType.Punctuation, '}')) {
+            do {
+                const name = this.consume(TokenType.Identifier, 'Expect property name or string literal.');
+                this.consume(TokenType.Punctuation, ':', 'Expect ':' after property name.');
+                const value = this.expression();
+                properties.push(new PropertyNode(new IdentifierNode(name.text), value));
+            } while (this.match(TokenType.Punctuation, ','));
+        }
+        this.consume(TokenType.Punctuation, '}', 'Expect '}' after object literal.');
+        return new ObjectLiteralNode(properties);
+    }
+
+    private arrayLiteral(): ASTNode {
+        const elements: ASTNode[] = [];
+        if (!this.check(TokenType.Punctuation, ']')) {
+            do {
+                elements.push(this.expression());
+            } while (this.match(TokenType.Punctuation, ','));
+        }
+        this.consume(TokenType.Punctuation, ']', 'Expect ']' after array literal.');
+        return new ArrayLiteralNode(elements);
+    }
+
+    private requireCall(): ASTNode {
+        this.consume(TokenType.Punctuation, '(', 'Expect '(' after 'require'.');
+        const modulePath = this.consume(TokenType.StringLiteral, 'Expect string literal module path.');
+        this.consume(TokenType.Punctuation, ')', 'Expect ')' after module path.');
+        return new CallExpressionNode(new IdentifierNode('require'), [new StringLiteralNode(modulePath.text)]);
+    }
+>>>>>>> REPLACE
+---
+file: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\ts_parser\lexer.ts
+<<<<<<< SEARCH
+        const keywords = ['const', 'let', 'var', 'if', 'else', 'for', 'while', 'return', 'function', 'class', 'import', 'export', 'from', 'async', 'await', 'require'];
+=======
+        const keywords = ['const', 'let', 'var', 'if', 'else', 'for', 'while', 'return', 'function', 'class', 'import', 'export', 'from', 'async', 'await', 'require', 'true', 'false', 'null', 'undefined'];
+>>>>>>> REPLACE

@@ -1,4 +1,3 @@
----
-command: git commit -F C:/Users/Lucie/git_repositories/spectre_numerique_lucie/commit_message.txt
----
-command: git push
+§X: git add .
+§X: git commit -m "Kilo Code: Sauvegarde de l'état initial avant nettoyage"
+§X: git push

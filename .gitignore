@@ -5,3 +5,5 @@ gemini-cli-lurkuitae/
 # Environment variables
 .env
 .env
+parser-ts/
+.env.example

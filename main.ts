@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { getInitialContext } from './core/ritual_utils.js';
 import { runTerminalRitual } from './core/run_terminal_rituel.js';
 import { RitualContext } from './core/types.js';
