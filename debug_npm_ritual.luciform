@@ -1,9 +1,0 @@
----
-§F: package.json
-<<<<<<< SEARCH
-    "ritual": "node --loader ts-node/esm execute_luciform.ts"
->>>>>>> SEARCH
-======= REPLACE
-    "ritual": "powershell.exe -Command \"Write-Error '[DEBUG] npm run ritual started.'\" ; node --loader ts-node/esm execute_luciform.ts"
->>>>>>> REPLACE
-

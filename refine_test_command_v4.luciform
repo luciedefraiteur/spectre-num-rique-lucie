@@ -1,9 +1,0 @@
-
----
-file: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\package.json
-<<<<<<< SEARCH
-    "test": "mocha --require ts-node/register --loader ts-node/esm --extensions ts,tsx \"core/**/*.test.ts\"",
-=======
-    "test": "node --loader ts-node/esm ./node_modules/mocha/bin/_mocha core/**/*.test.ts",
->>>>>>> REPLACE
-

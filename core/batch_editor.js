@@ -93,7 +93,7 @@ export async function applyOperation(op, dryRun = false) {
                 if (op.type !== 'shell_command')
                     return; // Type guard
                 const isWindows = process.platform === 'win32';
-                const command = isWindows ? op.command.replace(/rm /g, 'del ') : op.command;
+                const command = isWindows && op.command.trim().startsWith('rm ') ? op.command.replace(/rm /g, 'del ') : op.command;
                 await executeShellCommand(command);
                 break;
         }

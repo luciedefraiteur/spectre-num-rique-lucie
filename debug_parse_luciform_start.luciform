@@ -1,9 +1,0 @@
----
-§F: execute_luciform.ts
-<<<<<<< SEARCH
-async function parseLuciform(filePath: string): Promise<Operation[]> {
->>>>>>> SEARCH
-======= REPLACE
-async function parseLuciform(filePath: string): Promise<Operation[]> {
-    console.error("parseLuciform function started.");
->>>>>>> REPLACE
