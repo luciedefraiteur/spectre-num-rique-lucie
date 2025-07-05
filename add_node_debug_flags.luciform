@@ -1,0 +1,8 @@
+---
+§F: package.json
+<<<<<<< SEARCH
+    "ritual": "node --loader ts-node/esm execute_luciform.ts"
+>>>>>>> SEARCH
+======= REPLACE
+    "ritual": "node --stack-trace-limit=Infinity --enable-source-maps --loader ts-node/esm execute_luciform.ts"
+>>>>>>> REPLACE

@@ -1,0 +1,14 @@
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+        const operations = await parseLuciform(luciformPath);
+
+        for (const op of operations) {
+>>>>>>> SEARCH
+======= REPLACE
+        const operations = await parseLuciform(luciformPath);
+
+        console.log("Parsed Operations:", JSON.stringify(operations, null, 2));
+
+        for (const op of operations) {
+>>>>>>> REPLACE

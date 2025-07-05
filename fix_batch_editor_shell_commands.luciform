@@ -1,0 +1,37 @@
+---
+§F: core/batch_editor.ts
+<<<<<<< SEARCH
+            const dir = path.dirname(op.filePath);
+            console.log(`Attempting to create directory: ${dir}`);
+            await fs.mkdir(dir, {recursive: true});
+            console.log(`Attempting to write file: ${op.filePath}`);
+            await fs.writeFile(op.filePath, op.content, 'utf-8');
+            console.log(`Successfully created ${ op.filePath }`);
+>>>>>>> SEARCH
+======= REPLACE
+            const dir = path.dirname(op.filePath);
+            await fs.mkdir(dir, {recursive: true});
+            await fs.writeFile(op.filePath, op.content, 'utf-8');
+            // console.log(`Successfully created ${ op.filePath }`); // Removed console.log
+>>>>>>> REPLACE
+---
+§F: core/batch_editor.ts
+<<<<<<< SEARCH
+            const command = isWindows ? op.command.replace(/rm /g, 'del ') : op.command;
+            await executeShellCommand(command);
+>>>>>>> SEARCH
+======= REPLACE
+            let commandToExecute = op.command;
+            if (isWindows) {
+                // For Windows, ensure paths with spaces are quoted
+                // This is a simplified approach; a more robust solution might involve parsing the command
+                // and quoting individual arguments if they are paths.
+                // For now, we'll assume the command itself needs quoting if it contains spaces.
+                if (commandToExecute.includes(' ') && !commandToExecute.startsWith('"') && !commandToExecute.endsWith('"')) {
+                    commandToExecute = `"${commandToExecute}"`;
+                }
+                // Replace 'rm' with 'del' for Windows compatibility
+                commandToExecute = commandToExecute.replace(/rm /g, 'del ');
+            }
+            await executeShellCommand(commandToExecute);
+>>>>>>> REPLACE

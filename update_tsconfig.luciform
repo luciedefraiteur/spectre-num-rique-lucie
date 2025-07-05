@@ -1,0 +1,26 @@
+§F: tsconfig.json
+<<<<<<< §S
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ES2022",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "outDir": "dist",
+    "strict": true
+  },
+  "include": ["*.ts", "core/**/*.ts"],
+  "exclude": ["server.ts"]
+}
+======= §R
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "types": ["node"]
+  }
+}
+>>>>>>> §R

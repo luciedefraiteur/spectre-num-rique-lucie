@@ -1,0 +1,10 @@
+§F: execute_luciform.ts
+<<<<<<< §S
+            const lineNumberMatch = line.match(/:line:(\d+)/);
+            if (lineNumberMatch) {
+                currentSearchStartLine = parseInt(lineNumberMatch[1], 10);
+            }
+======= §R
+            const lineNumberMatch = line.match(/:line:(\d+)/);
+            currentSearchStartLine = lineNumberMatch ? parseInt(lineNumberMatch[1], 10) : 1;
+>>>>>>> §R

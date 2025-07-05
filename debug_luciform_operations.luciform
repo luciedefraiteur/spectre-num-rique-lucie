@@ -1,0 +1,38 @@
+---
+§F: execute_luciform.ts
+<<<<<<< INSERT:line:1
+async function logOperationResult(operation: any, status: string, error?: any) {
+    const logMessage = `${new Date().toISOString()} - Operation: ${JSON.stringify(operation)} - Status: ${status}`;
+    const fullLogMessage = error ? `${logMessage} - Error: ${error}` : logMessage;
+    try {
+        await fs.appendFile('luciform_operation_log.txt', fullLogMessage + '\n', 'utf-8');
+    } catch (fileError) {
+        console.error(`Error writing to luciform_operation_log.txt: ${fileError}`);
+    }
+}
+>>>>>>> INSERT
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+        for (const op of operations) {
+            try {
+                await applyOperation(op, dryRun);
+            } catch (opError) {
+                console.error(`Error applying operation ${JSON.stringify(op)}: ${opError}`);
+                // Decide whether to re-throw or continue
+                throw opError; // Re-throw to stop execution on first error
+            }
+        }
+>>>>>>> SEARCH
+<<<<<<< REPLACE
+        for (const op of operations) {
+            try {
+                await applyOperation(op, dryRun);
+                await logOperationResult(op, 'SUCCESS');
+            } catch (opError) {
+                console.error(`Error applying operation ${JSON.stringify(op)}: ${opError}`);
+                await logOperationResult(op, 'ERROR', opError);
+                throw opError; // Re-throw to stop execution on first error
+            }
+        }
+>>>>>>> REPLACE

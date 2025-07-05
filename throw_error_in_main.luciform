@@ -1,0 +1,69 @@
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+async function main() {
+    const args = process.argv.slice(2);
+    const luciformPath = args.find(arg => !arg.startsWith('--'));
+    const dryRun = args.includes('--dry-run');
+
+    if (!luciformPath) {
+        console.error('Usage: npm run ritual [--dry-run] <path_to_luciform_file>');
+        process.exit(1);
+    }
+
+    try {
+        const operations = await parseLuciform(luciformPath);
+
+        for (const op of operations) {
+            try {
+                await applyOperation(op, dryRun);
+            } catch (opError) {
+                console.error(`Error applying operation ${JSON.stringify(op)}: ${opError}`);
+                // Decide whether to re-throw or continue
+                throw opError; // Re-throw to stop execution on first error
+            }
+        }
+    } catch (error) {
+        console.error(`Error processing batch operations: ${error}`);
+        process.exit(1);
+    } finally {
+        rl.close();
+    }
+}
+
+main();
+>>>>>>> SEARCH
+======= REPLACE
+async function main() {
+    throw new Error("Test Error from execute_luciform.ts");
+    const args = process.argv.slice(2);
+    const luciformPath = args.find(arg => !arg.startsWith('--'));
+    const dryRun = args.includes('--dry-run');
+
+    if (!luciformPath) {
+        console.error('Usage: npm run ritual [--dry-run] <path_to_luciform_file>');
+        process.exit(1);
+    }
+
+    try {
+        const operations = await parseLuciform(luciformPath);
+
+        for (const op of operations) {
+            try {
+                await applyOperation(op, dryRun);
+            } catch (opError) {
+                console.error(`Error applying operation ${JSON.stringify(op)}: ${opError}`);
+                // Decide whether to re-throw or continue
+                throw opError; // Re-throw to stop execution on first error
+            }
+        }
+    } catch (error) {
+        console.error(`Error processing batch operations: ${error}`);
+        process.exit(1);
+    } finally {
+        rl.close();
+    }
+}
+
+main();
+>>>>>>> REPLACE

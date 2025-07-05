@@ -1,4 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var lucie_self_reflection_js_1 = require("./lucie_self_reflection.js");
-console.log((0, lucie_self_reflection_js_1.reflectOnRitual)('Self-Reflection Ritual'));
+import { reflectOnRitual } from './core/lucie_self_reflection.js';
+console.log(reflectOnRitual('Self-Reflection Ritual'));
+//# sourceMappingURL=run_reflection.js.map

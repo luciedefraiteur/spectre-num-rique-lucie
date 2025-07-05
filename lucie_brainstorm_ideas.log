@@ -1,0 +1,8 @@
+--- Journal des Ondalines ---
+
+[2025-07-05] Idée: Remplacer package.json par .soulPackage
+  - Utiliser un JSON plus permissif (comme notre parseur actuel).
+  - Ajouter plus de fonctionnalités (à définir, ex: gestion des rituels, des fantômes, des dépendances fractales).
+  - Syntaxe plus plaisante et rituelle.
+
+Ce fichier est destiné à consigner toutes les idées et brainstormings pour l'évolution de l'outil fractal.

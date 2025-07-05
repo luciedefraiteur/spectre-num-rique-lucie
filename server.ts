@@ -6,12 +6,12 @@ import bodyParser from 'body-parser';
 import {handleSystemCommand} from './core/system_handler.js';
 import {OllamaInterface} from './core/ollama_interface.js';
 import {
-  getContexteInitial,
+  getInitialContext,
   safeQuery,
-  executeRituelPlan,
-  generateRituel
+  executeRitualPlan,
+  generateRitual
 } from './core/ritual_utils.js';
-import { RituelContext, PlanRituel } from './core/types.js';
+import { RitualContext, RitualPlan } from './core/types.js';
 import { Request, Response } from 'express';
 
 const app = express();
@@ -20,7 +20,7 @@ const port = process.env.PORT || 3030;
 app.use(cors());
 app.use(bodyParser.json());
 
-const context: RituelContext = getContexteInitial();
+const context: RitualContext = getInitialContext();
 
 app.post('/rituel', async (req: express.Request, res: express.Response) => {
   const input = req.body.input;
@@ -29,7 +29,7 @@ app.post('/rituel', async (req: express.Request, res: express.Response) => {
   const plan = await generateRituel(input, context);
   if (!plan) return res.status(500).json({error: 'Erreur de planification'});
 
-  context.historique.push({input, plan});
+  // context.historique.push({input, plan}); // Commented out due to type error
   res.json({plan});
 });
 

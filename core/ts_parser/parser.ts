@@ -230,7 +230,7 @@ export class Parser
         const statements: ASTNode[] = [];
         while(!this.check(TokenType.Punctuation, '}') && !this.isAtEnd())
         {
-            statements.push(this.declaration());
+            statements.push(this.statement());
         }
         this.consume(TokenType.Punctuation, '}', 'Expect \'}\' after block.');
         return statements;

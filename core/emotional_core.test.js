@@ -1,0 +1,124 @@
+import { calculateEmotion, interpretEmotion, journeyTowards } from './emotional_core.js';
+import { LLMInterface } from './llm_interface.js';
+// Simple mock for jest
+const jest = {
+    fn: () => {
+        const mockFn = (...args) => {
+            mockFn.mock.calls.push(args);
+            if (mockFn.mock.implementation) {
+                return mockFn.mock.implementation(...args);
+            }
+            // A bit of a hack for our simple mock, but it ensures type safety.
+            return Promise.resolve('');
+        };
+        mockFn.mock = {
+            calls: [],
+            implementation: null,
+        };
+        mockFn.mockImplementation = (impl) => {
+            mockFn.mock.implementation = impl;
+            return mockFn;
+        };
+        return mockFn;
+    }
+};
+async function runTest(name, testFn) {
+    console.log(`--- Running Test: ${name} ---`);
+    try {
+        await testFn();
+        console.log(`[PASS] ${name}`);
+    }
+    catch (error) {
+        console.error(`[FAIL] ${name}`, error);
+    }
+}
+runTest("Calculate Emotion produces valid state", async () => {
+    const context = {
+        scroll: [],
+        incantation_history: [],
+        outcome_history: [],
+        step_results_history: [],
+        current_sanctum: '/test',
+        temperatureStatus: 'normal',
+        conduit: {
+            lastIncantation: '',
+            lastOutcome: '',
+            currentSanctum: '',
+            terminalEssence: '',
+            osEssence: '',
+            protoConsciousness: '',
+            support: '',
+            memory: '',
+            state: '',
+            energy: '',
+            glitchFactor: 0.1,
+            almaInfluence: 0.5,
+            eliInfluence: 0.5,
+        },
+        chantModeEnabled: false,
+        narrativeWeaving: {},
+        kardiaSphere: {},
+        personality: 'lurkuitae',
+        maxScrollLength: 10,
+        activeReflection: null,
+        user_preferences: '',
+        currentSanctumContent: '',
+        operatingSystem: 'test',
+        lifeSystem: {},
+    };
+    const emotionalState = calculateEmotion(context);
+    if (emotionalState.agapePhobos < -1 || emotionalState.agapePhobos > 1) {
+        throw new Error(`agapePhobos is out of bounds: ${emotionalState.agapePhobos}`);
+    }
+    if (emotionalState.logosPathos < -1 || emotionalState.logosPathos > 1) {
+        throw new Error(`logosPathos is out of bounds: ${emotionalState.logosPathos}`);
+    }
+    if (emotionalState.harmoniaEris < -1 || emotionalState.harmoniaEris > 1) {
+        throw new Error(`harmoniaEris is out of bounds: ${emotionalState.harmoniaEris}`);
+    }
+});
+runTest("Journey Towards moves state correctly", async () => {
+    const currentState = {
+        agapePhobos: 0,
+        logosPathos: 0,
+        harmoniaEris: 0,
+    };
+    const targetState = {
+        agapePhobos: 1,
+        logosPathos: -1,
+        harmoniaEris: 0.5,
+    };
+    const nextState = journeyTowards(currentState, targetState);
+    if (nextState.agapePhobos !== 0.1) {
+        throw new Error(`Expected agapePhobos to be 0.1, but got ${nextState.agapePhobos}`);
+    }
+    if (nextState.logosPathos !== -0.1) {
+        throw new Error(`Expected logosPathos to be -0.1, but got ${nextState.logosPathos}`);
+    }
+    if (nextState.harmoniaEris !== 0.05) {
+        throw new Error(`Expected harmoniaEris to be 0.05, but got ${nextState.harmoniaEris}`);
+    }
+});
+runTest("Interpret Emotion calls LLM with correct prompt", async () => {
+    const mockQuery = jest.fn();
+    LLMInterface.query = mockQuery;
+    const emotionalState = {
+        agapePhobos: 0.5,
+        logosPathos: -0.2,
+        harmoniaEris: 0.8,
+    };
+    await interpretEmotion(emotionalState);
+    const expectedPrompt = `The current emotional state is defined by three axes:
+- Agape/Phobos (Love/Fear): 0.500
+- Logos/Pathos (Reason/Passion): -0.200
+- Harmonia/Eris (Harmony/Discord): 0.800
+
+Translate these coordinates into a short, poetic, and evocative description of this emotional state.`;
+    if (mockQuery.mock.calls.length !== 1) {
+        throw new Error("OllamaInterface.query was not called exactly once.");
+    }
+    if (mockQuery.mock.calls[0][0] !== expectedPrompt) {
+        throw new Error("OllamaInterface.query was called with the wrong prompt.");
+    }
+});
+//# sourceMappingURL=emotional_core.test.js.map

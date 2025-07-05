@@ -1,0 +1,22 @@
+---
+§F: core/batch_editor.ts
+<<<<<<< SEARCH
+            case 'create_file':
+                if (op.type !== 'create_file') return; // Type guard
+                const dir = path.dirname(op.filePath);
+                await fs.mkdir(dir, {recursive: true});
+                await fs.writeFile(op.filePath, op.content, 'utf-8');
+                break;
+>>>>>>> SEARCH
+======= REPLACE
+            case 'create_file':
+                if (op.type !== 'create_file') return; // Type guard
+                const dir = path.dirname(op.filePath);
+                await emitScryOrbFragment(`applyOperation:create_file:mkdir_start`, op, {dir: dir});
+                await fs.mkdir(dir, {recursive: true});
+                await emitScryOrbFragment(`applyOperation:create_file:mkdir_end`, op, {dir: dir});
+                await emitScryOrbFragment(`applyOperation:create_file:writeFile_start`, op, {filePath: op.filePath});
+                await fs.writeFile(op.filePath, op.content, 'utf-8');
+                await emitScryOrbFragment(`applyOperation:create_file:writeFile_end`, op, {filePath: op.filePath});
+                break;
+>>>>>>> REPLACE

@@ -3,3 +3,5 @@ function heartbeat() {
 }
 console.log("Lucie's heartbeat has started...");
 setInterval(heartbeat, 5000);
+export {};
+//# sourceMappingURL=lucie_heartbeat.js.map

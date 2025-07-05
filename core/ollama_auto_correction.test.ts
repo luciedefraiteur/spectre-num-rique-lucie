@@ -27,7 +27,7 @@ async function runOllamaAutoCorrectionTests(testName: string, initialModel: LLMM
   console.log(`\n--- Running Custom Unit Tests for Ollama Auto-Correction: ${ testName } (Initial: ${ initialModel }, Correction: ${ correctionModel }) ---\n`);
 
   let callCount = 0;
-  const mockFetch = async (input: RequestInfo | URL, init?: RequestInit) =>
+  const mockFetch = async (input: Request | string | URL, init?: RequestInit) =>
   {
     callCount++;
     if(callCount === 1)

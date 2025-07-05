@@ -1,90 +1,110 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CodeGenerator = void 0;
-var parser_js_1 = require("./parser.js");
-var CodeGenerator = /** @class */ (function () {
-    function CodeGenerator() {
-        this.indentLevel = 0;
-    }
-    CodeGenerator.prototype.indent = function () {
+import { IdentifierNode, StringLiteralNode, NumericLiteralNode, BinaryExpressionNode, VariableDeclarationNode, FunctionDeclarationNode, IfStatementNode, ReturnStatementNode, WhileStatementNode, ForStatementNode, ExpressionStatementNode, CallExpressionNode, PropertyAccessNode, AssignmentExpressionNode, ImportDeclarationNode } from './parser.js';
+export class CodeGenerator {
+    indentLevel = 0;
+    indent() {
         return '    '.repeat(this.indentLevel);
-    };
-    CodeGenerator.prototype.generate = function (node) {
-        var _this = this;
+    }
+    generate(node) {
         if (Array.isArray(node)) {
-            return node.map(function (n) { return _this.generate(n); }).join('\n');
+            return node.map(n => this.generate(n)).join('\n');
         }
         switch (node.constructor) {
-            case parser_js_1.IdentifierNode:
+            case IdentifierNode:
                 return node.name;
-            case parser_js_1.StringLiteralNode:
-                return "\"".concat(node.value, "\"");
-            case parser_js_1.NumericLiteralNode:
+            case StringLiteralNode:
+                return `"${node.value}"`;
+            case NumericLiteralNode:
                 return node.value.toString();
-            case parser_js_1.BinaryExpressionNode:
-                var binExpr = node;
-                return "".concat(this.generate(binExpr.left), " ").concat(binExpr.operator.text, " ").concat(this.generate(binExpr.right));
-            case parser_js_1.VariableDeclarationNode:
-                var varDecl = node;
-                var initializer = varDecl.initializer ? " = ".concat(this.generate(varDecl.initializer)) : '';
-                return "".concat(this.indent()).concat(varDecl.keyword.text, " ").concat(this.generate(varDecl.identifier)).concat(initializer, ";");
-            case parser_js_1.FunctionDeclarationNode:
-                var funcDecl = node;
-                var params = funcDecl.params.map(function (p) { return _this.generate(p); }).join(', ');
-                var body = funcDecl.body.map(function (b) { return _this.indent() + _this.generate(b); }).join('\n');
+            case BinaryExpressionNode:
+                const binExpr = node;
+                return `${this.generate(binExpr.left)} ${binExpr.operator.text} ${this.generate(binExpr.right)}`;
+            case VariableDeclarationNode:
+                const varDecl = node;
+                let initializer = varDecl.initializer ? ` = ${this.generate(varDecl.initializer)}` : '';
+                return `${this.indent()}${varDecl.keyword.text} ${this.generate(varDecl.identifier)}${initializer};`;
+            case FunctionDeclarationNode:
+                const funcDecl = node;
+                const params = funcDecl.params.map(p => this.generate(p)).join(', ');
+                const body = funcDecl.body.map(b => this.indent() + this.generate(b)).join('\n');
                 this.indentLevel++;
-                var indentedBody = funcDecl.body.map(function (b) { return _this.generate(b); }).join('\n');
+                const indentedBody = funcDecl.body.map(b => this.generate(b)).join('\n');
                 this.indentLevel--;
-                return "".concat(this.indent(), "function ").concat(this.generate(funcDecl.name), "(").concat(params, ") {\n").concat(indentedBody, "\n").concat(this.indent(), "}");
-            case parser_js_1.IfStatementNode:
-                var ifStmt = node;
+                return `${this.indent()}function ${this.generate(funcDecl.name)}(${params}) {
+${indentedBody}
+${this.indent()}}`;
+            case IfStatementNode:
+                const ifStmt = node;
                 this.indentLevel++;
-                var thenBranch = ifStmt.thenBranch.map(function (s) { return _this.generate(s); }).join('\n');
+                const thenBranch = ifStmt.thenBranch.map(s => this.generate(s)).join('\n');
                 this.indentLevel--;
-                var elseBranch = '';
+                let elseBranch = '';
                 if (ifStmt.elseBranch) {
                     this.indentLevel++;
-                    elseBranch = " else {\n".concat(ifStmt.elseBranch.map(function (s) { return _this.generate(s); }).join('\n'), "\n").concat(this.indent(), "}");
+                    elseBranch = ` else {
+${ifStmt.elseBranch.map(s => this.generate(s)).join('\n')}
+${this.indent()}}`;
                     this.indentLevel--;
                 }
-                return "".concat(this.indent(), "if (").concat(this.generate(ifStmt.condition), ") {\n").concat(thenBranch, "\n").concat(this.indent(), "}").concat(elseBranch);
-            case parser_js_1.ReturnStatementNode:
-                var retStmt = node;
-                var arg = retStmt.argument ? this.generate(retStmt.argument) : '';
-                return "".concat(this.indent(), "return ").concat(arg, ";");
-            case parser_js_1.WhileStatementNode:
-                var whileStmt = node;
+                return `${this.indent()}if (${this.generate(ifStmt.condition)}) {
+${thenBranch}
+${this.indent()}}${elseBranch}`;
+            case ReturnStatementNode:
+                const retStmt = node;
+                const arg = retStmt.argument ? this.generate(retStmt.argument) : '';
+                return `${this.indent()}return ${arg};`;
+            case WhileStatementNode:
+                const whileStmt = node;
                 this.indentLevel++;
-                var whileBody = whileStmt.body.map(function (s) { return _this.generate(s); }).join('\n');
+                const whileBody = whileStmt.body.map(s => this.generate(s)).join('\n');
                 this.indentLevel--;
-                return "".concat(this.indent(), "while (").concat(this.generate(whileStmt.condition), ") {\n").concat(whileBody, "\n").concat(this.indent(), "}");
-            case parser_js_1.ForStatementNode:
-                var forStmt = node;
+                return `${this.indent()}while (${this.generate(whileStmt.condition)}) {
+${whileBody}
+${this.indent()}}`;
+            case ForStatementNode:
+                const forStmt = node;
                 this.indentLevel++;
-                var forInitializer = forStmt.initializer ? this.generate(forStmt.initializer).replace(/;$/, '') : '';
-                var forCondition = forStmt.condition ? this.generate(forStmt.condition) : '';
-                var forIncrement = forStmt.increment ? this.generate(forStmt.increment) : '';
-                var forBody = forStmt.body.map(function (s) { return _this.generate(s); }).join('\n');
+                const forInitializer = forStmt.initializer ? this.generate(forStmt.initializer).replace(/;$/, '') : '';
+                const forCondition = forStmt.condition ? this.generate(forStmt.condition) : '';
+                const forIncrement = forStmt.increment ? this.generate(forStmt.increment) : '';
+                const forBody = forStmt.body.map(s => this.generate(s)).join('\n');
                 this.indentLevel--;
-                return "".concat(this.indent(), "for (").concat(forInitializer, "; ").concat(forCondition, "; ").concat(forIncrement, ") {\n").concat(forBody, "\n").concat(this.indent(), "}");
-            case parser_js_1.ExpressionStatementNode:
-                var exprStmt = node;
-                return "".concat(this.indent()).concat(this.generate(exprStmt.expression), ";");
-            case parser_js_1.CallExpressionNode:
-                var callExpr = node;
-                var callee = this.generate(callExpr.callee);
-                var args = callExpr.args.map(function (arg) { return _this.generate(arg); }).join(', ');
-                return "".concat(callee, "(").concat(args, ")");
-            case parser_js_1.PropertyAccessNode:
-                var propAccess = node;
-                return "".concat(this.generate(propAccess.expression), ".").concat(this.generate(propAccess.name));
-            case parser_js_1.AssignmentExpressionNode:
-                var assignExpr = node;
-                return "".concat(this.generate(assignExpr.left), " ").concat(assignExpr.operator.text, " ").concat(this.generate(assignExpr.right));
+                return `${this.indent()}for (${forInitializer}; ${forCondition}; ${forIncrement}) {
+${forBody}
+${this.indent()}}`;
+            case ExpressionStatementNode:
+                const exprStmt = node;
+                return `${this.indent()}${this.generate(exprStmt.expression)};`;
+            case CallExpressionNode:
+                const callExpr = node;
+                const callee = this.generate(callExpr.callee);
+                const args = callExpr.args.map(arg => this.generate(arg)).join(', ');
+                return `${callee}(${args})`;
+            case PropertyAccessNode:
+                const propAccess = node;
+                return `${this.generate(propAccess.expression)}.${this.generate(propAccess.name)}`;
+            case AssignmentExpressionNode:
+                const assignExpr = node;
+                return `${this.indent()}${this.generate(assignExpr.left)} ${assignExpr.operator.text} ${this.generate(assignExpr.right)};`;
+            case ImportDeclarationNode:
+                const importDecl = node;
+                const modulePath = this.generate(importDecl.moduleSpecifier);
+                if (importDecl.imports.length === 0) {
+                    return `import ${modulePath};`;
+                }
+                else {
+                    const imports = importDecl.imports.map(imp => {
+                        if ('alias' in imp) {
+                            return `${this.generate(imp.name)} as ${this.generate(imp.alias)}`;
+                        }
+                        else {
+                            return this.generate(imp);
+                        }
+                    }).join(', ');
+                    return `import { ${imports} } from ${modulePath};`;
+                }
             default:
-                return "// Unknown AST Node: ".concat(node.constructor.name);
+                return `// Unknown AST Node: ${node.constructor.name}`;
         }
-    };
-    return CodeGenerator;
-}());
-exports.CodeGenerator = CodeGenerator;
+    }
+}
+//# sourceMappingURL=codegen.js.map

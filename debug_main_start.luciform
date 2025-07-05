@@ -1,0 +1,9 @@
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+async function main() {
+>>>>>>> SEARCH
+======= REPLACE
+async function main() {
+    console.error("main() function started.");
+>>>>>>> REPLACE

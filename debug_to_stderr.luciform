@@ -1,0 +1,32 @@
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+async function logToFile(message: string) {
+    try {
+        await fs.appendFile('luciform_debug_output.log', message + '\n', 'utf-8');
+    } catch (error) {
+        console.error(`Error writing to luciform_debug_output.log: ${error}`);
+    }
+}
+
+async function main() {
+>>>>>>> SEARCH
+======= REPLACE
+async function main() {
+>>>>>>> REPLACE
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+await logToFile("--- STARTING EXECUTE_LUCIFORM.TS ---");
+>>>>>>> SEARCH
+======= REPLACE
+console.error("--- STARTING EXECUTE_LUCIFORM.TS ---");
+>>>>>>> REPLACE
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+        await logToFile("Parsed Operations:\n" + JSON.stringify(operations, null, 2));
+>>>>>>> SEARCH
+======= REPLACE
+        console.error("Parsed Operations:\n" + JSON.stringify(operations, null, 2));
+>>>>>>> REPLACE

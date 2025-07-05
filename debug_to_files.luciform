@@ -1,0 +1,33 @@
+---
+§F: execute_luciform.ts
+<<<<<<< INSERT:line:1
+import * as path from 'path';
+>>>>>>> INSERT
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+async function main() {
+>>>>>>> SEARCH
+======= REPLACE
+async function main() {
+    // Write a heartbeat file to confirm execution
+    await fs.writeFile('luciform_heartbeat.txt', 'execute_luciform.ts started at ' + new Date().toISOString(), 'utf-8');
+
+>>>>>>> REPLACE
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+        console.error("--- STARTING EXECUTE_LUCIFORM.TS ---");
+>>>>>>> SEARCH
+======= REPLACE
+        // console.error("--- STARTING EXECUTE_LUCIFORM.TS ---"); // Removed, replaced by heartbeat file
+>>>>>>> REPLACE
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+        console.error("Parsed Operations:\n" + JSON.stringify(operations, null, 2));
+>>>>>>> SEARCH
+======= REPLACE
+        // console.error("Parsed Operations:\n" + JSON.stringify(operations, null, 2)); // Removed, replaced by JSON file dump
+        await fs.writeFile('parsed_operations.json', JSON.stringify(operations, null, 2), 'utf-8');
+>>>>>>> REPLACE

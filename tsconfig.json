@@ -1,13 +1,27 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "target": "ES2022",
-    "moduleResolution": "NodeNext",
+    "strict": true,
     "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "outDir": "dist",
-    "strict": true
+    "sourceMap": true,
+    "incremental": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "target": "es2022",
+    "types": ["node", "vitest/globals"],
+    "jsx": "react-jsx"
   },
-  "include": ["*.ts", "core/**/*.ts"],
-  "exclude": ["server.ts"]
+  "exclude": [
+    "server.ts",
+    "server.js",
+    "server.js.map",
+    "gemini-cli-lurkuitae/",
+    "lurkuitae/",
+    "**/*.test.ts"
+  ]
 }

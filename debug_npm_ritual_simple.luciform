@@ -1,0 +1,8 @@
+---
+§F: package.json
+<<<<<<< SEARCH
+    "ritual": "node --loader ts-node/esm execute_luciform.ts"
+>>>>>>> SEARCH
+======= REPLACE
+    "ritual": "node C:/Users/Lucie/git_repositories/spectre_numerique_lucie/test_file_write.js"
+>>>>>>> REPLACE

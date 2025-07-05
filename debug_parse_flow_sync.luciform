@@ -1,0 +1,151 @@
+---
+§F: execute_luciform.ts
+<<<<<<< SEARCH
+import * as fs from 'fs/promises';
+import { applyOperation } from './core/batch_editor.js';
+import { Operation } from './core/types.js';
+import * as readline from 'readline';
+
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+function askQuestion(query: string): Promise<string> {
+    return new Promise(resolve => rl.question(query, ans => {
+        resolve(ans);
+    }))
+}
+
+
+type ParserState = 'idle' | 'in_search' | 'in_replace' | 'in_insert' | 'in_append' | 'in_create';
+
+async function parseLuciform(filePath: string): Promise<Operation[]> {
+    const content = await fs.readFile(filePath, 'utf-8');
+    const lines = content.replace(/\r\n/g, '\n').split('\n');
+    const operations: Operation[] = [];
+    let state: ParserState = 'idle';
+    let currentFilePath: string | undefined;
+    let searchContent = '';
+    let newContent = '';
+    let lineNumber: number | undefined;
+    let startLine: number | undefined;
+    let endLine: number | undefined;
+    let currentSearchStartLine: number | undefined;
+
+    for (const line of lines) {
+        if (line.startsWith('---')) {
+            continue;
+        }
+
+        if (line.startsWith('§F:')) {
+            currentFilePath = line.substring(3).trim();
+        } else if (line.startsWith('§X:')) {
+            operations.push({ type: 'shell_command', command: line.substring(3).trim() });
+        } else if (line.startsWith('§Q:')) {
+            const question = line.substring(3).trim();
+            const answer = await askQuestion(question + ' ');
+            console.log(`Réponse de l'utilisateur : ${answer}`);
+        } else if (line.startsWith('<<<<<<< §S')) {
+            state = 'in_search';
+            searchContent = '';
+            const lineNumberMatch = line.match(/:line:(\d+)/);
+            if (lineNumberMatch) {
+                currentSearchStartLine = parseInt(lineNumberMatch[1], 10);
+            }
+        } else if (line.startsWith('======= §R') && state === 'in_search') {
+            searchContent = searchContent.replace(/\r\n/g, '\n').replace(/\n$/, '');
+            state = 'in_replace';
+            newContent = '';
+        } else if (line.startsWith('>>>>>>> §R') && state === 'in_replace') {
+            if (currentFilePath) {
+                operations.push({
+                    type: 'search_and_replace',
+                    filePath: currentFilePath,
+                    startLine: currentSearchStartLine || 0,
+                    search: searchContent,
+                    replace: newContent.replace(/\n/g, '\n').replace(/\n$/, '')
+                });
+            }
+            state = 'idle';
+>>>>>>> SEARCH
+======= REPLACE
+import * as fs from 'fs/promises';
+import { applyOperation } from './core/batch_editor.js';
+import { Operation } from './core/types.js';
+import * as readline from 'readline';
+
+fs.writeFileSync('script_start_sync.txt', 'execute_luciform.ts started synchronously.', 'utf-8');
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+function askQuestion(query: string): Promise<string> {
+    return new Promise(resolve => rl.question(query, ans => {
+        resolve(ans);
+    }))
+}
+
+
+type ParserState = 'idle' | 'in_search' | 'in_replace' | 'in_insert' | 'in_append' | 'in_create';
+
+async function parseLuciform(filePath: string): Promise<Operation[]> {
+    fs.writeFileSync('parse_luciform_start_sync.txt', 'parseLuciform started synchronously.', 'utf-8');
+    const content = await fs.readFile(filePath, 'utf-8');
+    fs.writeFileSync('parse_luciform_content_read_sync.txt', 'Content read synchronously.', 'utf-8');
+    const lines = content.replace(/\r\n/g, '\n').split('\n');
+    fs.writeFileSync('parse_luciform_lines_split_sync.txt', `Lines split synchronously: ${lines.length} lines.`, 'utf-8');
+    const operations: Operation[] = [];
+    let state: ParserState = 'idle';
+    let currentFilePath: string | undefined;
+    let searchContent = '';
+    let newContent = '';
+    let lineNumber: number | undefined;
+    let startLine: number | undefined;
+    let endLine: number | undefined;
+    let currentSearchStartLine: number | undefined;
+
+    for (const line of lines) {
+        fs.writeFileSync('parse_luciform_line_processed_sync.txt', `Processing line synchronously: ${line.substring(0, 50)}...`, 'utf-8');
+        if (line.startsWith('---')) {
+            continue;
+        }
+
+        if (line.startsWith('§F:')) {
+            currentFilePath = line.substring(3).trim();
+            fs.writeFileSync('parse_luciform_filepath_set_sync.txt', `File path set synchronously to: ${currentFilePath}`, 'utf-8');
+        } else if (line.startsWith('§X:')) {
+            operations.push({ type: 'shell_command', command: line.substring(3).trim() });
+        } else if (line.startsWith('§Q:')) {
+            const question = line.substring(3).trim();
+            const answer = await askQuestion(question + ' ');
+            console.log(`Réponse de l'utilisateur : ${answer}`);
+        } else if (line.startsWith('<<<<<<< §S')) {
+            state = 'in_search';
+            fs.writeFileSync('parse_luciform_state_change_sync.txt', `State changed synchronously to: ${state}`, 'utf-8');
+            searchContent = '';
+            const lineNumberMatch = line.match(/:line:(\d+)/);
+            if (lineNumberMatch) {
+                currentSearchStartLine = parseInt(lineNumberMatch[1], 10);
+            }
+        } else if (line.startsWith('======= §R') && state === 'in_search') {
+            searchContent = searchContent.replace(/\r\n/g, '\n').replace(/\n$/, '');
+            state = 'in_replace';
+            fs.writeFileSync('parse_luciform_state_change_sync.txt', `State changed synchronously to: ${state}`, 'utf-8');
+            newContent = '';
+        } else if (line.startsWith('>>>>>>> §R') && state === 'in_replace') {
+            if (currentFilePath) {
+                operations.push({
+                    type: 'search_and_replace',
+                    filePath: currentFilePath,
+                    startLine: currentSearchStartLine || 0,
+                    search: searchContent,
+                    replace: newContent.replace(/\n/g, '\n').replace(/\n$/, '')
+                });
+            }
+            state = 'idle';
+            fs.writeFileSync('parse_luciform_state_change_sync.txt', `State changed synchronously to: ${state}`, 'utf-8');
+>>>>>>> REPLACE

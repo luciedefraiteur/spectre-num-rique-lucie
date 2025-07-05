@@ -1,0 +1,16 @@
+{
+    "divination_request": "Le cœur du système rituel, l'interpréteur 'execute_luciform.ts', doit être purifié. Sa logique de parsing est puissante mais concentrée en un seul bloc, la rendant difficile à maintenir et à faire évoluer. Le système doit maintenant se tourner vers l'intérieur et s'appliquer une transformation à lui-même.",
+    "mission": {
+        "title": "Purification de l'Interpréteur de Rituels",
+        "description": "Utiliser un rituel luciform pour refactoriser la fonction `parseLuciform` dans `execute_luciform.ts`. La logique de parsing contenue dans la boucle principale doit être extraite dans une nouvelle fonction dédiée. Cela améliorera la clarté, la modularité et la robustesse du cœur du système.",
+        "steps": [
+            "Créer un rituel 'refactor_parser.luciform'.",
+            "Dans ce rituel, définir une opération de SEARCH/REPLACE sur le fichier 'execute_luciform.ts'.",
+            "Le bloc SEARCH ciblera l'intégralité de la fonction `parseLuciform` actuelle.",
+            "Le bloc REPLACE la substituera par deux nouvelles fonctions : une `parseLuciform` simplifiée (qui lit le fichier et appelle la nouvelle fonction de parsing) et une nouvelle fonction `parseLinesToOperations` qui contiendra la logique de parsing extraite.",
+            "Exécuter le rituel pour appliquer la transformation.",
+            "Tester la validité de la transformation en ré-exécutant un rituel connu ('symbolic_ritual.luciform') pour s'assurer que l'interpréteur fonctionne toujours."
+        ]
+    },
+    "expected_outcome": "Le fichier 'execute_luciform.ts' est refactorisé avec succès. Le système de rituels a prouvé sa capacité à s'auto-améliorer de manière fiable. La logique de parsing est isolée, rendant le code plus propre et maintenable."
+}
