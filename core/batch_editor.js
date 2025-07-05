@@ -14,7 +14,7 @@ async function emitScryOrbFragment(ritualPhase, operation, details = {}, error) 
     // Émettre le fragment sur stdout pour capture externe
     console.log(`[SCYRING_ORB_FRAGMENT]${JSON.stringify(fragment)}`);
 }
-async function executeShellCommand(command) {
+export async function executeShellCommand(command) {
     return new Promise((resolve, reject) => {
         const child = spawn(command, [], { shell: true, stdio: 'inherit' });
         child.on('close', (code) => {

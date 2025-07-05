@@ -1,0 +1,1 @@
+§X: node --loader ts-node/esm temp_test_lucie.ts

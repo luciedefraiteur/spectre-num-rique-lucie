@@ -5,7 +5,7 @@
   "main": "main.ts",
   "type": "module",
   "scripts": {
-    "start": "node initiate_ritual.js",
+    "start": "ts-node-esm main.ts",
     "build": "tsc",
     "test": "vitest",
     "dev": "nodemon --watch . --exec ts-node-esm main.ts",

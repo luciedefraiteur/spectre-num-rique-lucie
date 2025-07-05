@@ -1,1 +1,1 @@
-declare var y: string;
+export {};

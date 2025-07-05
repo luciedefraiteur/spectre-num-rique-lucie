@@ -304,4 +304,5 @@ export class Parser {
         return this.tokens[this.current - 1];
     }
 }
+// THIS IS A TEST ERROR
 //# sourceMappingURL=parser.js.map

@@ -1,4 +1,3 @@
-"use strict";
 function generateIndexerPrompt(history, initialInput, ritualSequence) {
     return `
 # Rôle : Indexeur Intelligent des Actions Rituelles
@@ -62,4 +61,5 @@ ${JSON.stringify(ritualSequence, null, 2)}
 Ta réponse commence directement par { sans aucune explication extérieure.
 `.trim();
 }
+export {};
 //# sourceMappingURL=lurkuitindex.js.map
