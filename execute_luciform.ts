@@ -168,7 +168,25 @@ async function main()
         {
             try
             {
-                await applyOperation(op, dryRun);
+                if (dryRun) {
+                    const dryRunOutput = `[DRY RUN] Operation: ${op.type.toUpperCase()}
+  File: ${op.filePath || 'N/A'}
+${ 'search' in op ? `  Search: 
+---
+${op.search}
+---` : '' }${ 'replace' in op ? `  Replace: 
+---
+${op.replace}
+---` : '' }${ 'newContent' in op ? `  Content: 
+---
+${op.newContent}
+---` : '' }${ 'command' in op ? `  Command: ${op.command}` : '' }${ 'lineNumber' in op ? `  Line: ${op.lineNumber}` : '' }${ 'startLine' in op && 'endLine' in op ? `  Lines: ${op.startLine}-${op.endLine}` : '' }
+----------------------------------------
+`;
+                    await fs.appendFile('luciform_dry_run_temp_output.log', dryRunOutput, 'utf-8');
+                } else {
+                    await applyOperation(op, dryRun);
+                }
             } catch(opError)
             {
                 console.error(`Error applying operation ${ JSON.stringify(op) }: ${ opError }`);

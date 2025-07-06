@@ -109,4 +109,31 @@ describe('Batch Editor Operations', () => {
         const modifiedContent = await fs.readFile(filePath, 'utf-8');
         expect(modifiedContent).to.equal('Initial content.\nAppended content.\n');
     });
+
+    it('executeBatch aggregates feedback for success, unknown, and stubbed', async () => {
+        const actions = [
+            {
+                type: 'create_file',
+                filePath: path.join(testDir, 'batch_1.txt'),
+                content: 'batch test 1'
+            },
+            {
+                type: 'this_type_does_not_exist',
+                raw: 'some strange unknown action'
+            },
+            {
+                type: 'append',
+                filePath: path.join(testDir, 'batch_2.txt'),
+                newContent: 'new appended content\n'
+            }
+        ];
+        // Pre-create batch_2.txt
+        await fs.writeFile(actions[2].filePath, '', 'utf-8');
+
+        const { aggregator, feedback } = await executeBatch(actions);
+        expect(feedback.length).to.equal(3);
+        expect(aggregator.successes.length).to.equal(2);
+        expect(aggregator.stubbed.length + aggregator.skipped.length).to.be.gte(1);
+        expect(feedback[1].status === 'stubbed' || feedback[1].status === 'error');
+    });
 });

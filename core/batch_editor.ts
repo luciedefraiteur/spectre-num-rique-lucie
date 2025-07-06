@@ -14,8 +14,109 @@ async function emitScryOrbFragment(ritualPhase: string, operation: Operation, de
         error_message: error ? String(error) : undefined,
         stack_trace: error ? error.stack : undefined
     };
-    // Émettre le fragment sur stdout pour capture externe
-    console.log(`[SCYRING_ORB_FRAGMENT]${ JSON.stringify(fragment) }`);
+    // Emit to external logger if present (for test/dev), otherwise console
+    if (typeof globalThis.emitSCYRFragment === 'function') {
+        globalThis.emitSCYRFragment(fragment);
+    } else {
+        console.log(`[SCYRING_ORB_FRAGMENT]${ JSON.stringify(fragment) }`);
+    }
+}
+
+// --- Batch Action Executor Map Types ---
+import { BatchActionFeedback, ResultAggregator } from './batch_editor_types.js';
+import { unknownHandler } from './permissive_parser/unknownHandler.js';
+import type { Action } from './permissive_parser/index.js';
+
+// If you want to accept both Operation and other Actions in batch, use this union type:
+type AnyBatchAction = Operation | Action;
+
+type ActionExecutor = (action: AnyBatchAction, dryRun?: boolean) => Promise<BatchActionFeedback>;
+
+// Core Action Executor Map; extend as supports grows
+const actionExecutorMap: Record<string, ActionExecutor> = {
+  'create_file': async (action, dryRun) => {
+    try {
+      await applyOperation(action as Operation, dryRun);
+      return { type: action.type, action, status: 'success' };
+    } catch (error) {
+      return { type: action.type, action, status: 'error', error, message: error?.message };
+    }
+  },
+  'search_and_replace': async (action, dryRun) => {
+    try {
+      await applyOperation(action as Operation, dryRun);
+      return { type: action.type, action, status: 'success' };
+    } catch (error) {
+      return { type: action.type, action, status: 'error', error, message: error?.message };
+    }
+  },
+  'insert': async (action, dryRun) => {
+    try {
+      await applyOperation(action as Operation, dryRun);
+      return { type: action.type, action, status: 'success' };
+    } catch (error) {
+      return { type: action.type, action, status: 'error', error, message: error?.message };
+    }
+  },
+  'delete': async (action, dryRun) => {
+    try {
+      await applyOperation(action as Operation, dryRun);
+      return { type: action.type, action, status: 'success' };
+    } catch (error) {
+      return { type: action.type, action, status: 'error', error, message: error?.message };
+    }
+  },
+  'append': async (action, dryRun) => {
+    try {
+      await applyOperation(action as Operation, dryRun);
+      return { type: action.type, action, status: 'success' };
+    } catch (error) {
+      return { type: action.type, action, status: 'error', error, message: error?.message };
+    }
+  },
+  'shell_command': async (action, dryRun) => {
+    try {
+      await applyOperation(action as Operation, dryRun);
+      return { type: action.type, action, status: 'success' };
+    } catch (error) {
+      return { type: action.type, action, status: 'error', error, message: error?.message };
+    }
+  },
+};
+
+// Generic fallback for unknown action types
+async function batchUnknownHandler(action: AnyBatchAction, dryRun?: boolean): Promise<BatchActionFeedback> {
+  const stub = await unknownHandler(action as any, { severity: 'warning' });
+  return {
+    type: action.type || 'Unknown',
+    action,
+    status: 'stubbed',
+    message: 'No executor for action type',
+    extra: stub
+  };
+}
+
+/**
+ * Executes a batch of actions (operations), dispatching via actionExecutorMap. Aggregates summary.
+ * @param actions Array of parsed Action or Operation items
+ * @param opts Optional config: {dryRun: boolean}
+ */
+export async function executeBatch(
+  actions: AnyBatchAction[],
+  opts: { dryRun?: boolean } = {}
+): Promise<{ aggregator: ResultAggregator, feedback: BatchActionFeedback[] }> {
+  const aggregator = new ResultAggregator();
+  for (const action of actions) {
+    const executor: ActionExecutor = actionExecutorMap[action.type as string] || batchUnknownHandler;
+    let feedback: BatchActionFeedback;
+    try {
+      feedback = await executor(action, opts.dryRun);
+    } catch (error) {
+      feedback = { type: action.type, action, status: 'error', error };
+    }
+    aggregator.add(feedback);
+  }
+  return { aggregator, feedback: aggregator.all() };
 }
 
 export async function executeShellCommand(command: string): Promise<void>
@@ -112,12 +213,24 @@ export async function applyOperation(op: Operation, dryRun: boolean = false): Pr
                 await fs.appendFile(op.filePath, newContentAppend, 'utf-8');
                 break;
 
-            case 'shell_command':
-                if(op.type !== 'shell_command') return; // Type guard
-                const isWindows = process.platform === 'win32';
-                const command = isWindows ? op.command.replace(/rm /g, 'del ') : op.command;
-                await executeShellCommand(command);
-                break;
+case 'shell_command':
+    if(op.type !== 'shell_command') return; // Type guard
+    const isWindows = process.platform === 'win32';
+    const commandString = isWindows ? op.command.replace(/rm /g, 'del ') : op.command;
+
+    // Split AND/OR on && and ||, naive support (no advanced quotes/subshell handling)
+    const simpleAndOrSplit = commandString.split(/\s*(\&\&|\|\|)\s*/g).filter(Boolean);
+
+    if(simpleAndOrSplit.length > 1) {
+        // Execute respecting the order (no short-circuit on fail, just simple sequential)
+        for(const part of simpleAndOrSplit) {
+            if(part === '&&' || part === '||') continue;
+            await executeShellCommand(part);
+        }
+    } else {
+        await executeShellCommand(commandString);
+    }
+    break;
         }
         await emitScryOrbFragment(`applyOperation:${ op.type }:success`, op);
     } catch(error)

@@ -1,3 +1,3 @@
+"use strict";
 // core/types.ts
-export {};
-//# sourceMappingURL=types.js.map
+Object.defineProperty(exports, "__esModule", { value: true });

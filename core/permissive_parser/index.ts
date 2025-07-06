@@ -2,6 +2,21 @@ import {Tokenizer} from './tokenizer.js';
 import {Parser} from './parser.js';
 import {RitualPlan, Incantation} from '../types.js';
 
+// --- Structured Action Types ---
+
+export interface Action {
+  type: string;
+  [key: string]: any;
+}
+
+export interface UnknownAction extends Action {
+  type: 'UnknownAction';
+  raw: string;
+}
+
+// --- Feature flag: Enable Structured Action Output ---
+const STRUCTURED_ACTIONS = process.env.STRUCTURED_ACTIONS === '1';
+
 /**
  * Adapts a loosely structured object from the LLM into a strict PlanRituel.
  * This prevents crashes when the LLM hallucinates a different schema.
@@ -81,10 +96,45 @@ function adaptToPlanRituel(data: any): RitualPlan | null
   return null; // If it's an unknown object format
 }
 
-export const parse = (text: string): RitualPlan | null =>
-{
-  try
-  {
+// --- New Action-based parse (if feature flag enabled) ---
+function parseActions(text: string): Action[] {
+  const tokens = Tokenizer.tokenize(text);
+  // This assumes Parser.parse emits an object or array, not yet as Action objects
+  const parser = new Parser(tokens);
+  let result: any;
+  try {
+    result = parser.parse();
+  } catch (e) {
+    // Completely unparseable: return UnknownAction
+    return [{ type: 'UnknownAction', raw: text }];
+  }
+
+  // Try to emit array of structured Actions
+  if (Array.isArray(result)) {
+    return result.map(x => toAction(x, text));
+  } else if (typeof result === 'object' && result !== null) {
+    // Could be a single action or step; wrap in array
+    return [toAction(result, text)];
+  } else {
+    // Fallback: unknown output
+    return [{ type: 'UnknownAction', raw: text }];
+  }
+}
+
+function toAction(candidate: any, raw: string): Action {
+  if (candidate && candidate.type) {
+    return { ...candidate };
+  }
+  // Fallback to UnknownAction for invalid actions
+  return { type: 'UnknownAction', raw };
+}
+
+export const parse = (text: string): RitualPlan | null | Action[] => {
+  if (STRUCTURED_ACTIONS) {
+    return parseActions(text);
+  }
+
+  try {
     const tokens = Tokenizer.tokenize(text);
     const parser = new Parser(tokens);
     const result = parser.parse();
