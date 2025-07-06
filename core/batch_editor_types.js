@@ -16,3 +16,4 @@ export class ResultAggregator {
         return this.results.filter(r => r.status === 'stubbed');
     }
 }
+//# sourceMappingURL=batch_editor_types.js.map

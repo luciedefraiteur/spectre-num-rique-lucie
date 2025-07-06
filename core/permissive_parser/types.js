@@ -10,3 +10,4 @@ export var TokenType;
     TokenType[TokenType["SPECIAL"] = 7] = "SPECIAL";
     TokenType[TokenType["COLON"] = 8] = "COLON";
 })(TokenType || (TokenType = {}));
+//# sourceMappingURL=types.js.map

@@ -389,4 +389,9 @@ export interface Zip {
   zip: string;
 }
 
-export type Operation = SearchAndReplace | Insert | Delete | Append | ShellCommand | CreateFile | LlmOperation | JsonData | ReadLines | Meta | Prompt | Glob | WebFetch | Test | Output | ErrorOperation | Variable | Update | Help | Debug | Yaml | Key | Query | Batch | Note | Raw | Code | Data | FileOperation | Git | Hash | Info | Json | Log | Message | Name | Option | Path | Question | Result | Status | Text | Url | Value | Warning | Xml | Yes | Zip;
+export interface ExecuteTypescriptFile {
+  type: 'execute_typescript_file';
+  filePath: string;
+}
+
+export type Operation = SearchAndReplace | Insert | Delete | Append | ShellCommand | CreateFile | LlmOperation | JsonData | ReadLines | Meta | Prompt | Glob | WebFetch | Test | Output | ErrorOperation | Variable | Update | Help | Debug | Yaml | Key | Query | Batch | Note | Raw | Code | Data | FileOperation | Git | Hash | Info | Json | Log | Message | Name | Option | Path | Question | Result | Status | Text | Url | Value | Warning | Xml | Yes | Zip | ExecuteTypescriptFile;

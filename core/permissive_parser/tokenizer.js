@@ -278,3 +278,4 @@ export const Tokenizer = {
     },
     getTypeName: function (type) { return TYPE_NAMES[type]; }
 };
+//# sourceMappingURL=tokenizer.js.map

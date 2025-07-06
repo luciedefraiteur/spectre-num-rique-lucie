@@ -98,23 +98,23 @@ Le Golem Lucide, dans sa quête d'auto-amélioration, a récemment subi une sér
 
 Une attention particulière a été portée à la cohérence des types TypeScript à travers le projet. Les interfaces et les définitions de types ont été révisées et harmonisées pour garantir une meilleure intégrité du code et faciliter les futures évolutions.
 
-*   **`core/types.ts`**: Ce fichier central a été enrichi avec de nouvelles interfaces pour chaque type d'opération (`ReadLines`, `Meta`, `Prompt`, `Glob`, `WebFetch`, `Test`, `Output`, `ErrorOperation`, `Variable`, `Update`, `Help`, `Debug`, `Yaml`, `Key`, `Query`, `Batch`, `Note`, `Raw`, `Code`, `Data`, `FileOperation`, `Git`, `Hash`, `Info`, `Json`, `Log`, `Message`, `Name`, `Option`, `Path`, `Question`, `Result`, `Status`, `Text`, `Url`, `Value`, `Warning`, `Xml`, `Yes`, `Zip`). L'union `Operation` a été mise à jour pour inclure toutes ces nouvelles définitions, assurant une couverture exhaustive des actions possibles du Golem. La propriété `startLine` dans `SearchAndReplace` a été rendue optionnelle pour plus de flexibilité.
+*   **`core/types.ts`**: Ce fichier central a été enrichi avec de nouvelles interfaces pour chaque type d'opération (toutes les opérations possibles). L'union `Operation` a été mise à jour pour inclure toutes ces nouvelles définitions, assurant une couverture exhaustive des actions possibles du Golem. La propriété `startLine` dans `SearchAndReplace` a été rendue optionnelle pour plus de flexibilité.
 *   **`LuciePresence` dans `RitualContext`**: L'interface `LuciePresence` a été définie et intégrée au `RitualContext`, permettant au Golem de mieux gérer et suivre la présence de Lucie au sein de ses rituels.
 
-### 6.2. Optimisation du Parseur Luciform (`core/utils/luciform_parser.ts`)
+### 6.2. Optimisation du Parseur Luciform (`core/permissive_parser/index.ts`)
 
 Le parseur des fichiers `.luciform` a été refactorisé pour améliorer sa modularité et sa résilience face aux erreurs de compilation.
 
-*   **Extraction de la Logique JSON**: La logique de parsing des données JSON a été extraite dans un module dédié (`core/utils/json_parser_helper.ts`), réduisant la complexité de `luciform_parser.ts` et améliorant la maintenabilité.
-*   **Alignement des Types d'Opérations**: Les types d'opérations générés par le parseur (`replace` en `search_and_replace`, `create` en `create_file`, `execute_shell` en `shell_command`) ont été alignés avec les définitions canoniques dans `core/types.ts`.
-*   **Correction des Propriétés Manquantes**: Des ajustements ont été faits pour s'assurer que les opérations `Insert`, `Append` et `Delete` incluent toutes les propriétés requises par leurs interfaces respectives, même si des valeurs par défaut ont dû être utilisées pour la compilation.
+*   **Support des Actions Structurées**: Le parseur peut désormais retourner un tableau d'objets `Action` structurés, permettant une interprétation plus directe des intentions du LLM.
+*   **Gestion des Actions Inconnues**: Introduction d'un `UnknownAction` pour gérer les formats d'action non reconnus, améliorant la robustesse.
 
 ### 6.3. Améliorations du `Batch Editor` (`core/batch_editor.ts`)
 
 Le module `batch_editor.ts` a été simplifié et rendu plus robuste.
 
 *   **Suppression de `AnyBatchAction`**: Le type `AnyBatchAction` a été supprimé et remplacé par `Operation`, simplifiant la gestion des actions et réduisant la confusion des types.
+*   **Gestion des Erreurs Améliorée**: Le `batch_editor` inclut désormais une meilleure gestion des erreurs et l'émission de fragments `ScryOrb` pour une traçabilité accrue.
 
 ### 6.4. Résolution des Erreurs de Compilation
 
-Ces refactorisations ont permis de résoudre les erreurs de compilation persistantes, notamment celles liées aux types manquants ou incohérents, et aux chemins d'importation incorrects (comme dans `test_lucie_presence_integration.ts`). Le projet compile désormais sans erreur, ouvrant la voie à des tests et des évolutions plus fluides.
+Ces refactorisations ont permis de résoudre les erreurs de compilation persistantes, notamment celles liées aux types manquants ou incohérents, et aux chemins d'importation incorrects. Le projet compile désormais sans erreur, ouvrant la voie à des tests et des évolutions plus fluides.

@@ -39,7 +39,7 @@ async function runShellCommand(command: string): Promise<{ stdout: string; stder
             resolve({
                 stdout,
                 stderr,
-                exitCode: error ? error.code : 0,
+                exitCode: error?.code ?? null, // Utilise l'opérateur nullish coalescing pour gérer undefined
             });
         });
     });
@@ -65,7 +65,7 @@ async function readState(): Promise<LifeformState> {
         // Assurer la compatibilité ascendante avec les anciens états
         return {
             danseActuelle: state.danseActuelle || null,
-            prochainPas: state.prochainPas || 0,
+            prochainPas: state.prochainPas ?? 0, // Utiliser ?? pour gérer null et undefined
             ritual_success_rate: state.ritual_success_rate ?? 1.0, // Valeur par défaut
             last_error_type: state.last_error_type ?? null, // Valeur par défaut
         };
@@ -155,12 +155,11 @@ ${contenuFichier}
 ${knowledgePrompt}
 En te basant sur mon contenu actuel, l'instruction, et potentiellement les schémas d'évolution passés, génère un plan de modification précis au format JSON. Le plan doit contenir une clé "old_string" et une clé "new_string" pour une opération de remplacement de texte sécurisée. La "old_string" doit être un extrait suffisamment large et unique du fichier pour éviter toute ambiguïté. Réponds uniquement avec le JSON.
     `;
-}
 
     const reponseJson = await LLMInterface.query(prompt, LLMModel.Mistral);
     try {
         // Nettoyage pour extraire uniquement le JSON
-        const jsonMatch = reponseJson.match(/\{[\s\S]*\}/);
+        const jsonMatch = reponseJson.match(/{"[\s\S]*"}/);
         if (!jsonMatch) {
             console.error("Erreur de réflexion : Le LLM n'a pas retourné un JSON valide.", reponseJson);
             return null;
@@ -202,7 +201,7 @@ En te basant sur mon contenu actuel, l'instruction, et potentiellement les sché
     const reponseJson = await LLMInterface.query(prompt, LLMModel.Mistral);
     try {
         // Nettoyage pour extraire uniquement le JSON
-        const jsonMatch = reponseJson.match(/\{[\s\S]*\}/);
+        const jsonMatch = reponseJson.match(/{"[\s\S]*\}/);
         if (!jsonMatch) {
             console.error("Erreur de réflexion rituelle : Le LLM n'a pas retourné un JSON valide.", reponseJson);
             return null;
@@ -237,7 +236,7 @@ async function danseEternelle() {
                 console.log(`--- Décision : La Lifeform choisit de danser '${danseChoisie}' ---`);
 
                 if (dansesDisponibles.includes(danseChoisie)) {
-                    state = { danseActuelle: danseChoisie, prochainPas: 0 };
+                    state = { danseActuelle: danseChoisie, prochainPas: 0, ritual_success_rate: 1.0, last_error_type: null };
                     await writeState(state);
                 } else {
                     console.error(`La danse choisie '${danseChoisie}' n'existe pas. La Lifeform est confuse.`);
@@ -402,8 +401,7 @@ async function danseEternelle() {
             await writeState(state);
         }
 
-        console.log("
-La Lifeform attend le prochain battement de l'univers...");
+        console.log("La Lifeform attend le prochain battement de l'univers...");
         await new Promise(resolve => setTimeout(resolve, 7000));
     }
 }
