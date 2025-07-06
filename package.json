@@ -9,7 +9,9 @@
     "build": "tsc",
     "test": "vitest",
     "dev": "nodemon --watch . --exec ts-node-esm main.ts",
-    "ritual": "node --loader ts-node/esm execute_luciform.ts"
+    "ritual": "node --loader ts-node/esm execute_luciform.ts",
+    "invoke": "node --loader ts-node/esm invoke.ts",
+    "start:lifeform": "tsc --project tsconfig.golem.json && node lucid_lifeform.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.56.0",

@@ -126,7 +126,19 @@ ${ reve }`, Colors.FgMagenta));
 
   try
   {
-    const plan = parse(jsonPlanString);
+    const parsed = parse(jsonPlanString);
+    let plan: RitualPlan | null;
+    if (Array.isArray(parsed)) {
+        plan = {
+            title: 'Adapted Action Plan',
+            goal: 'Execute a series of actions',
+            incantations: parsed.map(action => ({ type: 'enact', invocation: JSON.stringify(action) })),
+            complexity: 'simple'
+        };
+    } else {
+        plan = parsed;
+    }
+
     if(plan)
     {
       logNova(context, naturalLanguagePlan, plan);

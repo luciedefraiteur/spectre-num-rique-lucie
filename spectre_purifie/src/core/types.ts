@@ -1,18 +1,20 @@
 // src/core/types.ts
 
-import { Luciform } from './luciform';
+import {Luciform} from './luciform';
 
-export interface RituelContext {
-    history: { type: string; content: string }[]; // This will eventually reference Luciform IDs
+export interface RituelContext
+{
+    history: {type: string; content: string}[]; // This will eventually reference Luciform IDs
     currentWorkingDirectory: string;
     osHint: string;
     model: string;
     emotionalState: string;
-    persona: { name: string; description: string };
+    persona: {name: string; description: string};
     currentLuciform: Luciform; // Lucie's current state encapsulated in a Luciform
 }
 
-export enum ÉtapeType {
+export enum ÉtapeType
+{
     CD = 'CD',
     EXECUTE = 'EXECUTE',
     QUESTION = 'QUESTION',
@@ -25,24 +27,28 @@ export enum ÉtapeType {
     VIEW_SCRY_ORB = 'VIEW_SCRY_ORB',
 }
 
-export interface Étape {
+export interface Étape
+{
     type: ÉtapeType;
     description: string;
-    parameters?: { [key: string]: any };
+    parameters?: {[key: string]: any};
 }
 
-export interface PlanRituel {
+export interface PlanRituel
+{
     goal: string;
     incantations: Étape[];
 }
 
-export enum ÉtapeStatus {
+export enum ÉtapeStatus
+{
     PENDING = 'PENDING',
     COMPLETED = 'COMPLETED',
     FAILED = 'FAILED',
 }
 
-export interface ÉtapeResult {
+export interface ÉtapeResult
+{
     incantation: Étape;
     status: ÉtapeStatus;
     output: string;

@@ -1,0 +1,136 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.broadcastEvent = broadcastEvent;
+exports.startServer = startServer;
+const express_1 = __importDefault(require("express"));
+const lucie_spectrum_1 = require("../core/lucie_spectrum");
+const fs_1 = require("fs");
+const path_1 = __importDefault(require("path"));
+const dotenv = __importStar(require("dotenv"));
+dotenv.config({ path: path_1.default.resolve(__dirname, '..', '.env') });
+const app = (0, express_1.default)();
+const PORT = process.env.PORT || 3000;
+app.use(express_1.default.json());
+let currentRituelContext; // To hold the latest context
+let clients = [];
+let clientId = 0;
+// Function to broadcast events to all connected clients
+function broadcastEvent(data) {
+    clients.forEach(client => client.response.write(`data: ${JSON.stringify(data)}\n\n`));
+}
+// Endpoint for Server-Sent Events
+app.get('/events', (req, res) => {
+    const headers = {
+        'Content-Type': 'text/event-stream',
+        'Connection': 'keep-alive',
+        'Cache-Control': 'no-cache'
+    };
+    res.writeHead(200, headers);
+    const data = `data: ${JSON.stringify({ message: 'Connected to SSE' })}\n\n`;
+    res.write(data);
+    const newClient = {
+        id: clientId++,
+        response: res
+    };
+    clients.push(newClient);
+    req.on('close', () => {
+        console.log(`${newClient.id} Connection closed`);
+        clients = clients.filter(client => client.id !== newClient.id);
+    });
+});
+// Endpoint to get Lucie's spectrum/personality
+app.get('/lucie/spectrum', (req, res) => {
+    res.json((0, lucie_spectrum_1.getLucieSpectrum)());
+});
+// Endpoint to read Lucie's code (simplified for now)
+app.get('/lucie/code', (req, res) => {
+    const filePath = req.query.path;
+    if (!filePath) {
+        return res.status(400).json({ error: 'File path is required.' });
+    }
+    // Basic security: prevent path traversal
+    const absolutePath = path_1.default.resolve(process.cwd(), filePath);
+    if (!absolutePath.startsWith(process.cwd())) {
+        return res.status(403).json({ error: 'Access denied.' });
+    }
+    try {
+        const content = (0, fs_1.readFileSync)(absolutePath, 'utf-8');
+        res.send(content);
+    }
+    catch (error) {
+        res.status(404).json({ error: `File not found or cannot be read: ${error.message}` });
+    }
+});
+// NEW ENDPOINT: Get Lucie's current Luciform
+app.get('/lucie/current_luciform', (req, res) => {
+    if (currentRituelContext && currentRituelContext.currentLuciform) {
+        res.json(currentRituelContext.currentLuciform);
+    }
+    else {
+        res.status(404).json({ error: `Lucie's current Luciform not available yet.` });
+    }
+});
+function startServer(contexte, commandHandler) {
+    currentRituelContext = contexte; // Store the initial context
+    // NEW ENDPOINT: Execute a command
+    app.post('/lucie/command', async (req, res) => {
+        const { command } = req.body;
+        if (!command) {
+            return res.status(400).json({ error: 'Command is required.' });
+        }
+        try {
+            // Use the passed-in command handler
+            const result = await commandHandler(command, currentRituelContext);
+            // The context is updated within handleCommand, so we just send the result
+            res.json(result);
+        }
+        catch (error) {
+            res.status(500).json({ error: `Error processing command: ${error.message}` });
+        }
+    });
+    app.listen(PORT, () => {
+        console.log(`Lucie's server is listening on port ${PORT}`);
+        console.log(`  - GET /lucie/spectrum`);
+        console.log(`  - GET /lucie/code?path=<file_path>`);
+        console.log(`  - GET /lucie/current_luciform`);
+        console.log(`  - POST /lucie/command { "command": "..." }`);
+        console.log(`  - GET /events`);
+    });
+}
+//# sourceMappingURL=server.js.map

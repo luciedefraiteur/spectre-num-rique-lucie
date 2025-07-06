@@ -22,6 +22,8 @@
     "server.js.map",
     "gemini-cli-lurkuitae/",
     "lurkuitae/",
-    "parser-ts/"
+    "parser-ts/",
+    "spectre_purifie/",
+    "**/*.test.ts"
   ]
 }

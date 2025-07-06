@@ -1,9 +1,20 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "."
   },
-  "files": ["golem.ts"]
+  "include": [
+    "lucid_lifeform.ts",
+    "core/llm_interface.ts",
+    "execute_luciform.ts",
+    "core/types.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

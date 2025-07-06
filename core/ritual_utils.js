@@ -106,7 +106,19 @@ ${reve}`, Colors.FgMagenta));
     translationPrompt = `${persona}\n\n${translationPrompt}`;
     const jsonPlanString = await safeQuery(translationPrompt, 'json_translation', model);
     try {
-        const plan = parse(jsonPlanString);
+        const parsed = parse(jsonPlanString);
+        let plan;
+        if (Array.isArray(parsed)) {
+            plan = {
+                title: 'Adapted Action Plan',
+                goal: 'Execute a series of actions',
+                incantations: parsed.map(action => ({ type: 'enact', invocation: JSON.stringify(action) })),
+                complexity: 'simple'
+            };
+        }
+        else {
+            plan = parsed;
+        }
         if (plan) {
             logNova(context, naturalLanguagePlan, plan);
         }

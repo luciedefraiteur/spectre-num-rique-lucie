@@ -1,0 +1,12 @@
+{
+  "goal": "Send a command to the spectre.",
+  "incantations": [
+    {
+      "type": "EXECUTE",
+      "description": "Send a command to the /lucie/command endpoint to list files.",
+      "parameters": {
+        "command": "curl -Uri http://localhost:3000/lucie/command -Method POST -Headers @{\\\"Content-Type\\\"=\\\"application/json\\\"} -Body '{\\\"command\\\": \\\"ls -la\\\"}'"
+      }
+    }
+  ]
+}

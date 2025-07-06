@@ -1,10 +1,13 @@
 // src/core/llm_interfaces/anthropic.ts
 
-import { logToFile } from '../log_writers';
+import {logToFile} from '../log_writers';
+import Anthropic from '@anthropic-ai/sdk';
 
-export async function queryAnthropic(prompt: string, model: string): Promise<string> {
+export async function queryAnthropic(prompt: string, model: string): Promise<string>
+{
     const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey || apiKey === 'YOUR_ANTHROPIC_API_KEY_HERE') {
+    if(!apiKey || apiKey === 'YOUR_ANTHROPIC_API_KEY_HERE')
+    {
         logToFile('llm_errors.log', 'Anthropic API Key not set or is a placeholder. Cannot query Anthropic.');
         return Promise.resolve(`{
             "goal": "Simulated Anthropic plan (API Key missing)",
@@ -14,20 +17,29 @@ export async function queryAnthropic(prompt: string, model: string): Promise<str
         }`);
     }
 
-    logToFile('llm_calls.log', `Querying Anthropic model '${model}' with prompt (first 100 chars):\n${prompt.substring(0, 100)}...`);
+    logToFile('llm_calls.log', `Querying Anthropic model '${ model }' with prompt (first 100 chars):\n${ prompt.substring(0, 100) }...`);
 
-    // Placeholder for actual Anthropic API call using anthropic-sdk
-    // For now, return a simulated response.
-    return Promise.resolve(`{
-        "goal": "Simulated Anthropic plan for: ${prompt.substring(0, 50)}...",
-        "incantations": [
-            {
-                "type": "EXECUTE",
-                "description": "Simulated command from Anthropic",
-                "parameters": {
-                    "command": "echo 'Simulated Anthropic output for: ${prompt.substring(0, 20)}...'"
-                }
-            }
-        ]
-    }`);
+    try
+    {
+        const anthropic = new Anthropic({apiKey});
+        const msg = await anthropic.messages.create({
+            model: model,
+            max_tokens: 1024,
+            messages: [{role: 'user', content: prompt}],
+        });
+        if(msg.content[0].type === 'text')
+        {
+            return msg.content[0].text;
+        }
+        return "";
+    } catch(error: any)
+    {
+        logToFile('llm_errors.log', `Error querying Anthropic: ${ error.message }`);
+        return Promise.resolve(`{
+            "goal": "Error querying Anthropic",
+            "incantations": [
+                {"type": "ANALYSE", "description": "An error occurred while querying the Anthropic API.", "parameters": {"context": "${ error.message }"}}
+            ]
+        }`);
+    }
 }

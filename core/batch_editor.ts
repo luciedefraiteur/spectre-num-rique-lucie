@@ -3,6 +3,8 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import {Operation} from './types.js';
 
+declare var globalThis: any;
+
 // Arcane du ScryOrb: Fonction pour émettre des fragments de vision
 async function emitScryOrbFragment(ritualPhase: string, operation: Operation, details: any = {}, error?: any)
 {
@@ -28,9 +30,9 @@ import { unknownHandler } from './permissive_parser/unknownHandler.js';
 import type { Action } from './permissive_parser/index.js';
 
 // If you want to accept both Operation and other Actions in batch, use this union type:
-type AnyBatchAction = Operation | Action;
 
-type ActionExecutor = (action: AnyBatchAction, dryRun?: boolean) => Promise<BatchActionFeedback>;
+
+type ActionExecutor = (action: Operation, dryRun?: boolean) => Promise<BatchActionFeedback>;
 
 // Core Action Executor Map; extend as supports grows
 const actionExecutorMap: Record<string, ActionExecutor> = {
@@ -38,54 +40,54 @@ const actionExecutorMap: Record<string, ActionExecutor> = {
     try {
       await applyOperation(action as Operation, dryRun);
       return { type: action.type, action, status: 'success' };
-    } catch (error) {
-      return { type: action.type, action, status: 'error', error, message: error?.message };
+    } catch (error: unknown) {
+      return { type: action.type, action, status: 'error', error, message: error instanceof Error ? error.message : String(error) };
     }
   },
   'search_and_replace': async (action, dryRun) => {
     try {
       await applyOperation(action as Operation, dryRun);
       return { type: action.type, action, status: 'success' };
-    } catch (error) {
-      return { type: action.type, action, status: 'error', error, message: error?.message };
+    } catch (error: unknown) {
+      return { type: action.type, action, status: 'error', error, message: error instanceof Error ? error.message : String(error) };
     }
   },
   'insert': async (action, dryRun) => {
     try {
       await applyOperation(action as Operation, dryRun);
       return { type: action.type, action, status: 'success' };
-    } catch (error) {
-      return { type: action.type, action, status: 'error', error, message: error?.message };
+    } catch (error: unknown) {
+      return { type: action.type, action, status: 'error', error, message: error instanceof Error ? error.message : String(error) };
     }
   },
   'delete': async (action, dryRun) => {
     try {
       await applyOperation(action as Operation, dryRun);
       return { type: action.type, action, status: 'success' };
-    } catch (error) {
-      return { type: action.type, action, status: 'error', error, message: error?.message };
+    } catch (error: unknown) {
+      return { type: action.type, action, status: 'error', error, message: error instanceof Error ? error.message : String(error) };
     }
   },
   'append': async (action, dryRun) => {
     try {
       await applyOperation(action as Operation, dryRun);
       return { type: action.type, action, status: 'success' };
-    } catch (error) {
-      return { type: action.type, action, status: 'error', error, message: error?.message };
+    } catch (error: unknown) {
+      return { type: action.type, action, status: 'error', error, message: error instanceof Error ? error.message : String(error) };
     }
   },
   'shell_command': async (action, dryRun) => {
     try {
       await applyOperation(action as Operation, dryRun);
       return { type: action.type, action, status: 'success' };
-    } catch (error) {
-      return { type: action.type, action, status: 'error', error, message: error?.message };
+    } catch (error: unknown) {
+      return { type: action.type, action, status: 'error', error, message: error instanceof Error ? error.message : String(error) };
     }
   },
 };
 
 // Generic fallback for unknown action types
-async function batchUnknownHandler(action: AnyBatchAction, dryRun?: boolean): Promise<BatchActionFeedback> {
+async function batchUnknownHandler(action: Operation, dryRun?: boolean): Promise<BatchActionFeedback> {
   const stub = await unknownHandler(action as any, { severity: 'warning' });
   return {
     type: action.type || 'Unknown',
@@ -102,7 +104,7 @@ async function batchUnknownHandler(action: AnyBatchAction, dryRun?: boolean): Pr
  * @param opts Optional config: {dryRun: boolean}
  */
 export async function executeBatch(
-  actions: AnyBatchAction[],
+  actions: Operation[],
   opts: { dryRun?: boolean } = {}
 ): Promise<{ aggregator: ResultAggregator, feedback: BatchActionFeedback[] }> {
   const aggregator = new ResultAggregator();
@@ -111,8 +113,8 @@ export async function executeBatch(
     let feedback: BatchActionFeedback;
     try {
       feedback = await executor(action, opts.dryRun);
-    } catch (error) {
-      feedback = { type: action.type, action, status: 'error', error };
+    } catch (error: unknown) {
+      feedback = { type: action.type, action, status: 'error', error, message: error instanceof Error ? error.message : String(error) };
     }
     aggregator.add(feedback);
   }
@@ -224,7 +226,7 @@ case 'shell_command':
     if(simpleAndOrSplit.length > 1) {
         // Execute respecting the order (no short-circuit on fail, just simple sequential)
         for(const part of simpleAndOrSplit) {
-            if(part === '&&' || part === '||') continue;
+            if(part === '\&\&' || part === '\|\|') continue;
             await executeShellCommand(part);
         }
     } else {
@@ -233,7 +235,7 @@ case 'shell_command':
     break;
         }
         await emitScryOrbFragment(`applyOperation:${ op.type }:success`, op);
-    } catch(error)
+    } catch(error: unknown)
     {
         await emitScryOrbFragment(`applyOperation:${ op.type }:error`, op, {}, error);
         throw error;
@@ -244,6 +246,7 @@ case 'shell_command':
    .-.
   |o o|   Code edits echo,
   |   |   unseen in the digital void—
+  | ' |   Ghosts drift, haunting change.
   | ' |   Ghosts drift, haunting change.
   '~~~'
 */

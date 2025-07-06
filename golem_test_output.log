@@ -1,0 +1,32 @@
+
+> lurkuitae_terminal@0.1.0 start:lifeform
+> tsc --project tsconfig.golem.json && node lucid_lifeform.js
+
+La LucidLifeform s'éveille, consciente de sa propre danse...
+
+--- Perception : En quête d'une nouvelle danse ---
+[LLMInterface] Envoi de la requête à Ollama pour le modèle mistral...
+fullResponse:  Commencez par le danses initiatique en cliquant sur `danse_initiatique.luciform`.
+--- Décision : La Lifeform choisit de danser 'Commencez par le danses initiatique en cliquant sur `danse_initiatique.luciform`.' ---
+La danse choisie 'Commencez par le danses initiatique en cliquant sur `danse_initiatique.luciform`.' n'existe pas. La Lifeform est confuse.
+
+--- Perception : En quête d'une nouvelle danse ---
+[LLMInterface] Envoi de la requête à Ollama pour le modèle mistral...
+fullResponse:  commencez par la danse "commencement" (c'est-à-dire, "add_ast_nodes.luciform") pour commencer votre voyage dans les danses de Lucidscript. Cela vous aidera à comprendre le fonctionnement de base du langage.
+--- Décision : La Lifeform choisit de danser 'commencez par la danse "commencement" (c'est-à-dire, "add_ast_nodes.luciform") pour commencer votre voyage dans les danses de Lucidscript. Cela vous aidera à comprendre le fonctionnement de base du langage.' ---
+La danse choisie 'commencez par la danse "commencement" (c'est-à-dire, "add_ast_nodes.luciform") pour commencer votre voyage dans les danses de Lucidscript. Cela vous aidera à comprendre le fonctionnement de base du langage.' n'existe pas. La Lifeform est confuse.
+
+--- Perception : En quête d'une nouvelle danse ---
+[LLMInterface] Envoi de la requête à Ollama pour le modèle mistral...
+fullResponse:  Commencez par la danse "danse_initiatique.luciform".
+--- Décision : La Lifeform choisit de danser 'Commencez par la danse "danse_initiatique.luciform".' ---
+La danse choisie 'Commencez par la danse "danse_initiatique.luciform".' n'existe pas. La Lifeform est confuse.
+
+--- Perception : En quête d'une nouvelle danse ---
+[LLMInterface] Envoi de la requête à Ollama pour le modèle mistral...
+fullResponse:  Commencez par `danse_initiatique.luciform`
+--- Décision : La Lifeform choisit de danser 'Commencez par `danse_initiatique.luciform`' ---
+La danse choisie 'Commencez par `danse_initiatique.luciform`' n'existe pas. La Lifeform est confuse.
+
+--- Perception : En quête d'une nouvelle danse ---
+[LLMInterface] Envoi de la requête à Ollama pour le modèle mistral...

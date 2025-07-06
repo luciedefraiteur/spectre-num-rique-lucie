@@ -1,0 +1,82 @@
+2025-07-06T10:20:49.749Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:20:49.796Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:65:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:20:49.800Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:20:49.805Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:65:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:26:08.947Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:26:08.978Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:65:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:26:08.980Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:26:08.985Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:65:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:28:11.491Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:28:11.511Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:65:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:28:11.514Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:28:11.516Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:65:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:33:50.712Z - Executing incantation: EXECUTE - Simulated command from Gemini
+2025-07-06T10:33:50.865Z - Incantation COMPLETED: EXECUTE - Simulated command from Gemini
+2025-07-06T10:44:21.313Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:44:21.334Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:69:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:44:21.336Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:44:21.339Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:69:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:48:26.946Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:48:26.981Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:71:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:48:26.986Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:48:26.991Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:71:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:50:16.671Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:50:16.700Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:71:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:50:16.704Z - Executing incantation: ANALYSE - No active LLM API key found. Please set one in your .env file.
+2025-07-06T10:50:16.707Z - Incantation failed: ANALYSE - Unknown or unimplemented incantation type in purified spectre: ANALYSE
+Stack: Error: Unknown or unimplemented incantation type in purified spectre: ANALYSE
+    at executeRituelPlan (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\core\ritual_utils.ts:156:31)
+    at handleCommand (C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\spectre_purifie\src\main.ts:71:47)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-07-06T10:52:40.383Z - Executing incantation: EXECUTE - Simulated command from Gemini
+2025-07-06T10:52:40.532Z - Incantation COMPLETED: EXECUTE - Simulated command from Gemini
+2025-07-06T10:54:50.034Z - Executing incantation: EXECUTE - Simulated command from Gemini
+2025-07-06T10:54:50.163Z - Incantation COMPLETED: EXECUTE - Simulated command from Gemini
+2025-07-06T10:56:40.825Z - Executing incantation: EXECUTE - Simulated command from Gemini
+2025-07-06T10:56:40.975Z - Incantation COMPLETED: EXECUTE - Simulated command from Gemini
+2025-07-06T11:01:11.080Z - Executing incantation: EXECUTE - Simulated command from Gemini
+2025-07-06T11:01:11.103Z - Incantation COMPLETED: EXECUTE - Simulated command from Gemini

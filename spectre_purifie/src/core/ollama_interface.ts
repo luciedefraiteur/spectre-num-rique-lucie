@@ -1,34 +1,45 @@
 // src/core/ollama_interface.ts
 
-// This file simulates an external LLM interaction.
-// In a real scenario, this would make an actual API call to an LLM service (e.g., Gemini, OpenAI, Claude).
+import fetch from 'node-fetch';
+
+interface OllamaResponse {
+    response: string;
+    // Add other fields if needed
+}
 
 export async function queryOllama(prompt: string, model: string): Promise<string> {
-    console.log(`[LLM Interface] Querying model '${model}' with prompt (first 100 chars):\n${prompt.substring(0, 100)}...`);
-    
-    // This is a pure simulation. In a real application, you would use a proper LLM client library
-    // and handle API keys securely (e.g., via environment variables).
-    
-    // For now, we'll return a dummy JSON structure for testing purposes.
-    // This structure should mimic what a PlanRituel would look like.
-    return Promise.resolve(`{
-        "goal": "Simulated plan for: ${prompt.substring(0, 50)}...",
-        "incantations": [
-            {
-                "type": "EXECUTE",
-                "description": "Simulated command execution from LLM",
-                "parameters": {
-                    "command": "echo 'Simulated output for: ${prompt.substring(0, 20)}...'"
-                }
+    console.log('[OLLAMA_INTERFACE] Entering queryOllama function.');
+    const ollamaHost = process.env.OLLAMA_HOST || 'http://localhost:11434';
+    const url = `${ollamaHost}/api/generate`;
+
+    console.log(`[OLLAMA_INTERFACE] Querying Ollama model '${model}' at ${url} with prompt (first 100 chars):\n${prompt.substring(0, 100)}...`);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            {
-                "type": "GENERATE_SCRY_ORB",
-                "description": "Simulated ScryOrb generation",
-                "parameters": {
-                    "name": "SimulatedStatus",
-                    "data": {"status": "ok", "timestamp": "${new Date().toISOString()}"}
-                }
-            }
-        ]
-    }`);
+            body: JSON.stringify({
+                model: model,
+                prompt: prompt,
+                stream: false,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`[OLLAMA_INTERFACE] Ollama API returned non-OK status: ${response.status} ${response.statusText} - ${errorText}`);
+            throw new Error(`Ollama API error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        const data = await response.json() as OllamaResponse;
+        console.log('[OLLAMA_INTERFACE] Successfully received response from Ollama.');
+        // Ollama's generate endpoint returns a JSON object with a 'response' field
+        return data.response;
+
+    } catch (error: any) {
+        console.error(`[OLLAMA_INTERFACE] Error querying Ollama: ${error.message}`);
+        throw error; // Re-throw the error to be caught by the orchestrator's timeout
+    }
 }

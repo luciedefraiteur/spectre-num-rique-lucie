@@ -120,6 +120,7 @@ export class LLMInterface {
                         prompt: cleanPrompt,
                         stream: false
                     };
+                    console.log(`[LLMInterface] Envoi de la requête à Ollama pour le modèle ${actualModel}...`);
                     const response = await _fetch('http://127.0.0.1:11434/api/generate', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
