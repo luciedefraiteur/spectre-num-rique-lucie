@@ -11,6 +11,7 @@ export enum LLMModel
   Mistral = "mistral",
   OpenAI = "openai",
   Gemini = "gemini",
+  Claude = "claude",
   Random = "random"
 }
 

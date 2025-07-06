@@ -9,6 +9,7 @@ export var LLMModel;
     LLMModel["Mistral"] = "mistral";
     LLMModel["OpenAI"] = "openai";
     LLMModel["Gemini"] = "gemini";
+    LLMModel["Claude"] = "claude";
     LLMModel["Random"] = "random";
 })(LLMModel || (LLMModel = {}));
 function escapeJson(input) {

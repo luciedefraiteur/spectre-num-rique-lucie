@@ -75,7 +75,7 @@ if(args.model)
 
 async function main()
 {
-  const initialContext = await getInitialContext(personality);
+  const initialContext = await getInitialContext();
   // console.log(initialContext.welcome_message); // This property does not exist on RitualContext
 
   while(true)

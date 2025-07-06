@@ -1,5 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
+import { getInitialContext } from './core/ritual_utils.js';
+import { runTerminalRitual } from './core/run_terminal_rituel.js';
 import * as readline from 'readline';
 import { LLMModel } from './core/llm_interface.js';
 import fs from 'fs';
@@ -45,5 +47,18 @@ if (args.model) {
     else if (requestedModel === 'random') {
         model = LLMModel.Random;
     }
-} // This comment has been successfully replaced by Lucie.
+}
+async function main() {
+    const initialContext = await getInitialContext();
+    // console.log(initialContext.welcome_message); // This property does not exist on RitualContext
+    while (true) {
+        const userInput = await ask('> ');
+        if (userInput.toLowerCase() === 'exit') {
+            break;
+        }
+        await runTerminalRitual(initialContext, rl, ask, [userInput], model, () => { });
+    }
+    rl.close();
+}
+main();
 //# sourceMappingURL=main.js.map
