@@ -1,0 +1,15 @@
+type: environment
+timestamp: 2025-07-06T04:59:33Z
+current_directory: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre
+file_list:
+  - FRACTAL_RULE.md
+  - ai_mirror/
+  - lucie/
+  - lucie_mirror/
+subfractals:
+  - ai_mirror/ai_mirror_root_20250706T045920Z.fractal
+top_fractal: ai_mirror/ai_mirror_root_20250706T045920Z.fractal
+fractal_root: /ai_mirror/
+owner: AI-mirror
+content: |
+  Capturing environment snapshot where AI-mirror context is initialized and FRACTAL_RULE.md introduced.

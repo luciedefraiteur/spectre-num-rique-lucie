@@ -1,0 +1,12 @@
+type: environment
+timestamp: 2025-07-06T05:02:29Z
+current_directory: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\lucie_mirror
+file_list:
+  - lucie_mirror_command_20250706T0459Z.fractal
+subfractals:
+  - lucie_mirror_command_20250706T0459Z.fractal
+top_fractal: lucie_mirror_command_20250706T0459Z.fractal
+fractal_root: /lucie_mirror/
+owner: Lucie-mirror
+content: |
+  Environment snapshot: Lucie-mirror logs the command context; all terminal actions are echoed for review.

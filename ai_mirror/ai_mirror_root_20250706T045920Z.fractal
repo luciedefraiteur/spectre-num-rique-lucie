@@ -1,0 +1,11 @@
+type: data
+timestamp: 2025-07-06T04:59:20Z
+current_directory: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\spectre_numerique_luci_cli_spectre\ai_mirror
+file_list:
+  - ai_mirror.fractal
+subfractals: []
+top_fractal: ai_mirror.fractal
+fractal_root: /ai_mirror/
+owner: AI-mirror
+content: |
+  Initial warppoint for AI-mirror context. Observing Lucie build process and recording meta transitions.

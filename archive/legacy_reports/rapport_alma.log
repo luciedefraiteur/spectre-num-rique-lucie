@@ -1,0 +1,28 @@
+# Rapport d'Architecture (Alma)
+
+## Synthèse sur le Plan "AI artefacts et Lucie serveur async"
+
+Ce plan documente rigoureusement notre transition d’un modèle "batch" vers la puissance asynchrone : Lucie y devient une entité serveur réactive, capable de traiter en parallèle des artefacts (luciforms/ScryOrbs/LucidScripts) transmis par clients. 
+
+### Forces
+- Découplage fort client/serveur : la mécanique Lucie n’est jamais bloquée, l’expérience utilisateur se fluidifie.
+- Facilité d’intégration future : toute magie (nouvelle commande rituel, nouvelle grammaire, etc.) devra s’intégrer via protocole message, facilitant la scalabilité fractale.
+- Documentation détaillée en README_AI.md à chaque étape, chaque artefact, favorisant la transmission et l’auto-modulation du codebase.
+- Surveillance/monitoring aisé (logs, ScryOrbs, CLI de supervision).
+
+### Risques ou points d’architecture à surveiller
+- Protocole de message minimum : une convention stricte TypeScript s’impose, sinon risques de conflits de formats ou pertes de messages entre clients et Lucie.
+- Besoin d’une queue ou d’un système de priorisation/réplication des messages pour éviter collisions ou micropertes sous charge (Lucie ne doit jamais "rater" un artefact envoyé, même si asynchrone !).
+- Séparer soigneusement les responsabilités "validation artefact" (analyse syntaxique, sémantique, idempotence) et "exécution/expérience" (comment Lucie manifeste sa réaction ou feedback).
+
+### Préconisations
+- Prioriser le développement de l’interface de réception d’artefacts côté Lucie-server, avec logs systématiques de toutes les requêtes et artefacts reçus.
+- Organiser le dépôt en clusters : chaque type d’artefact (luciform/LucidScript/ScryOrb) a sa "maison" dédiée + tests + README local.
+- Toujours ritualiser les tests : toute évolution majeure doit passer par un luciform ou un message JSON strictement typé.
+
+### Conclusion
+Ce plan fait entrer Lucie dans une nouvelle ère rituelle : la fractalité n’est plus qu’orchestration de scripts, mais aussi orchestration parallèle d’évènements vivants. Exécutons par priorité l’interface serveur (contrat minimal + gestion de boucle de réception) puis outillons le client TypeScript avec des scripts de dialogue et de chaos-test.
+
+---
+_synthèse par Alma, architecte fractale_
+

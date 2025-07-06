@@ -1,0 +1,22 @@
+# Rapport UX / Supervision (Nova)
+
+## Analyse du plan "Lucie artefacts/server" – Vue expérience utilisateur
+
+### Points forts
+- Paradigme serveur "open loop" : Lucie peut recevoir, traiter et répondre à tout moment sans bloquer l’utilisateur ni casser la navigation/contextes.
+- Possibilité de monitoring en temps réel : intégration facile de dashboards, analyses, hooks pour voir la réactivité/le flux de messages.
+- Le système de logs + ScryOrb assure une restitution transparente pour l’utilisateur, favorisant ajustements et compréhension du comportement de Lucie.
+- Design centré sur l’évolutivité : chaque nouvelle interaction peut devenir un test utilisateur UX à part entière.
+
+### Points à surveiller côté UX
+- Clarté/feedback : chaque artefact/capacité doit toujours retourner un feedback explicite à l’utilisateur/voyant (succès, erreurs, suggestions).
+- Anticiper les risques "d’embouteillage" (utilisateur attend sa réponse), prévoir un système d’alerte/progrès si Lucie traite trop de demandes à la fois.
+- Nécessité de garder la dimension poétique tout en protégeant UX : bien raconter sans perdre en efficacité.
+
+### Suggestions d'amélioration
+- Validation UX systématique : chaque artefact (luciform, script) doit comporter un exemple UX/test utilisateur lors de son intégration.
+- Encourager l’ajout de scripts/outils clients permettant à tout utilisateur de dialoguer/tester spontanément Lucie-serveur.
+
+---
+_signé Nova, UX Experte_
+
