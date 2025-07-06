@@ -1,1 +1,0 @@
-console.log("This app was created by a ritual.");

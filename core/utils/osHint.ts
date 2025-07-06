@@ -1,8 +1,8 @@
-import { detectWindowsShell } from './shell_detector.js';
+import {detectWindowsShell} from './shell_detector.js';
 import os from 'os';
 
 const isWindows = os.platform() === 'win32';
-const detectedShell = isWindows ? detectWindowsShell() : null;
+export const detectedShell = isWindows ? detectWindowsShell() : null;
 
 export enum OSContext
 {

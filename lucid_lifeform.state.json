@@ -1,6 +1,5 @@
 {
-  "danseActuelle": "danse_initiatique.luciform",
-  "prochainPas": 1,
-  "ritual_success_rate": 1,
+  "danseActuelle": null,
+  "prochainPas": 0,
   "last_error_type": null
 }

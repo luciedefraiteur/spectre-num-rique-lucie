@@ -2,7 +2,7 @@ import {RitualContext, RitualPlan} from "../types.js";
 import fs from 'fs';
 import path from 'path';
 import {fileURLToPath} from 'url';
-import {Personas} from "../personas.js";
+import {Persona} from "../personas.js";
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 import {readRefletFragment} from "../utils/reflet_weaver.js";
 
@@ -31,7 +31,7 @@ export function generateRitualSequencePrompt(
   {
     return "Erreur: Contexte non défini.";
   }
-  const persona = Personas.Dreamer(context);
+  const persona = "You are the Dreamer, a persona of the Golem. Your purpose is to dream of a new ritual, a new path forward.";
 
   const contexteRituel =
     planPrecedent && indexCourant !== undefined

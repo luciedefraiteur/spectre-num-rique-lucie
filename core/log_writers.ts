@@ -56,3 +56,36 @@ export async function logZed(context: RitualContext, failedStep: Incantation, re
 `;
     await writeLog('zed.log', content);
 }
+
+export async function logGolem(message: string, level: 'info' | 'error' = 'info')
+{
+    const content = `
+## GOLEM SERVER LOG
+- **Level:** ${ level.toUpperCase() }
+- **Message:** ${ message }
+`;
+    await writeLog('golem.log', content);
+}
+
+export async function logGolemClient(message: string, level: 'info' | 'error' = 'info')
+{
+    const content = `
+## GOLEM CLIENT LOG
+- **Level:** ${ level.toUpperCase() }
+- **Message:** ${ message }
+`;
+    await writeLog('golem_client.log', content);
+}
+
+export async function logPersonaAction(persona: string, command: string, ritual: string | null)
+{
+    const content = `
+## ${ persona.toUpperCase() } ACTION
+- **Command:** ${ command }
+- **Generated Ritual:**
+---
+${ ritual || 'No ritual generated.' }
+---
+`;
+    await writeLog(`${ persona }.log`, content);
+}

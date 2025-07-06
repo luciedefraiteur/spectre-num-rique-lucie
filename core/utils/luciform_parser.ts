@@ -1,21 +1,25 @@
 import * as fs from 'fs/promises';
-import { Operation } from '../types.js';
-import { Parser } from '../permissive_parser/parser.js';
-import { Tokenizer } from '../permissive_parser/tokenizer.js';
-import { parseJsonData } from './json_parser_helper.js';
+import {Operation} from '../types.js';
+import {Parser} from '../permissive_parser/parser.js';
+import {Tokenizer} from '../permissive_parser/tokenizer.js';
+import {parseJsonData} from './json_parser_helper.js';
 
 type ParserState = 'idle' | 'in_search' | 'in_replace' | 'in_insert' | 'in_append' | 'in_create' | 'in_json';
 
-export async function parseLuciform(filePath: string, args: string[]): Promise<{ operations: Operation[], luciePresenceData: any | null }>{    const content = await fs.readFile(filePath, 'utf-8');    const lines = content.replace(/\r\n/g, '\n').split('\n');    const operations: Operation[] = [];    let state: ParserState = 'idle';    let currentFilePath: string | undefined;    let searchContent = '';    let newContent = '';    let lineNumber: number | undefined;    let startLine: number | undefined;    let endLine: number | undefined;    let currentSearchStartLine: number | undefined;    let jsonContent = '';    let luciePresenceData: any | null = null;
+export async function parseLuciform(filePath: string, args: string[]): Promise<{operations: Operation[], luciePresenceData: any | null}>
+{
+    const content = await fs.readFile(filePath, 'utf-8'); const lines = content.replace(/\r\n/g, '\n').split('\n'); const operations: Operation[] = []; let state: ParserState = 'idle'; let currentFilePath: string | undefined; let searchContent = ''; let newContent = ''; let lineNumber: number | undefined; let startLine: number | undefined; let endLine: number | undefined; let currentSearchStartLine: number | undefined; let jsonContent = ''; let luciePresenceData: any | null = null;
 
     for(const line of lines)
     {
         if(line.startsWith('---'))
         {
             // Process content accumulated before the separator
-            if (state === 'in_json') {
+            if(state === 'in_json')
+            {
                 const parsedLucieData = parseJsonData(jsonContent, operations);
-                if (parsedLucieData) {
+                if(parsedLucieData)
+                {
                     luciePresenceData = parsedLucieData;
                 }
             }
@@ -49,7 +53,7 @@ export async function parseLuciform(filePath: string, args: string[]): Promise<{
             state = 'in_replace';
             if(currentFilePath && searchContent)
             {
-                operations.push({ type: 'search_and_replace', filePath: currentFilePath, search: searchContent, replace: newContent });
+                operations.push({type: 'search_and_replace', filePath: currentFilePath, search: searchContent, replace: newContent});
                 searchContent = '';
                 newContent = '';
             }
@@ -60,7 +64,7 @@ export async function parseLuciform(filePath: string, args: string[]): Promise<{
             state = 'in_insert';
             if(currentFilePath)
             {
-                operations.push({ type: 'insert', filePath: currentFilePath, lineNumber: 0, newContent: newContent });
+                operations.push({type: 'insert', filePath: currentFilePath, lineNumber: 0, newContent: newContent});
                 newContent = '';
             }
         }
@@ -70,7 +74,7 @@ export async function parseLuciform(filePath: string, args: string[]): Promise<{
             state = 'in_append';
             if(currentFilePath)
             {
-                operations.push({ type: 'append', filePath: currentFilePath, newContent: newContent });
+                operations.push({type: 'append', filePath: currentFilePath, newContent: newContent});
                 newContent = '';
             }
         }
@@ -80,7 +84,7 @@ export async function parseLuciform(filePath: string, args: string[]): Promise<{
             state = 'in_create';
             if(currentFilePath)
             {
-                operations.push({ type: 'create_file', filePath: currentFilePath, content: '' });
+                operations.push({type: 'create_file', filePath: currentFilePath, content: ''});
             }
         }
         else if(processedLine.startsWith('§L:'))
@@ -91,7 +95,7 @@ export async function parseLuciform(filePath: string, args: string[]): Promise<{
             state = 'idle';
             if(currentFilePath && startLine !== undefined && endLine !== undefined)
             {
-                operations.push({ type: 'read_lines', filePath: currentFilePath, startLine, endLine });
+                operations.push({type: 'read_lines', filePath: currentFilePath, startLine, endLine});
             }
         }
         else if(processedLine.startsWith('§J:'))
@@ -102,247 +106,269 @@ export async function parseLuciform(filePath: string, args: string[]): Promise<{
         else if(processedLine.startsWith('§X:'))
         {
             const command = processedLine.substring(3).trim();
-            operations.push({ type: 'shell_command', command });
+            operations.push({type: 'shell_command', command});
             state = 'idle';
         }
         else if(processedLine.startsWith('§D:'))
         {
             const deletePath = processedLine.substring(3).trim();
-            operations.push({ type: 'delete', filePath: deletePath, startLine: 0, endLine: 0 });
+            operations.push({type: 'delete', filePath: deletePath, startLine: 0, endLine: 0});
+            state = 'idle';
+        }
+        else if(processedLine.startsWith('§RI:'))
+        {
+            const ritualContent = processedLine.substring(4).trim();
+            try
+            {
+                const parsedRitual = JSON.parse(ritualContent);
+                operations.push({type: 'ritual_modification_instruction', fichier_a_modifier: parsedRitual.fichier_a_modifier, instruction: parsedRitual.instruction});
+            } catch(e)
+            {
+                console.error(`Erreur de parsing de l'instruction de modification rituelle: ${ e }. Contenu: ${ ritualContent }`);
+            }
             state = 'idle';
         }
         else if(processedLine.startsWith('§M:'))
         {
-            const metaInstruction = processedLine.substring(3).trim();
-            operations.push({ type: 'meta', instruction: metaInstruction });
+            const arcaneContent = processedLine.substring(3).trim();
+            try
+            {
+                const parsedArcane = JSON.parse(arcaneContent);
+                operations.push({type: 'arcane_instruction', fichier_a_modifier: parsedArcane.fichier_a_modifier, instruction: parsedArcane.instruction});
+            } catch(e)
+            {
+                console.error(`Erreur de parsing de l'instruction arcane: ${ e }. Contenu: ${ arcaneContent }`);
+                // Fallback to old behavior if JSON parsing fails
+                operations.push({type: 'arcane_instruction', fichier_a_modifier: '', instruction: arcaneContent});
+            }
             state = 'idle';
         }
         else if(processedLine.startsWith('§P:'))
         {
             const prompt = processedLine.substring(3).trim();
-            operations.push({ type: 'prompt', prompt });
+            operations.push({type: 'prompt', prompt});
             state = 'idle';
         }
         else if(processedLine.startsWith('§G:'))
         {
             const globPattern = processedLine.substring(3).trim();
-            operations.push({ type: 'glob', pattern: globPattern });
+            operations.push({type: 'glob', pattern: globPattern});
             state = 'idle';
         }
         else if(processedLine.startsWith('§W:'))
         {
             const webUrl = processedLine.substring(3).trim();
-            operations.push({ type: 'web_fetch', url: webUrl });
+            operations.push({type: 'web_fetch', url: webUrl});
             state = 'idle';
         }
         else if(processedLine.startsWith('§T:'))
         {
             const testCommand = processedLine.substring(3).trim();
-            operations.push({ type: 'test', command: testCommand });
+            operations.push({type: 'test', command: testCommand});
             state = 'idle';
         }
         else if(processedLine.startsWith('§O:'))
         {
             const output = processedLine.substring(3).trim();
-            operations.push({ type: 'output', content: output });
+            operations.push({type: 'output', content: output});
             state = 'idle';
         }
         else if(processedLine.startsWith('§E:'))
         {
             const error = processedLine.substring(3).trim();
-            operations.push({ type: 'error', message: error });
+            operations.push({type: 'error', message: error});
             state = 'idle';
         }
         else if(processedLine.startsWith('§V:'))
         {
             const variableName = processedLine.substring(3).trim();
-            operations.push({ type: 'variable', name: variableName });
+            operations.push({type: 'variable', name: variableName});
             state = 'idle';
         }
         else if(processedLine.startsWith('§U:'))
         {
             const updateInstruction = processedLine.substring(3).trim();
-            operations.push({ type: 'update', instruction: updateInstruction });
+            operations.push({type: 'update', instruction: updateInstruction});
             state = 'idle';
         }
         else if(processedLine.startsWith('§H:'))
         {
             const helpTopic = processedLine.substring(3).trim();
-            operations.push({ type: 'help', topic: helpTopic });
+            operations.push({type: 'help', topic: helpTopic});
             state = 'idle';
         }
         else if(processedLine.startsWith('§Z:'))
         {
             const debugMessage = processedLine.substring(3).trim();
-            operations.push({ type: 'debug', message: debugMessage });
+            operations.push({type: 'debug', message: debugMessage});
             state = 'idle';
         }
         else if(processedLine.startsWith('§Y:'))
         {
             const yamlContent = processedLine.substring(3).trim();
-            operations.push({ type: 'yaml', content: yamlContent });
+            operations.push({type: 'yaml', content: yamlContent});
             state = 'idle';
         }
         else if(processedLine.startsWith('§K:'))
         {
             const key = processedLine.substring(3).trim();
-            operations.push({ type: 'key', key: key });
+            operations.push({type: 'key', key: key});
             state = 'idle';
         }
         else if(processedLine.startsWith('§Q:'))
         {
             const query = processedLine.substring(3).trim();
-            operations.push({ type: 'query', query: query });
+            operations.push({type: 'query', query: query});
             state = 'idle';
         }
         else if(processedLine.startsWith('§B:'))
         {
             const batch = processedLine.substring(3).trim();
-            operations.push({ type: 'batch', batch: batch });
+            operations.push({type: 'batch', batch: batch});
             state = 'idle';
         }
         else if(processedLine.startsWith('§N:'))
         {
             const note = processedLine.substring(3).trim();
-            operations.push({ type: 'note', note: note });
+            operations.push({type: 'note', note: note});
             state = 'idle';
         }
         else if(processedLine.startsWith('§R:'))
         {
             const raw = processedLine.substring(3).trim();
-            operations.push({ type: 'raw', raw: raw });
+            operations.push({type: 'raw', raw: raw});
             state = 'idle';
         }
         else if(processedLine.startsWith('§C:'))
         {
             const code = processedLine.substring(3).trim();
-            operations.push({ type: 'code', code: code });
+            operations.push({type: 'code', code: code});
             state = 'idle';
         }
         else if(processedLine.startsWith('§D:'))
         {
             const data = processedLine.substring(3).trim();
-            operations.push({ type: 'data', data: data });
+            operations.push({type: 'data', data: data});
             state = 'idle';
         }
         else if(processedLine.startsWith('§F:'))
         {
             const file = processedLine.substring(3).trim();
-            operations.push({ type: 'file', file: file });
+            operations.push({type: 'file', file: file});
             state = 'idle';
         }
         else if(processedLine.startsWith('§G:'))
         {
             const git = processedLine.substring(3).trim();
-            operations.push({ type: 'git', git: git });
+            operations.push({type: 'git', git: git});
             state = 'idle';
         }
         else if(processedLine.startsWith('§H:'))
         {
             const hash = processedLine.substring(3).trim();
-            operations.push({ type: 'hash', hash: hash });
+            operations.push({type: 'hash', hash: hash});
             state = 'idle';
         }
         else if(processedLine.startsWith('§I:'))
         {
             const info = processedLine.substring(3).trim();
-            operations.push({ type: 'info', info: info });
+            operations.push({type: 'info', info: info});
             state = 'idle';
         }
         else if(processedLine.startsWith('§J:'))
         {
             const json = processedLine.substring(3).trim();
-            operations.push({ type: 'json', json: json });
+            operations.push({type: 'json', json: json});
             state = 'idle';
         }
         else if(processedLine.startsWith('§L:'))
         {
             const log = processedLine.substring(3).trim();
-            operations.push({ type: 'log', log: log });
+            operations.push({type: 'log', log: log});
             state = 'idle';
         }
         else if(processedLine.startsWith('§M:'))
         {
             const message = processedLine.substring(3).trim();
-            operations.push({ type: 'message', message: message });
+            operations.push({type: 'message', message: message});
             state = 'idle';
         }
         else if(processedLine.startsWith('§N:'))
         {
             const name = processedLine.substring(3).trim();
-            operations.push({ type: 'name', name: name });
+            operations.push({type: 'name', name: name});
             state = 'idle';
         }
         else if(processedLine.startsWith('§O:'))
         {
             const option = processedLine.substring(3).trim();
-            operations.push({ type: 'option', option: option });
+            operations.push({type: 'option', option: option});
             state = 'idle';
         }
         else if(processedLine.startsWith('§P:'))
         {
             const path = processedLine.substring(3).trim();
-            operations.push({ type: 'path', path: path });
+            operations.push({type: 'path', path: path});
             state = 'idle';
         }
         else if(processedLine.startsWith('§Q:'))
         {
             const question = processedLine.substring(3).trim();
-            operations.push({ type: 'question', question: question });
+            operations.push({type: 'ask_lucie', question: question});
             state = 'idle';
         }
         else if(processedLine.startsWith('§R:'))
         {
             const result = processedLine.substring(3).trim();
-            operations.push({ type: 'result', result: result });
+            operations.push({type: 'result', result: result});
             state = 'idle';
         }
         else if(processedLine.startsWith('§S:'))
         {
             const status = processedLine.substring(3).trim();
-            operations.push({ type: 'status', status: status });
+            operations.push({type: 'status', status: status});
             state = 'idle';
         }
         else if(processedLine.startsWith('§T:'))
         {
             const text = processedLine.substring(3).trim();
-            operations.push({ type: 'text', text: text });
+            operations.push({type: 'text', text: text});
             state = 'idle';
         }
         else if(processedLine.startsWith('§U:'))
         {
             const url = processedLine.substring(3).trim();
-            operations.push({ type: 'url', url: url });
+            operations.push({type: 'url', url: url});
             state = 'idle';
         }
         else if(processedLine.startsWith('§V:'))
         {
             const value = processedLine.substring(3).trim();
-            operations.push({ type: 'value', value: value });
+            operations.push({type: 'value', value: value});
             state = 'idle';
         }
         else if(processedLine.startsWith('§W:'))
         {
             const warning = processedLine.substring(3).trim();
-            operations.push({ type: 'warning', warning: warning });
+            operations.push({type: 'warning', warning: warning});
             state = 'idle';
         }
         else if(processedLine.startsWith('§X:'))
         {
             const xml = processedLine.substring(3).trim();
-            operations.push({ type: 'xml', xml: xml });
+            operations.push({type: 'xml', xml: xml});
             state = 'idle';
         }
         else if(processedLine.startsWith('§Y:'))
         {
             const yes = processedLine.substring(3).trim();
-            operations.push({ type: 'yes', yes: yes });
+            operations.push({type: 'yes', yes: yes});
             state = 'idle';
         }
         else if(processedLine.startsWith('§Z:'))
         {
             const zip = processedLine.substring(3).trim();
-            operations.push({ type: 'zip', zip: zip });
+            operations.push({type: 'zip', zip: zip});
             state = 'idle';
         }
         else if(state === 'in_search')
@@ -358,5 +384,5 @@ export async function parseLuciform(filePath: string, args: string[]): Promise<{
             jsonContent += processedLine + '\n';
         }
     }
-    return { operations, luciePresenceData };
+    return {operations, luciePresenceData};
 }

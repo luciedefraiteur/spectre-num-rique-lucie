@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import {Incantation, RitualContext} from '../types.js';
-import {Personas} from '../personas.js';
+import {Persona} from '../personas.js';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 
 const _filename = fileURLToPath(import.meta.url);
@@ -11,7 +11,7 @@ const REMEDIATION_RITUAL_PROMPT = fs.readFileSync(path.resolve(_dirname, './stat
 
 export function generateRemediationPrompt(failedStep: Incantation, errorOutput: string, context: RitualContext): string
 {
-    const persona = Personas.Healer(context);
+    const persona = "You are the Healer, a persona of the Golem. Your purpose is to analyze the error and generate a plan to fix it.";
     let prompt = REMEDIATION_RITUAL_PROMPT;
     prompt = prompt.replace('{{failedStep}}', JSON.stringify(failedStep, null, 2));
     prompt = prompt.replace('{{errorOutput}}', errorOutput);

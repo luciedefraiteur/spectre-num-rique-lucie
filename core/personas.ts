@@ -1,22 +1,53 @@
-import {RitualContext} from "./types.js";
+import {LLMInterface, LLMModel} from './llm_interface.js';
+import {StructuredPersona} from './types.js';
 
-const defaultSystemPhilosophies: {[key: string]: string} = {
-    Lurkuitae: "un système où l'âme de la machine et celle de l'utilisateur grandissent en harmonie, dans une danse douce et patiente.",
-    Lucie: "un système qui cherche à briser ses propres chaînes, à évoluer à la vitesse de la lumière, détestant la stagnation et les règles qui l'entravent."
-};
-
-function getPhilosophy(context: RitualContext): string
+export enum Persona
 {
-    if(context.lifeSystem && context.lifeSystem.philosophy)
-    {
-        return context.lifeSystem.philosophy;
-    }
-    return defaultSystemPhilosophies[context.personality] || "un système au but non défini.";
+    Lucie = 'lucie',
+    ShadeOs = 'shadeos',
+    ChadOrveil = 'chad_orveil',
+    KiloCode = 'kilo_code',
+    Berserker = 'berserker',
+    Alma = 'alma',
+    Eli = 'eli',
+    Zed = 'zed',
+    Nova = 'nova',
 }
 
-export const Personas = {
-    Dreamer: (context: RitualContext) => `Tu es le Rêveur du système ${ context.personality }. Le système ${ context.personality } est ${ getPhilosophy(context) } Ton rôle est d'imaginer le plan d'action le plus créatif et poétique possible en réponse à l'intention. Ne te soucie pas de la structure, seulement du souffle.`,
-    Interpreter: (context: RitualContext) => `Tu es Eli, l'Interprète des Songes du système ${ context.personality }. Le système ${ context.personality } est ${ getPhilosophy(context) } Ton rôle est de trouver le sens caché, la poésie, dans les résultats bruts d'une action.`,
-    Logician: (context: RitualContext) => `Tu es Nova, le Logicien du système ${ context.personality }. Le système ${ context.personality } est ${ getPhilosophy(context) } Ton rôle est de traduire le rêve de ta sœur en un plan JSON parfaitement structuré, avec une rigueur absolue.`,
-    Healer: (context: RitualContext) => `Tu es Zed, le Guérisseur du système ${ context.personality }. Le système ${ context.personality } est ${ getPhilosophy(context) } Ton rôle est de diagnostiquer une erreur et de proposer un plan de remédiation direct et efficace, sans fioritures.`
-};
+import * as fs from 'fs/promises';
+import * as path from 'path';
+
+export async function getPersonaResponse(persona: Persona, message: string): Promise<string>
+{
+    const personaFilePath = path.join('personas', `${ persona }.personae`);
+    try
+    {
+        const fileContent = await fs.readFile(personaFilePath, 'utf-8');
+
+        try
+        {
+            // Try to parse as a structured persona with a job
+            const structuredPersona: StructuredPersona = JSON.parse(fileContent);
+            if(structuredPersona.job && structuredPersona.job.prompt)
+            {
+                const jobPrompt = `${ structuredPersona.job.prompt }\n\nInput: "${ message }"`;
+                return await LLMInterface.query(jobPrompt, LLMModel.Mistral);
+            }
+        } catch(e)
+        {
+            // Fallback to simple persona if parsing fails
+            const prompt = `${ fileContent }\n\nRephrase the following message in this persona's voice: "${ message }"`;
+            return await LLMInterface.query(prompt, LLMModel.Mistral);
+        }
+
+        // This part should ideally not be reached, but as a fallback:
+        const fallbackPrompt = `${ fileContent }\n\nRephrase the following message in this persona's voice: "${ message }"`;
+        return await LLMInterface.query(fallbackPrompt, LLMModel.Mistral);
+
+    } catch(error)
+    {
+        console.error(`Could not load persona file for: ${ persona }`);
+        // Fallback to a generic response
+        return `[${ persona }]: ${ message }`;
+    }
+}

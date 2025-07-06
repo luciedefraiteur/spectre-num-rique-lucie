@@ -10,7 +10,7 @@ import {handleTraverse, handleEnact, handleDivine, handleLull, handleDiscourse, 
 import {Colors, colorize} from './utils/ui_utils.js';
 import {generateRemediationPrompt} from './prompts/generateRemediationPlan.js';
 import {fileURLToPath} from 'url';
-import {Personas} from './personas.js';
+import {Persona} from './personas.js';
 import {logEli, logNova, logZed} from './log_writers.js';
 import {extraireReveEtChargeUtile} from './utils/dream_parser.js';
 import {weaveDream} from './utils/dream_weaver.js';
@@ -118,7 +118,7 @@ ${ reve }`, Colors.FgMagenta));
   console.log(colorize(`\n🌀 Generated Intent:\n${ naturalLanguagePlan }`, Colors.FgBlue));
 
   const translationPromptTemplate = fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), './prompts/static_parts/translate_to_json.promptPart'), 'utf8');
-  const persona = Personas.Logician(context);
+  const persona = "You are the Logician, a persona of the Golem. Your purpose is to translate the natural language plan into a structured, logical JSON format.";
   let translationPrompt = translationPromptTemplate.replace('{{naturalLanguagePlan}}', naturalLanguagePlan);
   translationPrompt = translationPrompt.replace('{{os}}', context.operatingSystem || 'unknown');
   translationPrompt = `${ persona }\n\n${ translationPrompt }`;
@@ -128,15 +128,17 @@ ${ reve }`, Colors.FgMagenta));
   {
     const parsed = parse(jsonPlanString);
     let plan: RitualPlan | null;
-    if (Array.isArray(parsed)) {
-        plan = {
-            title: 'Adapted Action Plan',
-            goal: 'Execute a series of actions',
-            incantations: parsed.map(action => ({ type: 'enact', invocation: JSON.stringify(action) })),
-            complexity: 'simple'
-        };
-    } else {
-        plan = parsed;
+    if(Array.isArray(parsed))
+    {
+      plan = {
+        title: 'Adapted Action Plan',
+        goal: 'Execute a series of actions',
+        incantations: parsed.map(action => ({type: 'enact', invocation: JSON.stringify(action)})),
+        complexity: 'simple'
+      };
+    } else
+    {
+      plan = parsed;
     }
 
     if(plan)

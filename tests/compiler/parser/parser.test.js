@@ -1,5 +1,0 @@
-import * as assert from 'assert';
-import * as ts from 'typescript';
-import { parse } from '../../../core/compiler/parser.js';
-describe('Compiler Parser', () => { it('devrait parser une simple déclaration de variable TypeScript', () => { const code = "const x: number = 42;"; const ast = parse(code, 'test.ts'); assert.ok(ast, 'L\'AST ne devrait pas être nul'); assert.strictEqual(ast.kind, ts.SyntaxKind.SourceFile, 'Le nœud racine devrait être un SourceFile'); assert.strictEqual(ast.statements.length, 1, 'Il devrait y avoir une seule déclaration'); const statement = ast.statements[0]; assert.strictEqual(statement.kind, ts.SyntaxKind.VariableStatement, 'La déclaration devrait être une VariableStatement'); }); it('devrait parser un fichier JavaScript simple', () => { const code = "var y = \'hello\';"; const ast = parse(code, 'test.js'); assert.ok(ast, 'L\'AST ne devrait pas être nul'); assert.strictEqual(ast.kind, ts.SyntaxKind.SourceFile, 'Le nœud racine devrait être un SourceFile'); assert.strictEqual(ast.statements.length, 1, 'Il devrait y avoir une seule déclaration'); }); });
-//# sourceMappingURL=parser.test.js.map

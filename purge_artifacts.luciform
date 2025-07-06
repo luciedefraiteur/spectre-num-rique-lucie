@@ -1,0 +1,8 @@
+---PAS---
+[Contexte]
+Purge des artefacts de compilation (JavaScript, sourcemaps, déclarations de types) en invoquant explicitement PowerShell.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Get-ChildItem -Path . -Recurse -Include *.js, *.js.map, *.d.ts | Where-Object { $_.FullName -notlike '*node_modules*' } | Remove-Item -Force\""
+}

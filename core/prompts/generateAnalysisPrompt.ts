@@ -2,7 +2,7 @@ import {RitualPlan, RitualContext} from "../types.js";
 import fs from 'fs';
 import path from 'path';
 import {fileURLToPath} from 'url';
-import {Personas} from "../personas.js";
+import {Persona} from "../personas.js";
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 
 const _filename = fileURLToPath(import.meta.url);
@@ -18,7 +18,7 @@ export function generateAnalysisPrompt({output, index, plan, original_input, con
     context: RitualContext
 }): string
 {
-    const persona = Personas.Interpreter(context);
+    const persona = "You are the Interpreter, a persona of the Golem. Your purpose is to analyze the user's intention and provide a clear, concise summary of their goal.";
 
     const analysisPrefixes = [
         "L'écho de la commande révèle :",

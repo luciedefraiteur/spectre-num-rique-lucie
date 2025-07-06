@@ -1,5 +1,5 @@
 import {spawn} from 'child_process';
-import os from 'os';
+import * as os from 'os';
 import {RitualContext} from "./types.js";
 import {generateWaitMessagePrompt} from './prompts/generateWaitMessagePrompt.js';
 
@@ -109,7 +109,7 @@ export class LLMInterface
 
       try
       {
-        const response = await _fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${ geminiApiKey }`, {
+        const response = await _fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${ geminiApiKey }`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -142,7 +142,48 @@ export class LLMInterface
         console.error("Gemini FETCH Error:", err);
         throw new Error(`[Gemini Error: ${ err.message }]`);
       }
-    } else if(actualModel === LLMModel.CodeLlama || actualModel === LLMModel.CodeLlamaCode || actualModel === LLMModel.Llama3 || actualModel === LLMModel.Mistral)
+    } else if(actualModel === LLMModel.Claude)
+    {
+      const apiKey = process.env.CLAUDE_API_KEY;
+      if(!apiKey)
+      {
+        throw new Error('La clé API Claude (CLAUDE_API_KEY) n\'est pas définie dans le fichier .env');
+      }
+      try
+      {
+        const response = await _fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: "claude-3-opus-20240229",
+            max_tokens: 4096,
+            messages: [
+              {role: "user", content: prompt}
+            ]
+          }),
+        });
+
+        if(!response.ok)
+        {
+          const errorBody = await response.text();
+          throw new Error(`Erreur de l'API Claude: ${ response.status } ${ response.statusText } - ${ errorBody }`);
+        }
+
+        const data = await response.json() as any;
+        const fullResponse = data.content[0].text;
+        LLMInterface.cache.set(cacheKey, fullResponse);
+        return fullResponse;
+      } catch(err: any)
+      {
+        console.error("[Erreur Claude Interface]", err);
+        throw new Error(`[Claude Error: ${ err.message }]`);
+      }
+    }
+    else if(actualModel === LLMModel.CodeLlama || actualModel === LLMModel.CodeLlamaCode || actualModel === LLMModel.Llama3 || actualModel === LLMModel.Mistral)
     {
       const isWindows = os.platform() === 'win32';
       const cleanPrompt = escapeJson(prompt);
@@ -157,7 +198,7 @@ export class LLMInterface
             stream: false
           };
 
-          console.log(`[LLMInterface] Envoi de la requête à Ollama pour le modèle ${actualModel}...`);
+          console.log(`[LLMInterface] Envoi de la requête à Ollama pour le modèle ${ actualModel }...`);
           const response = await _fetch('http://127.0.0.1:11434/api/generate', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},

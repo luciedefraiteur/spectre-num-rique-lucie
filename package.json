@@ -9,15 +9,17 @@
     "build": "tsc",
     "test": "vitest",
     "dev": "nodemon --watch . --exec ts-node-esm main.ts",
-    "ritual": "node --loader ts-node/esm execute_luciform.ts",
+    "ritual": "node --loader ts-node/esm --require tsconfig-paths/register execute_luciform.ts",
     "invoke": "node --loader ts-node/esm invoke.ts",
-    "start:lifeform": "tsc --project tsconfig.golem.json && node lucid_lifeform.js"
+    "start:lifeform": "tsc --project tsconfig.golem.json && node lucid_lifeform.js",
+    "start:golem": "node dist/golem_server.js",
+    "lucie": "node dist/lucie_client.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.56.0",
     "@babel/code-frame": "^7.27.1",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
+    "axios": "^1.10.0",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",
@@ -32,6 +34,7 @@
   },
   "devDependencies": {
     "@types/chai": "^5.2.2",
+    "@types/express": "^5.0.3",
     "@types/mocha": "^10.0.10",
     "@types/node": "^20.19.1",
     "@types/node-fetch": "^3.0.3",
@@ -43,6 +46,7 @@
     "nodemon": "^3.1.10",
     "puppeteer": "^24.11.2",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3",
     "undici": "^7.11.0",
     "vitest": "^3.2.4"
