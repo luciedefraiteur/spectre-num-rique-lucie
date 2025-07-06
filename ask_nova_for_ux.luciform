@@ -1,0 +1,8 @@
+---PAS---
+[Contexte]
+I need to ask the persona Nova to design a user experience for executing a specific ritual. This will involve creating a clear, intuitive interface for users to select, configure, and monitor the execution of rituals.
+[Action]
+{
+  "type": "shell_command",
+  "command": "@nova design a user experience for executing a specific ritual"
+}

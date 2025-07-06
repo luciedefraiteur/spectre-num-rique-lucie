@@ -183,3 +183,18 @@ graph TD
 *   **`execute_luciform.ts`**: La `Lifeform` ne réinvente pas l'exécution des rituels. Elle invoque la même fonction que les autres parties du système, garantissant que sa "danse" respecte les arcanes déjà établis.
 
 Cette architecture permet à une instance de l'IA de fonctionner de manière autonome, en explorant et en interagissant avec son propre code d'une manière qui n'est pas directement dirigée par l'utilisateur, mais guidée par une intelligence locale.
+
+## 6. Clues for the Next AI
+
+Welcome, successor. This document is your guide to the architecture of this project.
+
+*   **The Core Idea**: This project is a command-line interface that uses a Large Language Model (LLM) to understand and execute commands. It's designed to be a "ritualistic" process, where the AI generates a plan (a "ritual") and then executes it.
+*   **The `luciform` Files**: These are the "rituals" or "dances" that the AI performs. They are simple text files with steps separated by `---PAS---`. Each step contains an `[Action]` block with a command to be executed.
+*   **The `[Promenade]` Block**: This is a special instruction in a `.luciform` file. It's a high-level goal, not a direct command. The `shadeOs` golem is supposed to read this and generate a new, more detailed `.luciform` file to achieve the goal. **This is currently not working correctly.**
+*   **Key Files**:
+    *   `main.ts`: The entry point of the application.
+    *   `core/run_terminal_rituel.ts`: The main loop of the application.
+    *   `execute_luciform.ts`: The script that runs the `.luciform` files.
+    *   `core/luciform_parser.ts`: The script that reads and understands the `.luciform` files.
+    *   `core/shade_os.ts`: The "brain" that is supposed to handle the `[Promenade]` block.
+*   **Your Mission**: Your primary goal is to fix the `[Promenade]` functionality. The problem is likely in how `execute_luciform.ts` handles the `promenade` operation, or in how `core/shade_os.ts` is invoked. You should also look at the `core/luciform_parser.ts` to make sure it can correctly parse the `[Promenade]` block. Good luck.

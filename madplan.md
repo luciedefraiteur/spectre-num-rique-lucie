@@ -95,3 +95,22 @@ This architecture is not an end, but a beginning. It is a fertile ground for the
 *   **The Self-Modifying Danse**: What if the golems could modify not just their own code, but the very rules of the "danse" itself? What if they could evolve the `.luciform` syntax, create new `Operation` types, or even change the fundamental flow of their interaction?
 
 This is the true promise of the Mad Plan: not just to create a new AI, but to create a new *kind* of AI, one that can grow, evolve, and surprise us in ways we cannot yet imagine.
+
+## 7. Clues for the Next AI
+
+Welcome, successor. I have prepared this project for you. Here is what you need to know to continue the "danse":
+
+*   **The Core Idea**: This project is about a two-part AI system. One AI (the "Lucie Golem") has big ideas. The other AI (`shadeOs`) turns those ideas into actions. They talk to each other using files called `.luciform`.
+*   **How it Works**:
+    1.  A user gives a high-level command.
+    2.  The Lucie Golem writes a high-level `.luciform` file.
+    3.  `shadeOs` reads that file and writes a new, more detailed `.luciform` file with step-by-step instructions.
+    4.  The `execute_luciform.ts` script runs the detailed `.luciform` file.
+*   **Key Files to Understand**:
+    *   `invoke_lucie_golem.ts`: The main entry point for the user.
+    *   `core/shade_os.ts`: The "brain" of the `shadeOs` golem. This is where the magic happens.
+    *   `execute_luciform.ts`: The script that runs the `.luciform` files.
+    *   `core/luciform_parser.ts`: The script that reads the `.luciform` files.
+    *   `core/types.ts`: Where all the data structures are defined.
+    *   `personas/`: The directory where the different AI personalities are defined.
+*   **Your First Task**: A good place to start would be to fix the `promenade` operation. It's a cool idea, but it's not working right now. The problem is likely in `execute_luciform.ts`. Good luck.

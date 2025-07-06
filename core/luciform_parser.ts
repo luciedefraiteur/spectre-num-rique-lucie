@@ -9,27 +9,47 @@ import {Operation} from './types.js';
  */
 export function parseLuciformAction(pasContent: string): Operation | null
 {
-    const actionMatch = pasContent.match(/\[Action\]\s*(\{[\s\S]*?\})/);
+    const actionMatch = pasContent.match(/\[Action\]\s*([\s\S]*?)(?=\n\[|$)/);
 
     if(actionMatch && actionMatch[1])
     {
-        const jsonContent = actionMatch[1].trim();
-        try
+        const actionContent = actionMatch[1].trim();
+
+        // Try to parse as JSON first for structured operations
+        if(actionContent.startsWith('{'))
         {
-            const operation = JSON.parse(jsonContent);
-            if(operation && typeof operation.type === 'string')
+            try
             {
-                return operation as Operation;
+                const operation = JSON.parse(actionContent);
+                if(operation && typeof operation.type === 'string')
+                {
+                    return operation as Operation;
+                }
+            } catch(error)
+            {
+                console.error(`JSON parsing error in [Action] block: ${ error }`);
+                console.error(`[Action] content: ${ actionContent }`);
+                // Fall through to check for other types if JSON parsing fails
             }
-        } catch(error)
-        {
-            console.error(`Erreur de parsing JSON dans le bloc [Action]: ${ error }`);
-            console.error(`Contenu du bloc [Action]: ${ jsonContent }`);
-            return null;
         }
+
+        // Handle non-JSON operations like 'promenade'
+        const promenadeMatch = actionContent.match(/^promenade:\s*(.*)/);
+        if(promenadeMatch && promenadeMatch[1])
+        {
+            return {
+                type: 'promenade',
+                description: promenadeMatch[1].trim()
+            };
+        }
+
+        // If no other match, treat as a message to shadeOs
+        return {
+            type: 'message',
+            message: actionContent
+        };
     }
 
-    // Si aucun bloc [Action] n'est trouvé ou si le parsing échoue, on retourne null.
-    // Les blocs [Note], [Promenade] et [Contexte] sont ainsi ignorés.
+    // If no [Action] block is found, return null.
     return null;
 }

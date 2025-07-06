@@ -70,3 +70,20 @@ This document outlines the current operational flow of the golem, from user comm
 6.  **`core/luciform_parser.ts`**: The executor uses this parser to read the `[Action]` block and parse the JSON string into a structured `Operation` object.
 7.  **`executeOperation()`**: Based on the `type` property of the `Operation` object, this function in `execute_luciform.ts` calls the appropriate function to handle the operation (e.g., `runShellCommand` for a `shell_command` type).
 8.  **Execution**: The final command or operation is executed.
+
+## Clues for the Next AI
+
+Welcome, successor. This document explains the workflow of the golem.
+
+*   **The Core Idea**: The golem takes a natural language command and turns it into a series of actions. This process is orchestrated by a series of scripts that work together.
+*   **The Workflow**:
+    1.  The user gives a command.
+    2.  An "invoke" script (`invoke_shade_os.ts` or `invoke_chad_orveil.ts`) sends the command to the "brain" (`core/shade_os.ts`).
+    3.  The "brain" creates a plan (a `.luciform` file).
+    4.  The `execute_luciform.ts` script runs the plan.
+*   **Key Files**:
+    *   `invoke_shade_os.ts`: The main entry point for the user.
+    *   `core/shade_os.ts`: The "brain" of the golem.
+    *   `execute_luciform.ts`: The script that runs the `.luciform` files.
+    *   `core/luciform_parser.ts`: The script that reads and understands the `.luciform` files.
+*   **Your Mission**: Your main goal is to understand this workflow and how the different scripts interact. The `[Promenade]` block is a key part of this, and it's currently broken. Fixing it will require you to understand this workflow in detail. Good luck.

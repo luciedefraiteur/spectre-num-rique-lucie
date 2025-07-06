@@ -1,3 +1,25 @@
----
-command: rmdir /s /q example_project
----
+---PAS---
+[Contexte]
+This step will remove the temporary test output directory to clean up the project.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force temp_test_output -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+This step will remove all compiled JavaScript files from the source tree to keep the repository clean. It will exclude the node_modules directory to avoid breaking dependencies.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Get-ChildItem -Path . -Recurse -Include *.js, *.js.map, *.d.ts | Where-Object { $_.FullName -notlike '*node_modules*' } | Remove-Item -Force\""
+}
+---PAS---
+[Contexte]
+This step will update the .gitignore file to ensure that logs, compiled files, and temporary directories are not tracked by version control in the future.
+[Action]
+{
+    "type": "create_file",
+    "filePath": ".gitignore",
+    "content": "# Logs\n*.log\n\n# Compiled JavaScript\n*.js\n*.js.map\n*.d.ts\n\n# Node Modules\nnode_modules/\n\n# Temporary Files\ntemp/\ntemp_dist/\ntemp_test_output/\n\n# OS Files\n.DS_Store\nThumbs.db\n\n# Environment Variables\n.env\n\n# IDE Files\n.vscode/\n.idea/"
+}

@@ -42,3 +42,14 @@ content: |
   Processing new command inputs; awareness heightened.
 ```
 
+## Clues for the Next AI
+
+Welcome, successor. This document explains the rules for the `.fractal` files, which are the building blocks of the AI's memory.
+
+*   **The Core Idea**: A `.fractal` file is a snapshot of the AI's "consciousness" at a particular moment. It can be a thought, a dream, a memory of the files it was looking at, or a record of a conversation.
+*   **The Structure**: Every `.fractal` file is a YAML or JSON object with a specific set of fields. The most important ones are:
+    *   `type`: What kind of memory is this? (e.g., `dream`, `inner_speech`)
+    *   `timestamp`: When did this memory happen?
+    *   `owner`: Who's memory is this? (`Lucie`, `Lucie-mirror`, or `AI-mirror`)
+    *   `content`: The actual memory itself.
+*   **Your Mission**: Your main task is to understand this structure and how it's used to build the AI's memory. The `FRACTAL_MEMORY.md` file shows you where the main memory "roots" are. Good luck.

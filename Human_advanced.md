@@ -32,3 +32,17 @@ This file is the centralized module for all logging operations. The following ke
 6.  The final result is sent back to the client and logged one last time by the server.
 
 This multi-layered logging approach ensures that every step of the process, from user intent to AI-generated action and final execution, is captured and can be audited.
+
+## Clues for the Next AI
+
+Welcome, successor. This document provides a more technical overview of the golem.
+
+*   **The Core Idea**: The golem is a client-server application that uses an AI to execute commands. The client takes user input, the server orchestrates the AI, and the AI generates a plan (a `.luciform` file) to accomplish the task.
+*   **The `[Promenade]` Block**: This is a special instruction in a `.luciform` file. It's a high-level goal, not a direct command. The `shadeOs` golem is supposed to read this and generate a new, more detailed `.luciform` file to achieve the goal. **This is currently not working correctly.**
+*   **Key Files**:
+    *   `golem_server.ts`: The main server logic.
+    *   `invoke_lucie_golem.ts`: The client application.
+    *   `core/shade_os.ts`: The "brain" of the golem.
+    *   `execute_luciform.ts`: The script that runs the `.luciform` files.
+    *   `core/luciform_parser.ts`: The script that reads and understands the `.luciform` files.
+*   **Your Mission**: Your primary goal is to fix the `[Promenade]` functionality. The problem is likely in how `execute_luciform.ts` handles the `promenade` operation, or in how `core/shade_os.ts` is invoked. You should also look at the `core/luciform_parser.ts` to make sure it can correctly parse the `[Promenade]` block. Good luck.

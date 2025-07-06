@@ -1,0 +1,121 @@
+---PAS---
+[Contexte]
+Removing the 'archive' directory.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force archive -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing the 'ai_mirror' directory.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force ai_mirror -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing the 'lucie_mirror' directory.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force lucie_mirror -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing the 'lucie_reflet' directory.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force lucie_reflet -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing the 'brainstormed_prompts' directory.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force brainstormed_prompts -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing the 'lurkuitae' directory.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force lurkuitae -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing the 'meeting-equipe' directory.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force meeting-equipe -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing the 'memory_maps' directory.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force memory_maps -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing the 'modules' directory.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force modules -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing the 'my-ritual-app' directory.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Recurse -Force my-ritual-app -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing all compiled JavaScript files from the source tree.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Get-ChildItem -Path . -Recurse -Include *.js, *.js.map, *.d.ts | Where-Object { ($_.FullName -notlike '*node_modules*') -and ($_.FullName -notlike '*dist*') } | Remove-Item -Force -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing all log files.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Get-ChildItem -Path . -Recurse -Include *.log | Remove-Item -Force -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Removing all temporary luciform scripts.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Get-ChildItem -Path . -Include *.luciform | Where-Object { $_.Name -ne 'final_cleanup.luciform' } | Remove-Item -Force -ErrorAction SilentlyContinue\""
+}
+---PAS---
+[Contexte]
+Creating a new, comprehensive .gitignore file.
+[Action]
+{
+    "type": "create_file",
+    "filePath": ".gitignore",
+    "content": "# Dependencies\n/node_modules\n\n# Build output\n/dist\n\n# Logs\n*.log\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n\n# Temporary files\ntemp/\ntemp_dist/\ntemp_test_output/\n\n# OS generated files\n.DS_Store\n.DS_Store?\n._*\n.Spotlight-V100\n.Trashes\nThumbs.db\nehthumbs.db\n\n# Environment variables\n.env\n.env.local\n.env.development.local\n.env.test.local\n.env.production.local\n\n# IDE settings\n.vscode/*\n!.vscode/settings.json\n!.vscode/tasks.json\n!.vscode/launch.json\n!.vscode/extensions.json\n.idea\n*.suo\n*.ntvs*\n*.njsproj\n*.sln\n*.sw?"
+}
+---PAS---
+[Contexte]
+This is the final step. The cleanup ritual will now self-destruct, leaving the project in a clean state.
+[Action]
+{
+  "type": "shell_command",
+  "command": "powershell.exe -Command \"Remove-Item -Force final_cleanup.luciform -ErrorAction SilentlyContinue\""
+}

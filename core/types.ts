@@ -461,6 +461,8 @@ export interface PersonaJobOperation
   inputCommand: string; // The command whose output will be the input for the persona's job
 }
 
+export type Persona = 'lucie' | 'nova' | 'eli' | 'zed' | 'alma' | 'berserker' | 'chronicler' | 'mog';
+
 export type Operation = SearchAndReplace | Insert | Delete | Append | ShellCommand | CreateFile | LlmOperation | JsonData | ReadLines | ArcaneInstruction | Prompt | Glob | WebFetch | Test | Output | ErrorOperation | Variable | Update | Help | Debug | Yaml | Key | Query | Batch | Note | Raw | Code | Data | FileOperation | Git | Hash | Info | Json | Log | Message | Name | Option | Path | Result | Status | Text | Url | Value | Warning | Xml | Yes | Zip | ExecuteTypescriptFile | RitualModificationInstruction | AskLucie | Promenade | PersonaJobOperation;
 
 // --- Personas ---

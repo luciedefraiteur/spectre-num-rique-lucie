@@ -89,3 +89,8 @@ ${ ritual || 'No ritual generated.' }
 `;
     await writeLog(`${ persona }.log`, content);
 }
+
+export async function logRitual(message: string)
+{
+    await writeLog('ritual.log', message);
+}

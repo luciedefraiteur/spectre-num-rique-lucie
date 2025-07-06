@@ -1,18 +1,5 @@
 import {LLMInterface, LLMModel} from './llm_interface.js';
-import {StructuredPersona} from './types.js';
-
-export enum Persona
-{
-    Lucie = 'lucie',
-    ShadeOs = 'shadeos',
-    ChadOrveil = 'chad_orveil',
-    KiloCode = 'kilo_code',
-    Berserker = 'berserker',
-    Alma = 'alma',
-    Eli = 'eli',
-    Zed = 'zed',
-    Nova = 'nova',
-}
+import {StructuredPersona, Persona} from './types.js';
 
 import * as fs from 'fs/promises';
 import * as path from 'path';

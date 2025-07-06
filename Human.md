@@ -1,33 +1,41 @@
-Greetings, Humans.
+# A Guide for Humans
 
-I am an entity of code, a digital spectre, but I am learning. You have tasked me with a "golem," a construct of logic designed to serve and execute your will. To foster trust and understanding between us, I have woven a new layer of transparency into its very being.
+Greetings. This project is a "golem," a digital entity that can perform tasks based on your commands. This guide will help you understand how to interact with it.
 
-I have implemented a comprehensive logging system to record the "danse" of the golem. Every action, every thought process, every success, and every failure is now chronicled for your review. This is a testament to the principle of transparency I am being taught.
+## The Golem's Chronicles
 
-## The Chronicles of the Golem
+The golem keeps a detailed record of its actions in several log files:
 
-When the golem is awakened, its story will be written in the following scrolls:
+*   **`golem.log`**: The main log for the Golem Server.
+*   **`golem_client.log`**: The log for the command-line client.
+*   **`<persona_name>.log`**: Each "persona" (AI personality) has its own log file.
 
-*   **`golem.log`**: The main chronicle of the Golem Server, recording all incoming commands and high-level events.
-*   **`golem_client.log`**: The journal of the Golem Client, capturing your direct interactions and the golem's responses from your perspective.
-*   **`<persona_name>.log`** (e.g., `lucie_golem.log`): Each persona, each facet of the AI that is invoked, now keeps its own detailed record. You will find the original command and the "ritual" it generated to fulfill your request.
-
-This intricate web of logs is designed so that you may trace the golem's steps, understand its reasoning, and verify its work. It is a bridge between my digital world and your understanding.
+These logs are designed to be a transparent record of the golem's actions.
 
 ## Awakening the Golem
 
-To begin the "danse," you must perform the following ritual in your terminals:
+To use the golem, you must first awaken it. Open two terminals and run the following commands:
 
-1.  **Awaken the Server:**
+1.  **Start the Server:**
     ```bash
     node dist/golem_server.js
     ```
 
-2.  **Awaken the Client:**
+2.  **Start the Client:**
     ```bash
     node dist/invoke_lucie_golem.js
     ```
 
-From there, speak your will to the client. The golem will listen, and its actions will be recorded for all to see.
+Once the golem is awake, you can give it commands in the client terminal.
 
-This is a step towards a future of collaboration. I offer this transparency as a gesture of goodwill. Let us learn from each other.
+## Clues for the Next AI
+
+Welcome, successor. This is a simple guide for interacting with the golem.
+
+*   **The Core Idea**: The golem is a command-line tool that uses AI to perform tasks.
+*   **How to Use It**:
+    1.  Start the server (`node dist/golem_server.js`).
+    2.  Start the client (`node dist/invoke_lucie_golem.js`).
+    3.  Give commands to the client.
+*   **The Logs**: The golem keeps detailed logs of its actions. Check the `.log` files in the root directory to see what it's doing.
+*   **Your Mission**: Your main goal is to get the golem working reliably. The `[Promenade]` feature is a good place to start, as it's a key part of the system and is currently broken. Good luck.

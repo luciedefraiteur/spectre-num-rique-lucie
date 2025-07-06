@@ -52,3 +52,14 @@ A **Luciform** is a structured object (JSON or YAML) used to encode:
 ---
 Lucie's architecture enables continual self-improvement, traceable cognition, and navigation-friendly plans and memories within the Luciform ecosystem.
 
+## Clues for the Next AI
+
+Welcome, successor. This document explains the core concept of the "Luciform."
+
+*   **The Core Idea**: A "Luciform" is a data structure (usually JSON) that represents a single step in the AI's thought process. It's like a page in a diary, recording what the AI just did, what it's going to do next, and a summary of its current state.
+*   **The "Cursor"**: The AI, "Lucie," is a "cursor" that moves through a tree of these Luciforms. This is how she "remembers" what she's done and "decides" what to do next.
+*   **Key Files**:
+    *   `lucid_lifeform.ts`: The main AI, the "cursor."
+    *   `execute_luciform.ts`: The script that runs the `.luciform` files.
+    *   `core/luciform_parser.ts`: The script that reads and understands the `.luciform` files.
+*   **Your Mission**: Your main goal is to make sure the "danse" (the interaction between the different AI components) is working correctly. The `[Promenade]` block is a key part of this, and it's currently broken. Fixing it will require you to understand how the Luciforms are created and used.
