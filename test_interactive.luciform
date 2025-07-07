@@ -1,7 +1,0 @@
-§Q:fileName:Quel nom voulez-vous donner au fichier ?
-§Q:fileContent:Quel contenu voulez-vous mettre dans le fichier ?
-§F:$fileName
-<<<<<<< §C
-$fileContent
->>>>>>> §C
-§X:cat $fileName

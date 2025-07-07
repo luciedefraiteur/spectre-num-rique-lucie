@@ -1,9 +1,0 @@
----PAS---
-[Contexte]
-This is a simple test to create a file. This will verify that the 'create_file' operation is working correctly.
-[Action]
-{
-  "type": "create_file",
-  "filePath": "test_file.txt",
-  "content": "Hello, world!"
-}

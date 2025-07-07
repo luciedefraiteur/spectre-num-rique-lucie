@@ -1,3 +1,5 @@
+import { KardiaSphere } from '../types.js';
+
 export interface Operation {
   type: string;
   [key: string]: any; // Allow for other properties like 'description', 'command', etc.
@@ -6,6 +8,7 @@ export interface Operation {
 export interface LuciformDocument {
   type: 'LuciformDocument';
   pas: PasNode[];
+  kardia?: KardiaSphere;
 }
 
 export interface PasNode {

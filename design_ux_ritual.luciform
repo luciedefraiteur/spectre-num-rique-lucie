@@ -1,8 +1,0 @@
----PAS---
-[Contexte]
-I am initiating a 'promenade' to formally task the persona Nova with a design challenge. This ensures the request is processed through the full ritual system, generating a detailed plan and a final artifact.
-[Action]
-{
-  "type": "promenade",
-  "description": "As the persona Nova, design a user experience for executing a specific ritual. The output should be a markdown file named 'ritual_ux_design.md' that details the user flow, interface components, and interaction model."
-}

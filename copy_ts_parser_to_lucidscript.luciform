@@ -1,2 +1,0 @@
----
-§X: powershell.exe -Command "$sourcePath = 'C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\ts_parser\'; $destPath = 'C:\Users\Lucie\git_repositories\spectre_numerique_lucie\projet_lucidScript\'; Get-ChildItem -Path $sourcePath -Filter '*.ts' | Where-Object { $_.Name -notlike '*.test.ts' } | ForEach-Object { Copy-Item -Path $_.FullName -Destination $destPath }"

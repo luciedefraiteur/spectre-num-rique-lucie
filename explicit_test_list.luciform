@@ -1,7 +1,0 @@
----
-file: C:\Users\Lucie\git_repositories\spectre_numerique_lucie\package.json
-<<<<<<< SEARCH
-    "test": "mocha --require ts-node/register --loader ts-node/esm --extensions ts,tsx \"core/**/*.test.ts\"",
-=======
-    "test": "mocha --require ts-node/register/esm C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\ts_parser\parser_advanced.test.ts C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\ts_parser\parser.test.ts C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\ritual_utils.test.ts C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\ollama_auto_correction.test.ts C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\narrative_glitch.test.ts C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\memory_weaver.test.ts C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\emotional_core.test.ts C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\permissive_parser\permissive_parser.test.ts C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\memory.test.ts",
->>>>>>> REPLACE

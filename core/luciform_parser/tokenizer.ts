@@ -70,6 +70,11 @@ export class LuciformTokenizer {
       const startLine = this.line;
       const startColumn = this.column;
 
+      if (this.match('[Kardia]')) {
+        tokens.push({ type: LuciformTokenType.KARDIA_START, value: '[Kardia]', line: startLine, column: startColumn });
+        continue;
+      }
+
       if (this.match('---PAS---')) {
         tokens.push({ type: LuciformTokenType.PAS_SEPARATOR, value: '---PAS---', line: startLine, column: startColumn });
         continue;

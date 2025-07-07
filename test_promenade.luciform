@@ -1,8 +1,0 @@
----PAS---
-[Contexte]
-This is a test promenade to create a simple file.
-[Action]
-{
-  "type": "promenade",
-  "description": "create a file named \"promenade_test_result.txt\" with content \"Promenade executed successfully.\""
-}

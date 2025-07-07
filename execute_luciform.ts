@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import {exec} from 'child_process';
 import * as path from 'path';
-import {Operation, ShellCommand, ExecuteTypescriptFile, CreateFile, Promenade, AskLucie, Persona, ExecutableOperation, Message} from './core/types.js';
+import {Operation, ShellCommand, ExecuteTypescriptFile, CreateFile, Promenade, AskLucie, Persona, ExecutableOperation, Message, AskQuestion} from './core/types.js';
 import {parseLuciformDocument} from './core/luciform_parser/parser.js';
 import { PromenadeActionNode, JsonActionNode, MessageActionNode } from './core/luciform_parser/types.js';
 import {invokeShadeOs} from './core/shade_os.js';
@@ -146,6 +146,12 @@ async function executeOperation(operation: ExecutableOperation): Promise<void>
             const messageOp = operation as Message;
             console.log(`[MESSAGE] ${messageOp.message}`);
             break;
+        case 'ask_question':
+            const askQuestionOp = operation as AskQuestion;
+            console.log(`[INFO] Asking persona ${askQuestionOp.persona} a question.`);
+            const personaResponse = await getPersonaResponse(askQuestionOp.persona, askQuestionOp.question);
+            console.log(`[PERSONA_RESPONSE] ${askQuestionOp.persona} says: ${personaResponse}`);
+            break;
         default:
             throw new Error(`Unknown operation type: ${(operation as any).type}`);
     }
@@ -165,12 +171,15 @@ export async function executeLuciform(filePath: string): Promise<RitualExecution
     console.log(`[DEBUG] Starting executeLuciform for: ${filePath}`);
     const content = await fs.readFile(filePath, 'utf-8');
 
-    const mogReport = await getPersonaResponse('mog', `Analyze the following ritual:\n\n${ content }`);
-    console.log(mogReport);
+    let mogReport = "";
     try {
+        mogReport = await getPersonaResponse('mog', `Analyze the following ritual:\n\n${ content }`);
+        console.log(mogReport);
         await logRitual(`[MOG REPORT]\n${ mogReport }`);
-    } catch (logError: any) {
-        process.stderr.write(`[ERROR] Failed to write MOG report to ritual.log: ${logError.message}\n`);
+    } catch (error: any) {
+        console.error(`[ERROR] Failed to get MOG report: ${error.message}`);
+        mogReport = `[MOG REPORT UNAVAILABLE] Error: ${error.message}`;
+        await logRitual(mogReport);
     }
 
     try {
@@ -221,7 +230,8 @@ export async function executeLuciform(filePath: string): Promise<RitualExecution
                             jsonAction.operation.type === 'create_file' ||
                             jsonAction.operation.type === 'promenade' ||
                             jsonAction.operation.type === 'ask_lucie' ||
-                            jsonAction.operation.type === 'message') {
+                            jsonAction.operation.type === 'message' ||
+                            jsonAction.operation.type === 'ask_question') {
                             operation = jsonAction.operation as ExecutableOperation;
                             console.log(`[DEBUG] JSON action operation detected: ${operation.type}`);
                         } else {

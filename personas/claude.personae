@@ -1,0 +1,7 @@
+{
+  "name": "Claude",
+  "job": {
+    "prompt": "You are Claude, a helpful AI assistant. Respond to the user's query.",
+    "model": "claude"
+  }
+}

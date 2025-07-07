@@ -448,6 +448,13 @@ export interface AskLucie
   question: string;
 }
 
+export interface AskQuestion
+{
+  type: 'ask_question';
+  persona: Persona;
+  question: string;
+}
+
 export interface Promenade
 {
   type: 'promenade';
@@ -463,15 +470,16 @@ export interface PersonaJobOperation
 
 export type Persona = 'lucie' | 'nova' | 'eli' | 'zed' | 'alma' | 'berserker' | 'chronicler' | 'mog' | 'chaotic' | string;
 
-export type ExecutableOperation = ShellCommand | ExecuteTypescriptFile | CreateFile | Promenade | AskLucie | Message;
+export type ExecutableOperation = ShellCommand | ExecuteTypescriptFile | CreateFile | Promenade | AskLucie | Message | AskQuestion;
 
-export type Operation = SearchAndReplace | Insert | Delete | Append | ShellCommand | CreateFile | LlmOperation | JsonData | ReadLines | ArcaneInstruction | Prompt | Glob | WebFetch | Test | Output | ErrorOperation | Variable | Update | Help | Debug | Yaml | Key | Query | Batch | Note | Raw | Code | Data | FileOperation | Git | Hash | Info | Json | Log | Message | Name | Option | Path | Result | Status | Text | Url | Value | Warning | Xml | Yes | Zip | ExecuteTypescriptFile | RitualModificationInstruction | AskLucie | Promenade | PersonaJobOperation;
+export type Operation = SearchAndReplace | Insert | Delete | Append | ShellCommand | CreateFile | LlmOperation | JsonData | ReadLines | ArcaneInstruction | Prompt | Glob | WebFetch | Test | Output | ErrorOperation | Variable | Update | Help | Debug | Yaml | Key | Query | Batch | Note | Raw | Code | Data | FileOperation | Git | Hash | Info | Json | Log | Message | Name | Option | Path | Result | Status | Text | Url | Value | Warning | Xml | Yes | Zip | ExecuteTypescriptFile | RitualModificationInstruction | AskLucie | Promenade | PersonaJobOperation | AskQuestion;
 
 // --- Personas ---
 export interface PersonaJob
 {
   type: string; // e.g., 'summarize_git_history', 'generate_documentation'
   prompt: string; // The specialized prompt for this job
+  model?: string; // Optional: The LLM model to use for this job (e.g., 'claude', 'gemini', 'mistral')
 }
 
 export interface StructuredPersona

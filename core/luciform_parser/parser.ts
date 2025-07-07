@@ -1,5 +1,6 @@
 import { LuciformTokenizer, LuciformTokenType, LuciformToken } from './tokenizer.js';
 import { LuciformDocument, PasNode, ActionNode, PromenadeActionNode, JsonActionNode, MessageActionNode, Operation } from './types.js';
+import { KardiaSphere } from '../types.js';
 
 export function parseLuciformDocument(luciformContent: string): LuciformDocument {
   const tokenizer = new LuciformTokenizer(luciformContent);
@@ -23,6 +24,31 @@ export function parseLuciformDocument(luciformContent: string): LuciformDocument
   const skipNewlines = () => {
     while (peek().type === LuciformTokenType.NEWLINE) {
       consume(LuciformTokenType.NEWLINE);
+    }
+  };
+
+  const parseKardia = (): KardiaSphere | undefined => {
+    if (peek().type !== LuciformTokenType.KARDIA_START) {
+      return undefined;
+    }
+    consume(LuciformTokenType.KARDIA_START);
+    skipNewlines();
+    let kardiaContent = '';
+    while (peek().type !== LuciformTokenType.PAS_SEPARATOR && peek().type !== LuciformTokenType.EOF) {
+      const token = peek();
+      if (token.type === LuciformTokenType.NEWLINE) {
+        consume(LuciformTokenType.NEWLINE);
+        kardiaContent += '\n';
+      } else {
+        kardiaContent += consume(token.type).value;
+      }
+    }
+    try {
+      return JSON.parse(kardiaContent) as KardiaSphere;
+    } catch (error) {
+      console.error(`JSON parsing error in [Kardia] block: ${error}`);
+      console.error(`[Kardia] content: ${kardiaContent}`);
+      return undefined;
     }
   };
 
@@ -85,6 +111,7 @@ export function parseLuciformDocument(luciformContent: string): LuciformDocument
     return { type: 'Pas', content: pasContent.trim(), action: actionNode };
   };
 
+  const kardia = parseKardia();
   const pasNodes: PasNode[] = [];
 
   // Skip any leading newlines in the document
@@ -105,5 +132,5 @@ export function parseLuciformDocument(luciformContent: string): LuciformDocument
     }
   }
 
-  return { type: 'LuciformDocument', pas: pasNodes };
+  return { type: 'LuciformDocument', pas: pasNodes, kardia };
 }

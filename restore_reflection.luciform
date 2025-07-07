@@ -1,7 +1,0 @@
-§F: package.json
-<<<<<<< §S
-    "ritual": "ts-node-esm execute_luciform.ts"
-======= §R
-    "ritual": "node --loader ts-node/esm execute_luciform.ts",
-    "reflect": "node --loader ts-node/esm run_reflection.ts"
->>>>>>> §R
