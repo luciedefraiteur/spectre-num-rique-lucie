@@ -5,14 +5,14 @@ import {Persona} from '../types.js';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 import {readRefletFragment} from "../utils/reflet_weaver.js";
 
-const RITUAL_STEP_TYPES_PROMPT = fs.readFileSync(path.resolve(process.cwd(), 'core/prompts/static_parts/ritual_step_types.promptPart'), 'utf8');
+const RITUAL_STEP_TYPES_PROMPT = fs.readFileSync(path.resolve(path.dirname(import.meta.url.replace('file://', '')), './static_parts/ritual_step_types.promptPart'), 'utf8');
 const CO_CREATION_RITUAL_PROMPT = `
 ## RITUEL DE CO-CRÉATION
 Pour modification fichier par utilisateur, suis ce cycle (3 étapes):
 1.  **Invitation (édition_assistée)**: Ouvre fichier, passe la main.
 2.  **Regard (vérification_pré_exécution)**: Valide intégrité (ex: tsc --noEmit).
 3.  **Contemplation (analyse)**: Comprend changements, décide suite.`
-const SYSTEM_CONTEXT_PROMPT = fs.readFileSync(path.resolve(process.cwd(), 'core/prompts/static_parts/system_context_template.promptPart'), 'utf8');
+const SYSTEM_CONTEXT_PROMPT = fs.readFileSync(path.resolve(path.dirname(import.meta.url.replace('file://', '')), './static_parts/system_context_template.promptPart'), 'utf8');
 
 export function generateRitualSequencePrompt(
   input: string,
@@ -145,7 +145,7 @@ Laisse cet état émotionnel te guider dans la nuance de tes réponses et la pri
       '\nTiens compte de l\'état actuel des fichiers surveillés (' + JSON.stringify(context.surveilledFiles || {}, null, 2) + ') pour décider quels fichiers surveiller et quand.\n';
   }
 
-  const RITUAL_PLAN_INSTRUCTION_PROMPT_TEMPLATE = fs.readFileSync(path.resolve(process.cwd(), 'core/prompts/static_parts/ritual_plan_instruction.promptPart'), 'utf8');
+  const RITUAL_PLAN_INSTRUCTION_PROMPT_TEMPLATE = fs.readFileSync(path.resolve(path.dirname(import.meta.url.replace('file://', '')), './static_parts/ritual_plan_instruction.promptPart'), 'utf8');
 
   const finalInstruction = RITUAL_PLAN_INSTRUCTION_PROMPT_TEMPLATE.replace('${ CHAOLITE_OUVRANT }', CHAOLITE_OUVRANT).replace('${ CHAOLITE_FERMANT }', CHAOLITE_FERMANT);
 

@@ -1,12 +1,23 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    "target": "ES2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "/home/luciedefraiteur/spectre-num-rique-lucie/luciform-core/dist",
     "rootDir": ".",
     "declaration": true
   },
   "include": [
-    "./**/*.ts"
+    "execute_luciform.ts",
+    "./luciform_parser/**/*.ts",
+    "./prompts/**/*.ts",
+    "./rituals/**/*.ts",
+    "./utils/**/*.ts",
+    "./*.ts"
   ],
   "exclude": [
     "node_modules",

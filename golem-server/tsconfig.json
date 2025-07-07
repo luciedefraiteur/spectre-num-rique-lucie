@@ -1,11 +1,8 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": ".",
-    "paths": {
-      "luciform-core/*": ["../luciform-core/dist/*"]
-    }
+    "rootDir": "."
   },
   "include": [
     "golem_server.ts"

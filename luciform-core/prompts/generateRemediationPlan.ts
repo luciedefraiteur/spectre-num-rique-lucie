@@ -4,7 +4,7 @@ import {Incantation, RitualContext} from '../types.js';
 import {Persona} from '../types.js';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 
-const REMEDIATION_RITUAL_PROMPT = fs.readFileSync(path.resolve(process.cwd(), 'core/prompts/static_parts/remediation_ritual.promptPart'), 'utf8');
+const REMEDIATION_RITUAL_PROMPT = fs.readFileSync(path.resolve(path.dirname(import.meta.url.replace('file://', '')), './static_parts/remediation_ritual.promptPart'), 'utf8');
 
 export function generateRemediationPrompt(failedStep: Incantation, errorOutput: string, context: RitualContext): string
 {
