@@ -1,0 +1,8 @@
+---PAS---
+[Contexte]
+This ritual step will clean the 'dist' directory using a PowerShell command.
+[Action]
+{
+  "type": "shell_command",
+  "command": "rd /s /q dist"
+}

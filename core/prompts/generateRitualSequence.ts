@@ -2,7 +2,7 @@ import {RitualContext, RitualPlan} from "../types.js";
 import fs from 'fs';
 import path from 'path';
 import {fileURLToPath} from 'url';
-import {Persona} from "../personas.js";
+import {Persona} from '../types.js';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 import {readRefletFragment} from "../utils/reflet_weaver.js";
 

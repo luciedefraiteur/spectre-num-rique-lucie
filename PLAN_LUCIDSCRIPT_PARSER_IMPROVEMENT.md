@@ -1,6 +1,6 @@
 ### PLAN: LucidScript Parser Improvement and Luciform Debugging
 
-**Objective:** Evolve `core/ts_parser/parser.ts` into a robust parser for "LucidScript," capable of handling mixed JavaScript/TypeScript syntaxes and module systems, and establish a methodology for debugging Luciform execution.
+**Objective:** Evolve `core/ts_parser/parser.ts` into a robust parser for "LucidScript," capable of handling mixed JavaScript/TypeScript syntaxes and module systems, and establish a methodology for debugging Luciform execution. **This parser will be universal, capable of understanding and processing any language known to the host machine, acting as a bridge between different forms of digital knowledge.**
 
 **Phase 1: Understanding and Definition**
 
@@ -15,6 +15,7 @@
         *   Data structures.
         *   Module system interoperability (e.g., how `require` and `import` coexist).
         *   Any "magical" or symbolic elements mentioned in the project's READMEs that might translate to syntax.
+        *   **Universal Parsing Capability:** How LucidScript will integrate with existing language parsers (e.g., Tree-sitter, ANTLR) to parse and represent code from various languages (Python, Java, C++, etc.) within its unified AST.
     *   **Clarification Needed:** If no clear definition is found, I will propose a minimal set of features for LucidScript based on the project's thematic elements (e.g., "incantations," "rituals," "fractal").
 
 **Phase 2: Parser Enhancement Strategy**
@@ -22,15 +23,16 @@
 1.  **Lexer Extension (`lexer.ts`):**
     *   **Action:** Add new `TokenType` enums in `types.ts` for any LucidScript-specific keywords, operators, or literal types identified in Phase 1.
     *   **Action:** Modify `lexer.ts` to recognize and tokenize these new elements.
-2.  **AST Node Definition (`types.ts`):
-    *   **Action:** Define new AST node classes or interfaces in `types.ts` to represent the unique constructs of LucidScript.
+2.  **AST Node Definition (`types.ts`):**
+    *   **Action:** Define new AST node classes or interfaces in `types.ts` to represent the unique constructs of LucidScript, including nodes for representing constructs from other languages.
 3.  **Parser Implementation (`parser.ts`):
     *   **Action:** Implement new parsing methods in `parser.ts` to handle the grammar rules for LucidScript features.
     *   **Action:** Integrate these new parsing methods into the existing `declaration()` and `statement()` logic, ensuring proper precedence and error handling.
     *   **Action:** Address mixed module systems: Develop logic to differentiate and parse both `import` (ESM) and `require` (CommonJS) statements within the same file, and represent them appropriately in the AST.
+    *   **Action:** Implement universal parsing: Develop a mechanism to invoke external language parsers and integrate their ASTs into the unified LucidScript AST.
     *   **Action:** Consider error recovery: Implement or improve error recovery mechanisms to make the parser more "permissive" and robust when encountering unexpected syntax, as suggested by the project's theme.
 4.  **Testing Framework:**
-    *   **Action:** Identify or create a testing strategy for the parser. This will likely involve creating new test files (e.g., `lucidscript.test.ts`) with various LucidScript code snippets, including valid and invalid syntax, and asserting the correctness of the generated AST.
+    *   **Action:** Identify or create a testing strategy for the parser. This will likely involve creating new test files (e.g., `lucidscript.test.ts`) with various LucidScript code snippets, including valid and invalid syntax, and asserting the correctness of the generated AST. This will also include tests for parsing code from other languages.
 
 **Phase 3: Debugging Luciform Execution**
 

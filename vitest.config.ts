@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['tests/compiler/parser/data_pact.test.ts'], // Exécute uniquement ce test
+    include: ['tests/**/*.test.ts'], // Exécute tous les tests dans le dossier tests
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

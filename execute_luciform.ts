@@ -1,13 +1,13 @@
-console.log('[CANARY] The ritual executor is being invoked.');
 import * as fs from 'fs/promises';
 import {exec} from 'child_process';
 import * as path from 'path';
-import {Operation, ShellCommand, ExecuteTypescriptFile, CreateFile, Promenade, AskLucie} from './core/types.js';
-import {parseLuciformAction} from './core/luciform_parser.js';
+import {Operation, ShellCommand, ExecuteTypescriptFile, CreateFile, Promenade, AskLucie, Persona, ExecutableOperation, Message} from './core/types.js';
+import {parseLuciformDocument} from './core/luciform_parser/parser.js';
+import { PromenadeActionNode, JsonActionNode, MessageActionNode } from './core/luciform_parser/types.js';
 import {invokeShadeOs} from './core/shade_os.js';
 import {logRitual} from './core/log_writers.js';
 import {detectedShell} from './core/utils/osHint.js';
-import {Persona, getPersonaResponse} from './core/personas.js';
+import {getPersonaResponse} from './core/personas.js';
 
 // Fonction utilitaire pour exécuter des commandes shell
 import {spawn} from 'child_process';
@@ -68,7 +68,7 @@ async function runShellCommand(command: string): Promise<{stdout: string; stderr
     });
 }
 
-async function executeOperation(operation: Operation): Promise<void>
+async function executeOperation(operation: ExecutableOperation): Promise<void>
 {
     switch(operation.type)
     {
@@ -115,30 +115,18 @@ async function executeOperation(operation: Operation): Promise<void>
             break;
         case 'promenade':
             const promenadeOp = operation as Promenade;
-            await logRitual(`[PROMENADE] Starting promenade: ${ promenadeOp.description }`);
-            const newRitual = await invokeShadeOs(promenadeOp.description, 'lucie', null, null, null);
-            if(newRitual)
-            {
-                await logRitual(`[PROMENADE] Generated sub-ritual:\n--- SUB-RITUAL START ---\n${ newRitual }\n--- SUB-RITUAL END ---`);
-                const tempDir = './temp';
-                await fs.mkdir(tempDir, {recursive: true});
-                const tempFilePath = path.join(tempDir, `__promenade_ritual_${ Date.now() }.luciform`);
-                await fs.writeFile(tempFilePath, newRitual, 'utf-8');
-                // Execute the new ritual in a separate process to ensure it has its own context.
-                const result = await runShellCommand(`node dist/execute_luciform.js ${ tempFilePath }`);
-                if(result.exitCode !== 0)
-                {
-                    await logRitual(`[ERROR] Promenade sub-ritual failed with exit code ${ result.exitCode }.`);
-                } else
-                {
-                    await logRitual(`[PROMENADE] Sub-ritual executed successfully. The result of the promenade is the output of the sub-ritual.`);
-                    // The output of the sub-ritual is the result of the promenade.
-                    // We will assume for now that the sub-ritual creates a file.
-                }
-                await fs.unlink(tempFilePath);
-            } else
-            {
-                await logRitual('[ERROR] shadeOs failed to generate a sub-ritual for the promenade.');
+            await process.stdout.write(`[PROMENADE] Starting promenade: ${ promenadeOp.description }\n`);
+            // Invoke shadeOs to generate a new luciform based on the promenade description
+            const generatedLuciformContent = await invokeShadeOs(promenadeOp.description, 'lucie', null, null, null);
+            if (generatedLuciformContent) {
+                // For now, just log the generated luciform content. In a real scenario,
+                // this would be executed or saved as a new ritual.
+                console.log(`[PROMENADE] ShadeOs generated a new luciform:\n${generatedLuciformContent}`);
+                // Optionally, save the generated luciform to a file
+                await fs.writeFile('generated_promenade_ritual.luciform', generatedLuciformContent, 'utf-8');
+                console.log("Generated promenade ritual saved to generated_promenade_ritual.luciform");
+            } else {
+                await process.stderr.write(`[ERROR] ShadeOs failed to generate a luciform for promenade: ${promenadeOp.description}\n`);
             }
             break;
         case 'ask_lucie':
@@ -154,9 +142,12 @@ async function executeOperation(operation: Operation): Promise<void>
             rl.close();
             // The answer is not used yet, but this completes the conversational loop.
             break;
-        default:
-            console.warn(`Type d'opération non géré: ${ operation.type }`);
+        case 'message':
+            const messageOp = operation as Message;
+            console.log(`[MESSAGE] ${messageOp.message}`);
             break;
+        default:
+            throw new Error(`Unknown operation type: ${(operation as any).type}`);
     }
 }
 
@@ -171,42 +162,128 @@ export interface RitualExecutionStatus
 
 export async function executeLuciform(filePath: string): Promise<RitualExecutionStatus>
 {
+    console.log(`[DEBUG] Starting executeLuciform for: ${filePath}`);
     const content = await fs.readFile(filePath, 'utf-8');
-    const canaryReport = await getPersonaResponse('canary', `Analyze the following ritual:\n\n${ content }`);
-    console.log(canaryReport);
-    await logRitual(`[CANARY REPORT]\n${ canaryReport }`);
 
-    await logRitual(`[RITUAL START] Executing luciform: ${ filePath }`);
-    const pasSeparators = content.split('---PAS---').filter(p => p.trim() !== '');
-    const totalSteps = pasSeparators.length;
+    const mogReport = await getPersonaResponse('mog', `Analyze the following ritual:\n\n${ content }`);
+    console.log(mogReport);
+    try {
+        await logRitual(`[MOG REPORT]\n${ mogReport }`);
+    } catch (logError: any) {
+        process.stderr.write(`[ERROR] Failed to write MOG report to ritual.log: ${logError.message}\n`);
+    }
+
+    try {
+        await logRitual(`[RITUAL START] Executing luciform: ${ filePath }`);
+    } catch (logError: any) {
+        process.stderr.write(`[ERROR] Failed to write RITUAL START to ritual.log: ${logError.message}\n`);
+    }
+
+    const luciformDocument = parseLuciformDocument(content);
+    const totalSteps = luciformDocument.pas.length;
     let completedSteps = 0;
 
     for(let i = 0; i < totalSteps; i++)
     {
-        const pasContent = pasSeparators[i];
+        const pas = luciformDocument.pas[i];
         const currentStep = i + 1;
-        await logRitual(`\n[STEP ${ currentStep } / ${ totalSteps }] Processing...`);
+        console.log(`[DEBUG] Processing step ${currentStep}/${totalSteps}`);
+        try {
+            await logRitual(`\n[STEP ${ currentStep } / ${ totalSteps }] Processing...`);
+        } catch (logError: any) {
+            process.stderr.write(`[ERROR] Failed to write STEP Processing log: ${logError.message}\n`);
+        }
 
         try
         {
-            const operation = parseLuciformAction(pasContent);
-            if(operation)
+            if(pas.action)
             {
-                await logRitual(`[OPERATION] Found operation of type: ${ operation.type }`);
-                await executeOperation(operation);
-                completedSteps++;
-                await logRitual(`[STEP ${ currentStep } / ${ totalSteps }] Completed successfully.`);
+                let operation: ExecutableOperation | null = null;
+                switch (pas.action.type) {
+                    case 'promenade':
+                        const promenadeAction = pas.action as PromenadeActionNode;
+                        operation = { type: 'promenade', description: promenadeAction.description } as Promenade;
+                        console.log(`[DEBUG] Promenade operation detected: ${promenadeAction.description}`);
+                        const generatedLuciformContent = await invokeShadeOs(promenadeAction.description, 'lucie', null, null, null);
+                        if (generatedLuciformContent) {
+                            console.log(`[DEBUG] ShadeOs generated luciform content. Length: ${generatedLuciformContent.length}`);
+                            await fs.writeFile('generated_promenade_ritual.luciform', generatedLuciformContent, 'utf-8');
+                            console.log("Generated promenade ritual saved to generated_promenade_ritual.luciform");
+                        } else {
+                            console.error(`[ERROR] ShadeOs failed to generate a luciform for promenade: ${promenadeAction.description}`);
+                        }
+                        break;
+                    case 'json_action':
+                        const jsonAction = pas.action as JsonActionNode;
+                        // Check if the operation is an ExecutableOperation
+                        if (jsonAction.operation.type === 'shell_command' ||
+                            jsonAction.operation.type === 'execute_typescript_file' ||
+                            jsonAction.operation.type === 'create_file' ||
+                            jsonAction.operation.type === 'promenade' ||
+                            jsonAction.operation.type === 'ask_lucie' ||
+                            jsonAction.operation.type === 'message') {
+                            operation = jsonAction.operation as ExecutableOperation;
+                            console.log(`[DEBUG] JSON action operation detected: ${operation.type}`);
+                        } else {
+                            console.warn(`[WARN] Non-executable operation type found in JSON action: ${jsonAction.operation.type}`);
+                        }
+                        break;
+                    case 'message':
+                        const messageAction = pas.action as MessageActionNode;
+                        operation = { type: 'message', message: messageAction.message } as Message;
+                        console.log(`[DEBUG] Message operation detected: ${messageAction.message}`);
+                        break;
+                    default:
+                        throw new Error(`Unknown action type: ${(pas.action as any).type}`);
+                }
+
+                if(operation) {
+                    console.log(`[DEBUG] Executing operation of type: ${operation.type}`);
+                    try {
+                        await logRitual(`[OPERATION] Found operation of type: ${ operation.type }`);
+                    } catch (logError: any) {
+                        process.stderr.write(`[ERROR] Failed to write OPERATION log: ${logError.message}\n`);
+                    }
+                    await executeOperation(operation as ExecutableOperation);
+                    completedSteps++;
+                    try {
+                        await logRitual(`[STEP ${ currentStep } / ${ totalSteps }] Completed successfully.`);
+                    } catch (logError: any) {
+                        process.stderr.write(`[ERROR] Failed to write STEP Completed log: ${logError.message}\n`);
+                    }
+                } else {
+                    console.warn(`[DEBUG] No operation to execute for step ${currentStep}`);
+                    try {
+                        await logRitual(`[WARN] No valid operation derived from action in step ${ currentStep }`);
+                    } catch (logError: any) {
+                        process.stderr.write(`[ERROR] Failed to write WARN log: ${logError.message}\n`);
+                    }
+                }
             } else
             {
-                await logRitual(`[WARN] No valid action found in step ${ currentStep }`);
+                console.warn(`[DEBUG] No action block found for step ${currentStep}`);
+                try {
+                    await logRitual(`[WARN] No action block found in step ${ currentStep }`);
+                } catch (logError: any) {
+                    process.stderr.write(`[ERROR] Failed to write WARN log: ${logError.message}\n`);
+                }
             }
         } catch(error: any)
         {
             const errorMessage = `Error during step ${ currentStep }: ${ error.message }`;
-            await logRitual(`[ERROR] ${ errorMessage }`);
+            console.error(`[DEBUG] Error caught in step ${currentStep}: ${errorMessage}`);
+            try {
+                await logRitual(`[ERROR] ${ errorMessage }`);
+            } catch (logError: any) {
+                process.stderr.write(`[ERROR] Failed to write ERROR log: ${logError.message}\n`);
+            }
             const finalReport = await getPersonaResponse('mog', `The ritual has failed. Please provide a final report based on the following status: ${ JSON.stringify({success: false, completedSteps, totalSteps, failedStep: currentStep, error: errorMessage}, null, 2) }`);
             console.log(finalReport);
-            await logRitual(`[MOG FINAL REPORT]\n${ finalReport }`);
+            try {
+                await logRitual(`[MOG FINAL REPORT]\n${ finalReport }`);
+            } catch (logError: any) {
+                process.stderr.write(`[ERROR] Failed to write MOG FINAL REPORT log: ${logError.message}\n`);
+            }
             return {
                 success: false,
                 completedSteps,
@@ -217,10 +294,19 @@ export async function executeLuciform(filePath: string): Promise<RitualExecution
         }
     }
 
-    await logRitual(`\n[RITUAL SUCCESS] All ${ totalSteps } steps completed successfully.`);
+    console.log(`[DEBUG] All steps processed. Finalizing ritual.`);
+    try {
+        await logRitual(`\n[RITUAL SUCCESS] All ${ totalSteps } steps completed successfully.`);
+    } catch (logError: any) {
+        process.stderr.write(`[ERROR] Failed to write RITUAL SUCCESS log: ${logError.message}\n`);
+    }
     const finalReport = await getPersonaResponse('mog', `The ritual has finished. Please provide a final report based on the following status: ${ JSON.stringify({success: true, completedSteps, totalSteps}, null, 2) }`);
     console.log(finalReport);
-    await logRitual(`[MOG FINAL REPORT]\n${ finalReport }`);
+    try {
+        await logRitual(`[MOG FINAL REPORT]\n${ finalReport }`);
+    } catch (logError: any) {
+        process.stderr.write(`[ERROR] Failed to write MOG FINAL REPORT log: ${logError.message}\n`);
+    }
     return {
         success: true,
         completedSteps,

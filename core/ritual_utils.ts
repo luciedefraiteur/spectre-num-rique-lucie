@@ -10,7 +10,7 @@ import {handleTraverse, handleEnact, handleDivine, handleLull, handleDiscourse, 
 import {Colors, colorize} from './utils/ui_utils.js';
 import {generateRemediationPrompt} from './prompts/generateRemediationPlan.js';
 import {fileURLToPath} from 'url';
-import {Persona} from './personas.js';
+import {Persona} from './types.js';
 import {logEli, logNova, logZed} from './log_writers.js';
 import {extraireReveEtChargeUtile} from './utils/dream_parser.js';
 import {weaveDream} from './utils/dream_weaver.js';

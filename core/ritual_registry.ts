@@ -1,7 +1,8 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import {Operation} from './types.js';
-import {parseLuciformAction} from './luciform_parser.js';
+import {Operation, ExecutableOperation} from './types.js';
+import {parseLuciformDocument} from './luciform_parser/parser.js';
+import { LuciformDocument } from './luciform_parser/types.js';
 
 export interface Ritual
 {
@@ -9,7 +10,7 @@ export interface Ritual
     description: string;
     examples: string[];
     golemPrompt: string;
-    operation: Operation | null;
+    operation: ExecutableOperation | null;
     filePath: string;
 }
 
@@ -24,9 +25,35 @@ function parseRitualContent(content: string, filePath: string): Ritual | null
     const pasContentIndex = content.indexOf(pasSeparator);
     const pasContent = pasContentIndex !== -1 ? content.substring(pasContentIndex + pasSeparator.length) : '';
 
-    const operation = parseLuciformAction(pasContent);
+    let operation: ExecutableOperation | null = null;
+    try {
+        const luciformDoc: LuciformDocument = parseLuciformDocument(pasContent);
+        if (luciformDoc.pas.length > 0 && luciformDoc.pas[0].action) {
+            const action = luciformDoc.pas[0].action;
+            if (action.type === 'json_action') {
+                // Check if the operation is an ExecutableOperation
+                if (action.operation.type === 'shell_command' ||
+                    action.operation.type === 'execute_typescript_file' ||
+                    action.operation.type === 'create_file' ||
+                    action.operation.type === 'promenade' ||
+                    action.operation.type === 'ask_lucie' ||
+                    action.operation.type === 'message') {
+                    operation = action.operation as ExecutableOperation;
+                } else {
+                    console.warn(`[WARN] Non-executable operation type found in JSON action: ${action.operation.type}`);
+                }
+            } else if (action.type === 'promenade') {
+                operation = { type: 'promenade', description: action.description };
+            } else if (action.type === 'message') {
+                operation = { type: 'message', message: action.message };
+            }
+        }
+    } catch (e) {
+        console.error(`Error parsing luciform content for ritual ${filePath}:`, e);
+        return null;
+    }
 
-    if(!nameMatch || !descriptionMatch || !golemPromptMatch || !operation)
+    if(!nameMatch || !descriptionMatch || !golemPromptMatch || operation === null)
     {
         return null;
     }
@@ -38,7 +65,7 @@ function parseRitualContent(content: string, filePath: string): Ritual | null
         description: descriptionMatch[1].trim(),
         examples,
         golemPrompt: golemPromptMatch[1].trim(),
-        operation,
+        operation: operation as ExecutableOperation,
         filePath
     };
 }

@@ -1,0 +1,24 @@
+---PAS---
+[Contexte]
+This step demonstrates calling a persona (Lucie) to get her thoughts on the current ritual.
+[Action]
+{
+  "type": "shell_command",
+  "command": "@lucie What are your thoughts on this ritual?"
+}
+---PAS---
+[Contexte]
+This step initiates a promenade, asking ShadeOs to plan a journey to explore the project's documentation.
+[Action]
+{
+  "type": "promenade",
+  "description": "Explore the project's documentation to understand its structure and key concepts."
+}
+---PAS---
+[Contexte]
+This is a placeholder step to indicate the ritual continues after the promenade.
+[Action]
+{
+  "type": "message",
+  "message": "Promenade initiated. Waiting for ShadeOs to complete its journey."
+}

@@ -1,0 +1,9 @@
+---PAS---
+[Contexte]
+Null
+[Action]
+{
+  "type": "create_file",
+  "filePath": "hello.txt",
+  "content": "Hello, World!"
+}

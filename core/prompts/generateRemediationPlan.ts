@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import {Incantation, RitualContext} from '../types.js';
-import {Persona} from '../personas.js';
+import {Persona} from '../types.js';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 
 const _filename = fileURLToPath(import.meta.url);

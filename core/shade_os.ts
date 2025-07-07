@@ -86,6 +86,7 @@ export async function invokeShadeOs(
         }
 
         Now, generate the complete .luciform file content for the command: "${ command }".
+        If the command is a 'promenade' operation, directly translate its 'description' into concrete shell commands or file operations within the .luciform file.
         Output ONLY the raw text for the .luciform file. Do not wrap it in markdown or any other formatting.
     `;
 
@@ -99,6 +100,7 @@ export async function invokeShadeOs(
     }
 
     const llmResponse = await LLMInterface.query(prompt, LLMModel.Mistral);
+    console.log(`[shadeOs] LLM Response: ${llmResponse}`);
     await logPersonaAction(invoker, command, llmResponse);
     return llmResponse;
   } catch(error)
