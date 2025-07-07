@@ -5,8 +5,7 @@
     "rootDir": "."
   },
   "include": [
-    "execute_luciform.ts",
-    "core/**/*.ts"
+    "./**/*.ts"
   ],
   "exclude": [
     "node_modules",

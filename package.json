@@ -14,10 +14,10 @@
     "invoke": "node --loader ts-node/esm invoke.ts",
     "start:lifeform": "tsc --project tsconfig.golem.json && node lucid_lifeform.js",
     "start:golem": "node dist/golem_server.js",
-    "golem-build": "tsc golem_server.ts golem_client.ts core/golem_launcher.ts core/run_terminal_rituel.ts core/ritual_utils.ts core/llm_interface.ts core/personas.ts core/system_handler.ts core/log_writers.ts core/emotional_core.ts core/memory_weaver.ts core/prompts/generateAnalysisPrompt.ts core/prompts/generateRemediationPlan.ts core/prompts/generateRitualSequence.ts core/prompts/generateWelcomeMessagePrompt.ts core/ritual_step_handlers.ts core/utils/dream_parser.ts core/utils/dream_weaver.ts core/utils/json_parser.ts core/utils/osHint.ts core/utils/reflet_weaver.ts core/utils/shell_detector.ts core/types.ts",
     "build:client": "tsc --project tsconfig.client.json",
     "build:server": "tsc --project tsconfig.server.json",
     "build:luciform": "tsc --project tsconfig.luciform.json",
+    "build:all-golem": "npm run build --prefix luciform-core && npm run build --prefix golem-server && npm run build --prefix golem-client",
     "start:golem-interactive": "node -r dotenv/config --experimental-specifier-resolution=node dist/golem_server.js & node -r dotenv/config --experimental-specifier-resolution=node dist/core/golem_launcher.js --interactive > golem_client.log 2>&1",
     "lucie": "node dist/lucie_client.js"
   },

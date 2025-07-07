@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "."
+  },
+  "include": [
+    "golem_client.ts",
+    "golem_launcher.ts",
+    "../luciform-core/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -5,8 +5,8 @@
     "rootDir": "."
   },
   "include": [
-    "golem_client.ts",
-    "core/**/*.ts"
+    "golem-client/golem_client.ts",
+    "golem-client/golem_launcher.ts"
   ],
   "exclude": [
     "node_modules",

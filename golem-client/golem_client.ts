@@ -67,7 +67,6 @@ app.post('/golem/client_action', (async (req: Request, res: Response) => {
 
 app.listen(GOLEM_CLIENT_PORT, () => {
   console.log(`[Golem Client] Client listener active on http://localhost:${GOLEM_CLIENT_PORT}`);
-
 });
 
 async function main(commands: string[] = []) {
@@ -117,9 +116,7 @@ async function processCommand(input: string) {
 
     if (executeData.error) {
       console.error("[Golem Client] Error executing ritual:", executeData.error);
-    }
-
-    else {
+    } else {
       console.log("[Golem Client] Ritual execution results:", JSON.stringify(executeData.resultats, null, 2));
     }
 

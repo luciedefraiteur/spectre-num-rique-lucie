@@ -5,8 +5,7 @@
     "rootDir": "."
   },
   "include": [
-    "golem_server.ts",
-    "core/**/*.ts"
+    "golem-server/golem_server.ts"
   ],
   "exclude": [
     "node_modules",

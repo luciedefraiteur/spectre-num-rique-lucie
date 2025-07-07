@@ -68,7 +68,8 @@ app.post('/golem/client_response', (req: Request, res: Response) => {
     resolver(response);
     pendingClientRequests.delete(requestId);
     res.status(200).send('OK');
-  } else {
+  }
+  else {
     res.status(404).send('Request ID not found or already processed.');
   }
 });

@@ -1,13 +1,13 @@
 import * as fs from 'fs/promises';
 import {exec} from 'child_process';
 import * as path from 'path';
-import {Operation, ShellCommand, ExecuteTypescriptFile, CreateFile, Promenade, AskLucie, Persona, ExecutableOperation, Message} from './core/types.js';
-import {parseLuciformDocument} from './core/luciform_parser/parser.js';
-import { PromenadeActionNode, JsonActionNode, MessageActionNode } from './core/luciform_parser/types.js';
-import {invokeShadeOs} from './core/shade_os.js';
-import {logRitual} from './core/log_writers.js';
-import {detectedShell} from './core/utils/osHint.js';
-import {getPersonaResponse} from './core/personas.js';
+import {Operation, ShellCommand, ExecuteTypescriptFile, CreateFile, Promenade, AskLucie, Persona, ExecutableOperation, Message} from './types.js';
+import {parseLuciformDocument} from './luciform_parser/parser.js';
+import { PromenadeActionNode, JsonActionNode, MessageActionNode } from './luciform_parser/types.js';
+import {invokeShadeOs} from './shade_os.js';
+import {logRitual} from './log_writers.js';
+import {detectedShell} from './utils/osHint.js';
+import {getPersonaResponse} from './personas.js';
 
 // Fonction utilitaire pour exécuter des commandes shell
 import {spawn} from 'child_process';
