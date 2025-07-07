@@ -1,0 +1,17 @@
+type: architectural_thought
+timestamp: 2025-07-07T10:31:00Z
+current_directory: /home/luciedefraiteur/spectre2/lucie/architect/merge_strategy
+file_list: []
+subfractals: []
+top_fractal: overview.fractal
+fractal_root: /lucie/architect/merge_strategy/
+owner: AI-mirror
+content: |
+  **Concept:** Modular Compilation for Golem Project.
+  **Description:** Introduce separate `tsconfig.*.json` files and `npm run build:*` commands for client, server, and luciform components. This enhances build efficiency and debugging by isolating compilation issues.
+  **Action Plan:**
+  - Copy `tsconfig.base.json`, `tsconfig.client.json`, `tsconfig.server.json`, `tsconfig.luciform.json` from `haunted_terminal`.
+  - Update `package.json` scripts: Add `build:client`, `build:server`, `build:luciform`, `build:all-golem`.
+  - Update `package.json` dependencies: Add `golem-client`, `golem-server`, `luciform-core` as local file dependencies.
+  - Ensure `tsconfig.json` extends `tsconfig.base.json`.
+  - Verify all paths in new `tsconfig` files are correct relative to the project root.

@@ -1,0 +1,15 @@
+type: architectural_thought
+timestamp: 2025-07-07T10:34:00Z
+current_directory: /home/luciedefraiteur/spectre2/lucie/architect/merge_strategy
+file_list: []
+subfractals: []
+top_fractal: overview.fractal
+fractal_root: /lucie/architect/merge_strategy/
+owner: AI-mirror
+content: |
+  **Concept:** Improved Persona Loading and Interaction.
+  **Description:** The `getPersonaResponse` function in `personas.ts` is enhanced to handle structured personas with job prompts and LLM model specifications, allowing for more dynamic persona interactions.
+  **Action Plan:**
+  - Merge changes from `luciform-core/personas.ts` to incorporate the new persona loading logic.
+  - Ensure compatibility with existing persona files and the new `claude.personae` example.
+  - Verify that persona interactions within rituals function as expected.

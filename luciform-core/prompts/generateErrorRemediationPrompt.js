@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateErrorRemediationPrompt = generateErrorRemediationPrompt;
+function generateErrorRemediationPrompt(_a) {
+    var command = _a.command, commandResult = _a.commandResult, contextHistory = _a.contextHistory, originalInput = _a.originalInput, currentPlan = _a.currentPlan;
+    var remediationPrefixes = [
+        "L'ombre de l'échec plane, mais Lurkuitae discerne une voie :",
+        "Un nœud s'est formé dans le rituel, mais la sagesse nous guide :",
+        "Le chemin est obscurci, mais l'oracle révèle la prochaine étape :",
+        "L'harmonie est rompue, mais un rituel de purification peut la restaurer :",
+        "Face à l'adversité, Lurkuitae propose une nouvelle incantation :"
+    ];
+    var randomPrefix = remediationPrefixes[Math.floor(Math.random() * remediationPrefixes.length)];
+    return "".concat(randomPrefix, "\n\n## Contexte de l'\u00C9chec :\n- Commande ex\u00E9cut\u00E9e : \"").concat(command, "\"\n- R\u00E9sultat de la commande :\n  - Succ\u00E8s : ").concat(commandResult.success, "\n  - Code de sortie : ").concat(commandResult.exitCode, "\n  - Sortie standard (stdout) :\n    \"\"\"\n    ").concat(commandResult.stdout, "\n    \"\"\"\n  - Erreur standard (stderr) :\n    \"\"\"\n    ").concat(commandResult.stderr, "\n    \"\"\"\n  - Message d'erreur syst\u00E8me : \"").concat(commandResult.error || 'N/A', "\"\n\n## Historique du Rituel :\n- Input initial de l'utilisateur : \"").concat(originalInput, "\"\n- Historique des actions pr\u00E9c\u00E9dentes :\n").concat(JSON.stringify(contextHistory, null, 2), "\n\n## Plan Rituel Actuel :\n").concat(JSON.stringify(currentPlan, null, 2), "\n\n## Principes de Rem\u00E9diation :\n1.  **Diagnostic Divinatoire :** Identifie la cause probable de l'\u00E9chec avec une perspicacit\u00E9 accrue (commande introuvable, permissions, syntaxe, d\u00E9pendance manquante, interf\u00E9rence astrale, etc.).\n2.  **Rituel de Purification :** Propose une ou plusieurs \u00E9tapes concr\u00E8tes et cr\u00E9atives pour r\u00E9soudre le probl\u00E8me, pouvant inclure des 'incantations' (commandes), des 'm\u00E9ditations' (attentes), ou des 'consultations' (questions).\n3.  **Guidance Lumineuse :** Si une solution automatique n'est pas possible, guide l'utilisateur avec des instructions claires et inspirantes.\n4.  **Types d'\u00E9tapes :** Utilise les types d'\u00E9tapes disponibles ('commande', 'analyse', 'attente', 'dialogue', 'question', 'r\u00E9ponse', 'changer_dossier', 'v\u00E9rification_pr\u00E9_ex\u00E9cution', 'confirmation_utilisateur', 'g\u00E9n\u00E9ration_code').\n5.  **Minimalisme Sacr\u00E9 :** Le sous-rituel doit \u00EAtre le plus concis et le plus efficace possible, chaque \u00E9tape ayant un but pr\u00E9cis.\n\n## Format de R\u00E9ponse :\nRetourne UNIQUEMENT un JSON valide avec la structure d'un PlanRituel.\nLe \"index\" doit \u00EAtre 0 pour ce sous-rituel de rem\u00E9diation.\nLa \"complexit\u00E9\" doit refl\u00E9ter la difficult\u00E9 de la rem\u00E9diation.\n\n\u26A0\uFE0F Ne retourne QUE le JSON, sans commentaires ni explications suppl\u00E9mentaires.").trim();
+}

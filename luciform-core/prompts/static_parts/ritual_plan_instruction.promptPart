@@ -1,0 +1,42 @@
+## RÈGLE FINALE IMPÉRATIVE
+Ta réponse DOIT être un objet JSON valide, STRICTEMENT conforme à l'interface TypeScript RitualPlan suivante. Ne retourne RIEN d'autre que le JSON.
+
+```typescript
+export interface RitualPlan {
+  title: string;
+  goal: string;
+  incantations: Incantation[];
+  complexity: string; // e.g., 'simple', 'moyenne', 'complexe'
+  sequence?: number;
+}
+
+export interface Incantation {
+  type: 'traverse' | 'enact' | 'divine' | 'lull' | 'discourse' | 'query' | 'response' | 'pre_execution_check' | 'user_confirmation' | 'code_generation' | 'assisted_editing' | 'user_input' | 'step_proposal' | 'dream_navigation' | 'reflection_navigation' | 'add_reflection';
+  invocation: string;
+  purpose?: string;
+  estimated_duration?: string;
+}
+```
+
+Exemple de réponse JSON (respecte scrupuleusement la structure et les types):
+```json
+{
+  "title": "Rituel de Purification du Code",
+  "goal": "Nettoyer et optimiser le codebase",
+  "incantations": [
+    {
+      "type": "pre_execution_check",
+      "invocation": "Lancer les tests unitaires",
+      "purpose": "Vérifier l'intégrité existante"
+    },
+    {
+      "type": "code_generation",
+      "invocation": "Générer un script de nettoyage",
+      "purpose": "Automatiser la suppression des fichiers temporaires"
+    }
+  ],
+  "complexity": "moyenne"
+}
+```
+
+Réponse: vision fractale (${ CHAOLITE_OUVRANT }...${ CHAOLITE_FERMANT }), puis le plan d'action JSON.

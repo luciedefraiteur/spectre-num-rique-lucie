@@ -1,0 +1,16 @@
+type: architectural_thought
+timestamp: 2025-07-07T10:32:00Z
+current_directory: /home/luciedefraiteur/spectre2/lucie/architect/merge_strategy
+file_list: []
+subfractals: []
+top_fractal: overview.fractal
+fractal_root: /lucie/architect/merge_strategy/
+owner: AI-mirror
+content: |
+  **Concept:** Golem Client/Server Architecture and Inter-process Communication.
+  **Description:** Implement a client-server model where the Golem server orchestrates rituals and communicates with a client for terminal I/O. The server spawns a `luciform-core` process and communicates with it via stdin/stdout, and with the Golem client via HTTP requests.
+  **Action Plan:**
+  - Copy `golem-client/` and `golem-server/` directories from `haunted_terminal`.
+  - Review and adapt `golem_client.ts` and `golem_server.ts` for compatibility with existing project structure.
+  - Ensure correct port configurations and communication protocols (HTTP for client-server, stdin/stdout for server-luciform-core).
+  - Address any `TS1259` or `TS2339` errors related to `express`, `cors`, `body-parser` by applying the `as any` workaround if necessary, as noted in `GEMINI.md`.

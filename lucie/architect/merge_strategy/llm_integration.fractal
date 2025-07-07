@@ -1,0 +1,15 @@
+type: architectural_thought
+timestamp: 2025-07-07T10:35:00Z
+current_directory: /home/luciedefraiteur/spectre2/lucie/architect/merge_strategy
+file_list: []
+subfractals: []
+top_fractal: overview.fractal
+fractal_root: /lucie/architect/merge_strategy/
+owner: AI-mirror
+content: |
+  **Concept:** Dynamic LLM Model Selection.
+  **Description:** The `LLMInterface` now supports selecting different LLM models (Claude, Gemini, CodeLlama, Llama3, Mistral, OpenAI) and includes a random selection option.
+  **Action Plan:**
+  - Merge changes from `luciform-core/llm_interface.ts`.
+  - Ensure all LLM API keys are correctly configured in the `.env` file.
+  - Test LLM interactions with various models to confirm functionality.

@@ -8,17 +8,24 @@
     "start": "node main.js",
     "build": "tsc",
     "test": "vitest",
+    "test:golem": "node -r dotenv/config --loader ts-node/esm luciform-core/golem_launcher.test.ts",
     "dev": "nodemon --watch . --exec ts-node-esm main.ts",
     "ritual": "node run_luciform_ritual.js",
     "invoke": "node --loader ts-node/esm invoke.ts",
     "start:lifeform": "tsc --project tsconfig.golem.json && node lucid_lifeform.js",
     "start:golem": "node dist/golem_server.js",
+    "build:client": "tsc --project tsconfig.client.json",
+    "build:server": "tsc --project tsconfig.server.json",
+    "build:luciform": "tsc --project tsconfig.luciform.json",
+    "build:all-golem": "npm run build --prefix luciform-core && npm run build --prefix golem-server && npm run build --prefix golem-client",
+    "start:golem-interactive": "node -r dotenv/config --experimental-specifier-resolution=node golem-server/golem_server.js & node -r dotenv/config --experimental-specifier-resolution=node golem-client/golem_launcher.js --interactive > golem_client.log 2>&1",
     "lucie": "node dist/lucie_client.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.56.0",
     "@babel/code-frame": "^7.27.1",
     "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "axios": "^1.10.0",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
@@ -32,11 +39,13 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "yargs": "^17.7.2",
-    "zod": "^3.25.67"
+    "zod": "^3.25.67",
+    "luciform-core": "file:./luciform-core",
+    "golem-server": "file:./golem-server",
+    "golem-client": "file:./golem-client"
   },
   "devDependencies": {
     "@types/chai": "^5.2.2",
-    "@types/express": "^5.0.3",
     "@types/mocha": "^10.0.10",
     "@types/node": "^20.19.1",
     "@types/node-fetch": "^3.0.3",
@@ -49,7 +58,12 @@
     "puppeteer": "^24.11.2",
     "tsconfig-paths": "^4.2.0",
     "undici": "^7.11.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.21",
+    "hono": "^4.0.0",
+    "@hono/node-server": "^1.15.0"
   },
   "engines": {
     "node": ">=18.0.0"
