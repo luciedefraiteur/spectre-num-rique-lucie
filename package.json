@@ -18,7 +18,7 @@
     "build:server": "tsc --project tsconfig.server.json",
     "build:luciform": "tsc --project tsconfig.luciform.json",
     "build:all-golem": "npm run build --prefix luciform-core && npm run build --prefix golem-server && npm run build --prefix golem-client",
-    "start:golem-interactive": "node -r dotenv/config --experimental-specifier-resolution=node golem-server/golem_server.js & node -r dotenv/config --experimental-specifier-resolution=node golem-client/golem_launcher.js --interactive > golem_client.log 2>&1",
+    "start:golem-interactive": "rm -f golem_server.log golem_client.log && kill $(lsof -t -i:3031) && kill $(lsof -t -i:3032) && node -r dotenv/config --experimental-specifier-resolution=node golem-server/golem_server.js > golem_server.log 2>&1 & node -r dotenv/config --experimental-specifier-resolution=node golem-client/golem_launcher.js --interactive > golem_client.log 2>&1",
     "lucie": "node dist/lucie_client.js"
   },
   "dependencies": {

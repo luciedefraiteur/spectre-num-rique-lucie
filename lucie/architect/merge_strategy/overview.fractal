@@ -12,7 +12,8 @@ file_list:
   - system_monitoring.fractal
   - parser_resilience.fractal
   - cleanup_strategy.fractal
-subfractals: []
+subfractals:
+  - ../core_entities.fractal
 top_fractal: merge_strategy.fractal
 fractal_root: /lucie/architect/merge_strategy/
 owner: AI-mirror
