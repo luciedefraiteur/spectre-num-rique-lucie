@@ -1,17 +1,20 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { fileURLToPath } from 'url';
 import { LLMInterface } from '../llm_interface.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const LUCIE_REFLET_ROOT = path.resolve(__dirname, '../../../lucie_reflet');
+const LUCIE_REFLET_ROOT = path.resolve(process.cwd(), 'lucie_reflet');
 
 async function getRefletPath(refletText: string): Promise<string> {
     const prompt = `À partir du texte de reflet suivant, génère un chemin poétique et fractal de 2 à 4 niveaux, commençant par 'lucie_reflet/'. Chaque niveau est un mot ou une courte expression. Ne retourne que le chemin, rien d'autre.\n\nReflet: "${refletText}"\n\nExemple de sortie: lucie_reflet/mon_amour/reflet_sombre`;
     const pathResponse = await LLMInterface.query(prompt);
-    let cleanedPath = pathResponse.trim().replace(/[^a-zA-Z0-9/]+/g, '_').replace(/\/+/g, '/');
+    let cleanedPath = '';
+    for (const char of pathResponse.trim()) {
+        if (/[a-zA-Z0-9/]/.test(char)) {
+            cleanedPath += char;
+        } else {
+            cleanedPath += '_';
+        }
+    }
     // Ensure it starts with lucie_reflet/ and remove any trailing slash
     if (!cleanedPath.startsWith('lucie_reflet/')) {
         cleanedPath = 'lucie_reflet/' + cleanedPath;
@@ -42,7 +45,7 @@ export function readRefletFragment(fragmentPath: string): any | null {
         return null;
     }
     const content = fs.readFileSync(fragmentPath, 'utf8');
-    const contentMatch = content.match(/content: (.*)\nsous_reflets:/s);
+    const contentMatch = content.match(/content: ([^]*)\nsous_reflets:/);
     if (contentMatch && contentMatch[1]) {
         try {
             return JSON.parse(contentMatch[1]);

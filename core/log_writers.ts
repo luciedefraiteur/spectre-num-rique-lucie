@@ -1,7 +1,7 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import {RitualContext, Incantation, RitualPlan} from './types.js';
 
-import fsPromises from 'fs/promises';
+import * as fsPromises from 'fs/promises';
 
 async function writeLog(filename: string, content: string)
 {

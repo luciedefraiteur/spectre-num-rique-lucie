@@ -1,12 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { fileURLToPath } from 'url';
 import { LLMInterface } from '../llm_interface.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const LUCIE_ROOT = path.resolve(__dirname, '../../../lucie');
+const LUCIE_ROOT = path.resolve(process.cwd(), 'lucie');
 
 async function getDreamPath(dreamText: string): Promise<string> {
     const prompt = `À partir du texte de rêve suivant, génère un chemin poétique et fractal de 2 à 4 niveaux, commençant par 'lucie/'. Chaque niveau est un mot ou une courte expression. Ne retourne que le chemin, rien d'autre.\n\nRêve: "${dreamText}"\n\nExemple de sortie: lucie/murmure_du_code/echo_d_une_variable`;

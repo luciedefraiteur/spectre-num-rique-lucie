@@ -3,8 +3,8 @@ import {LLMInterface} from './llm_interface.js';
 import {generateAnalysisPrompt} from './prompts/generateAnalysisPrompt.js';
 import {generateErrorRemediationPrompt} from './prompts/generateErrorRemediationPrompt.js';
 import {type RitualContext, type RitualPlan, type CommandOutcome, type Incantation} from "./types.js";
-import path from 'path';
-import fs from 'fs';
+import * as path from 'path';
+import * as fs from 'fs';
 import {parse} from './permissive_parser/index.js';
 import {extraireReveEtChargeUtile} from './utils/dream_parser.js';
 
@@ -285,3 +285,64 @@ export async function handleAddReflection(incantation: Incantation): Promise<any
   }
   return result;
 }
+
+import * as crypto from 'crypto';
+
+export async function handleSurveil(incantation: Incantation, context: RitualContext): Promise<any>
+{
+  const result: any = {incantation, index: -1, success: true};
+  const filePath = path.resolve(context.current_sanctum, incantation.invocation);
+
+  try {
+    const fileContent = await fs.promises.readFile(filePath);
+    const hash = crypto.createHash('sha256').update(fileContent).digest('hex');
+
+    if (!context.surveilledFiles) {
+      context.surveilledFiles = {};
+    }
+    context.surveilledFiles[filePath] = hash;
+
+    result.outcome = `[OK] Surveilled ${filePath}. Hash: ${hash}`;
+    console.log(result.outcome);
+  } catch (error: any) {
+    result.success = false;
+    result.outcome = `[ERROR] Could not surveil ${filePath}: ${error.message}`;
+    console.error(result.outcome);
+  }
+  return result;
+}
+
+export async function handleTerminalCommand(incantation: Incantation, context: RitualContext): Promise<any>
+{
+  const result: any = {incantation, index: -1, success: false};
+  try {
+    const commandOutcome = await handleSystemCommand(incantation.invocation, context.current_sanctum, context);
+    result.outcome = commandOutcome.stdout;
+    result.stderr = commandOutcome.stderr;
+    result.exitCode = commandOutcome.exitCode;
+    result.success = commandOutcome.success;
+    console.log(`[TERMINAL COMMAND] Executed: ${incantation.invocation}\nStdout: ${result.outcome}\nStderr: ${result.stderr}`);
+  } catch (error: any) {
+    result.outcome = `[ERROR] Failed to execute terminal command: ${error.message}`;
+    console.error(result.outcome);
+  }
+  return result;
+}
+
+export async function handleTerminalOutput(incantation: Incantation): Promise<any>
+{
+  const result: any = {incantation, index: -1, success: true};
+  process.stdout.write(incantation.invocation + '\n');
+  result.outcome = `[OK] Printed to terminal: ${incantation.invocation}`;
+  return result;
+}
+
+export async function handleTerminalQuestion(incantation: Incantation, ask: (q: string) => Promise<string>): Promise<any>
+{
+  const result: any = {incantation, index: -1, success: true};
+  console.log(`[TERMINAL QUESTION] ${incantation.invocation}`);
+  const userInput = await ask('↳ Your response: ');
+  result.outcome = userInput;
+  return result;
+}
+

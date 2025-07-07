@@ -25,7 +25,11 @@ export type IncantationType =
   | 'step_proposal'
   | 'dream_navigation'
   | 'reflection_navigation'
-  | 'add_reflection';
+  | 'add_reflection'
+  | 'surveil'
+  | 'terminal_command'
+  | 'terminal_output'
+  | 'terminal_question';
 
 export interface Incantation
 {
@@ -128,6 +132,7 @@ export interface RitualContext
   lifeSystem: any;
   luciePresence?: LuciePresence;
   hearLucie?: boolean;
+  surveilledFiles?: { [filePath: string]: string };
 }
 
 

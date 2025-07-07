@@ -2,7 +2,7 @@ import {exec} from 'child_process';
 import {promisify} from 'util';
 import {CommandOutcome, RitualContext} from './types.js';
 import {detectWindowsShell, ShellType} from './utils/shell_detector.js';
-import os from 'os';
+import * as os from 'os';
 import {osHint} from './utils/osHint.js';
 import {OSContext} from './utils/osHint.js';
 

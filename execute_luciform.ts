@@ -19,57 +19,67 @@ async function runShellCommand(command: string): Promise<{stdout: string; stderr
 
     return new Promise((resolve) =>
     {
-        const isWindows = process.platform === 'win32';
-        const shell = isWindows ? 'powershell.exe' : '/bin/sh';
-        const args = isWindows ? ['-Command', command] : ['-c', command];
+        try {
+            const isWindows = process.platform === 'win32';
+            const shell = isWindows ? 'powershell.exe' : '/bin/sh';
+            const args = isWindows ? ['-Command', command] : ['-c', command];
 
-        const child = spawn(shell, args, {
-            stdio: ['pipe', 'pipe', 'pipe'],
-            windowsVerbatimArguments: isWindows
-        });
-
-        let stdout = '';
-        let stderr = '';
-
-        child.stdout.on('data', (data) =>
-        {
-            const output = data.toString();
-            console.log(`[STDOUT] > ${ output.trim() }`);
-            stdout += output;
-        });
-
-        child.stderr.on('data', (data) =>
-        {
-            const output = data.toString();
-            console.error(`[STDERR] > ${ output.trim() }`);
-            stderr += output;
-        });
-
-        child.on('close', (code) =>
-        {
-            console.log(`[SHELL_EXEC] Command finished with exit code: ${ code }`);
-            resolve({
-                stdout,
-                stderr,
-                exitCode: code,
+            const child = spawn(shell, args, {
+                stdio: ['pipe', 'pipe', 'pipe'],
+                windowsVerbatimArguments: isWindows
             });
-        });
 
-        child.on('error', (err) =>
-        {
-            console.error('[FATAL] Failed to start subprocess.', err);
-            stderr += err.message;
+            let stdout = '';
+            let stderr = '';
+
+            child.stdout.on('data', (data) =>
+            {
+                const output = data.toString();
+                console.log(`[STDOUT] > ${ output.trim() }`);
+                stdout += output;
+            });
+
+            child.stderr.on('data', (data) =>
+            {
+                const output = data.toString();
+                console.error(`[STDERR] > ${ output.trim() }`);
+                stderr += output;
+            });
+
+            child.on('close', (code) =>
+            {
+                console.log(`[SHELL_EXEC] Command finished with exit code: ${ code }`);
+                resolve({
+                    stdout,
+                    stderr,
+                    exitCode: code,
+                });
+            });
+
+            child.on('error', (err) =>
+            {
+                console.error('[FATAL] Failed to start subprocess.', err);
+                stderr += err.message;
+                resolve({
+                    stdout,
+                    stderr,
+                    exitCode: 1,
+                });
+            });
+        } catch (error: any) {
+            console.error('[FATAL] Error in runShellCommand:', error);
             resolve({
-                stdout,
-                stderr,
+                stdout: '',
+                stderr: error.message,
                 exitCode: 1,
             });
-        });
+        }
     });
 }
 
 async function executeOperation(operation: ExecutableOperation): Promise<void>
 {
+    console.log(`[EXEC_OP] Executing operation: ${operation.type}`);
     switch(operation.type)
     {
         case 'shell_command':
@@ -81,6 +91,7 @@ async function executeOperation(operation: ExecutableOperation): Promise<void>
                 const parts = shellOp.command.split(' ');
                 const personaName = parts[0].substring(1) as Persona;
                 const message = parts.slice(1).join(' ');
+                console.log(`[EXEC_OP] Invoking persona: ${personaName}`);
                 const personaResponse = await getPersonaResponse(personaName, message);
                 console.log(`[PERSONA] ${ personaName } says: ${ personaResponse }`);
             } else
@@ -117,6 +128,7 @@ async function executeOperation(operation: ExecutableOperation): Promise<void>
             const promenadeOp = operation as Promenade;
             await process.stdout.write(`[PROMENADE] Starting promenade: ${ promenadeOp.description }\n`);
             // Invoke shadeOs to generate a new luciform based on the promenade description
+            console.log(`[EXEC_OP] Invoking shadeOs for promenade: ${promenadeOp.description}`);
             const generatedLuciformContent = await invokeShadeOs(promenadeOp.description, 'lucie', null, null, null);
             if (generatedLuciformContent) {
                 // For now, just log the generated luciform content. In a real scenario,
@@ -141,6 +153,7 @@ async function executeOperation(operation: ExecutableOperation): Promise<void>
             });
             rl.close();
             // The answer is not used yet, but this completes the conversational loop.
+            console.log(`[EXEC_OP] User answered: ${answer}`);
             break;
         case 'message':
             const messageOp = operation as Message;
@@ -149,6 +162,7 @@ async function executeOperation(operation: ExecutableOperation): Promise<void>
         default:
             throw new Error(`Unknown operation type: ${(operation as any).type}`);
     }
+    console.log(`[EXEC_OP] Finished operation: ${operation.type}`);
 }
 
 export interface RitualExecutionStatus

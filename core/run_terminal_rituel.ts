@@ -9,13 +9,12 @@ import {appendToVector, enterReverie} from './memory_weaver.js';
 import {generateWelcomeMessagePrompt} from './prompts/generateWelcomeMessagePrompt.js';
 import {logAlma} from './log_writers.js';
 import {loadAllReflectFragments} from './utils/reflet_weaver.js';
-import fs from 'fs';
+import * as fs from 'fs';
 import * as os from 'os';
 import * as fsPromises from 'fs/promises';
-import path from 'path';
-import {fileURLToPath} from 'url';
+import * as path from 'path';
 
-const _filename = fileURLToPath(import.meta.url);
+const _filename = path.resolve(process.cwd(), 'core/run_terminal_rituel.ts');
 const _dirname = path.dirname(_filename);
 
 export async function runTerminalRitual(context: RitualContext, rl: readline.Interface, ask: (q: string) => Promise<string>, testInputs?: string[], model: LLMModel = LLMModel.Mistral, updateSpectrumContext?: (context: RitualContext) => void): Promise<boolean>

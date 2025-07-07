@@ -3,10 +3,10 @@ import {LLMInterface, LLMModel} from './llm_interface.js';
 import {generateRitualSequencePrompt} from './prompts/generateRitualSequence.js';
 import {generateAnalysisPrompt} from './prompts/generateAnalysisPrompt.js';
 import {type RitualContext, type RitualPlan, type CommandOutcome, type Incantation} from "./types.js";
-import path from 'path';
-import fs from 'fs';
+import * as path from 'path';
+import * as fs from 'fs';
 import {parse} from './permissive_parser/index.js';
-import {handleTraverse, handleEnact, handleDivine, handleLull, handleDiscourse, handleQuery, handleResponse, handlePreExecutionCheck, handleUserConfirmation, handleCodeGeneration, handleUserInput, handleStepProposal, handleAssistedEditing, handleDreamNavigation, handleReflectionNavigation, handleAddReflection} from "./ritual_step_handlers.js";
+import {handleTraverse, handleEnact, handleDivine, handleLull, handleDiscourse, handleQuery, handleResponse, handlePreExecutionCheck, handleUserConfirmation, handleCodeGeneration, handleUserInput, handleStepProposal, handleAssistedEditing, handleDreamNavigation, handleReflectionNavigation, handleAddReflection, handleSurveil, handleTerminalCommand, handleTerminalOutput, handleTerminalQuestion} from "./ritual_step_handlers.js";
 import {Colors, colorize} from './utils/ui_utils.js';
 import {generateRemediationPrompt} from './prompts/generateRemediationPlan.js';
 import {fileURLToPath} from 'url';
@@ -103,8 +103,11 @@ export async function safeQuery(prompt: string, label: string, model?: LLMModel)
 
 export async function generateRitual(input: string, context: RitualContext, model?: LLMModel, analysisResult?: string, startingIndex?: number): Promise<RitualPlan | null>
 {
+  console.log(`[DEBUG] generateRitual called with input: ${input}`);
   const naturalLanguagePrompt = generateRitualSequencePrompt(input, context.scroll.at(-1)?.plan, context.scroll.at(-1)?.plan?.sequence, context, analysisResult, startingIndex);
+  console.log(`[DEBUG] naturalLanguagePrompt generated: ${naturalLanguagePrompt}`);
   const reponseBrute = await safeQuery(naturalLanguagePrompt, 'natural_plan_generation', model);
+  console.log(`[DEBUG] reponseBrute from LLM: ${reponseBrute}`);
   const {reve, chargeUtile: naturalLanguagePlan} = extraireReveEtChargeUtile(reponseBrute);
 
   if(reve)
@@ -115,31 +118,37 @@ export async function generateRitual(input: string, context: RitualContext, mode
 ${ reve }`, Colors.FgMagenta));
   }
 
-  console.log(colorize(`\n🌀 Generated Intent:\n${ naturalLanguagePlan }`, Colors.FgBlue));
+  console.log(colorize(`
+🌀 Generated Intent:
+${ naturalLanguagePlan }`, Colors.FgBlue));
 
-  const translationPromptTemplate = fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), './prompts/static_parts/translate_to_json.promptPart'), 'utf8');
+  const translationPromptTemplate = fs.readFileSync(path.resolve(process.cwd(), 'core/prompts/static_parts/translate_to_json.promptPart'), 'utf8');
   const persona = "You are the Logician, a persona of the Golem. Your purpose is to translate the natural language plan into a structured, logical JSON format.";
   let translationPrompt = translationPromptTemplate.replace('{{naturalLanguagePlan}}', naturalLanguagePlan);
   translationPrompt = translationPrompt.replace('{{os}}', context.operatingSystem || 'unknown');
   translationPrompt = `${ persona }\n\n${ translationPrompt }`;
+  console.log(`[DEBUG] translationPrompt generated: ${translationPrompt}`);
   const jsonPlanString = await safeQuery(translationPrompt, 'json_translation', model);
+  console.log(`[DEBUG] jsonPlanString from LLM: ${jsonPlanString}`);
 
   try
   {
-    const parsed = parse(jsonPlanString);
-    let plan: RitualPlan | null;
-    if(Array.isArray(parsed))
-    {
-      plan = {
-        title: 'Adapted Action Plan',
-        goal: 'Execute a series of actions',
-        incantations: parsed.map(action => ({type: 'enact', invocation: JSON.stringify(action)})),
-        complexity: 'simple'
-      };
-    } else
-    {
-      plan = parsed;
+    console.log(`[DEBUG] Attempting to parse JSON: ${jsonPlanString}`);
+    const parsed = JSON.parse(jsonPlanString);
+
+    // Basic validation against RitualPlan interface
+    if (!parsed || typeof parsed.title !== 'string' || typeof parsed.goal !== 'string' || !Array.isArray(parsed.incantations) || typeof parsed.complexity !== 'string') {
+      throw new Error('Parsed JSON does not conform to RitualPlan interface.');
     }
+
+    // Validate each incantation
+    for (const incantation of parsed.incantations) {
+      if (typeof incantation.type !== 'string' || typeof incantation.invocation !== 'string') {
+        throw new Error('Incantation in RitualPlan does not conform to Incantation interface.');
+      }
+    }
+
+    const plan: RitualPlan = parsed;
 
     if(plan)
     {
@@ -148,7 +157,7 @@ ${ reve }`, Colors.FgMagenta));
     return plan;
   } catch(e: any)
   {
-    console.error(`[FINAL PARSING ERROR] Failed to parse translated JSON plan: ${ e.message || e }. Input: "${ jsonPlanString }"`);
+    console.error(`[PARSER ADAPTER] Impossible d'adapter la sortie du LLM en RitualPlan valide. Sortie brute: ${jsonPlanString}. Erreur: ${e.message || e}`);
     return null;
   }
 }
@@ -171,6 +180,10 @@ const defaultIncantationHandlers = {
   handleDreamNavigation,
   handleReflectionNavigation,
   handleAddReflection,
+  handleSurveil,
+  handleTerminalCommand,
+  handleTerminalOutput,
+  handleTerminalQuestion,
 };
 
 async function _executeSingleIncantation(
@@ -237,6 +250,15 @@ async function _executeSingleIncantation(
       break;
     case 'add_reflection':
       result = await handlers.handleAddReflection(incantation);
+      break;
+    case 'terminal_command':
+      result = await handlers.handleTerminalCommand(incantation, context);
+      break;
+    case 'terminal_output':
+      result = await handlers.handleTerminalOutput(incantation);
+      break;
+    case 'terminal_question':
+      result = await handlers.handleTerminalQuestion(incantation, ask);
       break;
   }
   return result;

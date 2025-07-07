@@ -1,5 +1,5 @@
 import {detectWindowsShell} from './shell_detector.js';
-import os from 'os';
+import * as os from 'os';
 
 const isWindows = os.platform() === 'win32';
 export const detectedShell = isWindows ? detectWindowsShell() : null;

@@ -1,91 +1,78 @@
-import express, {Request, Response} from 'express';
-import {invokeShadeOs} from './core/shade_os.js';
-import {executeLuciform} from './execute_luciform.js';
-import {logGolem} from './core/log_writers.js';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import express, { Request, Response } from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import { getInitialContext, executeRitualPlan, generateRitual } from './core/ritual_utils.js';
+import { RitualContext, RitualPlan, Incantation } from './core/types.js';
+import fetch from 'node-fetch';
 
 const app = express();
-app.use(express.json());
+const port = process.env.GOLEM_PORT || 3031;
+const clientPort = process.env.GOLEM_CLIENT_PORT || 3032;
 
-const PORT = 3000;
+app.use(cors());
+app.use(bodyParser.json());
 
-async function handleCommand(command: string): Promise<{success: boolean; message: string; output: any}>
-{
-    let previousRitual: string | null = null;
-    let previousError: string | null = null;
-    const maxRetries = 3;
-    let retryCount = 0;
-    let currentCommand = command;
-    let finalOutput: any = null;
+const context: RitualContext = getInitialContext();
 
-    while(retryCount < maxRetries)
-    {
-        const luciformContent = await invokeShadeOs(currentCommand, 'lucie_golem_server', previousRitual, previousError, null);
+const pendingClientRequests = new Map<string, (value: string) => void>();
 
-        if(!luciformContent)
-        {
-            const message = "shadeOs could not generate a ritual for this command.";
-            await logGolem(message, 'error');
-            console.error(message);
-            return {success: false, message, output: null};
-        }
+app.post('/golem/rituel', (async (req: Request, res: Response) => {
+  const input: string = req.body.input;
+  if (!input) {
+    return res.status(400).json({ error: 'Input missing' });
+  }
 
-        const tempDir = './temp';
-        await fs.mkdir(tempDir, {recursive: true});
-        const tempFilePath = path.join(tempDir, `__golem_server_ritual_${ Date.now() }.luciform`);
-        await fs.writeFile(tempFilePath, luciformContent, 'utf-8');
+  try {
+    const plan = await generateRitual(input, context);
+    if (!plan) return res.status(500).json({ error: 'Planning error' });
+    res.json({ plan });
+  } catch (err) {
+    res.status(500).json({ error: 'Internal error', details: err });
+  }
+}) as any);
 
-        const status = await executeLuciform(tempFilePath);
-        finalOutput = status; // Capture the last status
+app.post('/golem/execute', (async (req: Request, res: Response) => {
+  const plan: RitualPlan = req.body.plan;
 
-        if(status.success)
-        {
-            const message = "The 'danse' is complete. The golem has fulfilled its purpose.";
-            await logGolem(message);
-            console.log(message);
-            await fs.unlink(tempFilePath);
-            return {success: true, message, output: status};
-        } else
-        {
-            const errorMessage = `The 'danse' has faltered. Attempting to self-correct (${ retryCount + 1 }/${ maxRetries })...`;
-            await logGolem(errorMessage, 'error');
-            console.log(errorMessage);
-            previousRitual = luciformContent;
-            previousError = status.error || 'Unknown error';
-            currentCommand = `The previous ritual failed. Please analyze the error and correct the ritual. The original intention was: "${ currentCommand }"`;
-            retryCount++;
-            await fs.unlink(tempFilePath);
-        }
+  const serverAsk = async (q: string): Promise<string> => {
+    const requestId = Date.now().toString();
+    const incantation: Incantation = { type: 'terminal_question', invocation: q };
+
+    const response = await fetch(`http://localhost:${clientPort}/golem/client_action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ incantation, requestId }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to send question to client: ${response.statusText}`);
     }
 
-    const message = "The 'danse' has failed after multiple attempts. The golem rests.";
-    await logGolem(message, 'error');
-    console.error(message);
-    return {success: false, message, output: finalOutput};
-}
+    return new Promise<string>((resolve) => {
+      pendingClientRequests.set(requestId, resolve);
+    });
+  };
 
-app.post('/command', async (req: Request, res: Response) =>
-{
-    const {command} = req.body;
-    if(!command)
-    {
-        res.status(400).json({error: 'Command is required'});
-        return;
-    }
+  try {
+    const resultats = await executeRitualPlan(plan, context, serverAsk);
+    res.json({ resultats });
+  } catch (err) {
+    res.status(500).json({ error: 'Execution error', details: err });
+  }
+}) as any);
 
-    const logMessage = `Received command: "${ command }"`;
-    await logGolem(logMessage);
-    console.log(logMessage);
-    const result = await handleCommand(command);
-    const resultLogMessage = `Sending result for command "${ command }": ${ JSON.stringify(result) }`;
-    await logGolem(resultLogMessage);
-    res.json(result);
+app.post('/golem/client_response', (req: Request, res: Response) => {
+  const { requestId, response } = req.body;
+  const resolver = pendingClientRequests.get(requestId);
+  if (resolver) {
+    resolver(response);
+    pendingClientRequests.delete(requestId);
+    res.status(200).send('OK');
+  } else {
+    res.status(404).send('Request ID not found or already processed.');
+  }
 });
 
-app.listen(PORT, () =>
-{
-    const startMessage = `Golem Server is listening on port ${ PORT }. The eternal 'danse' has begun.`;
-    logGolem(startMessage);
-    console.log(startMessage);
+app.listen(port, () => {
+  console.log(`[Golem Server] ✨ Listening on http://localhost:${port}`);
 });

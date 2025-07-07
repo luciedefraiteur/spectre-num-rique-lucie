@@ -1,14 +1,11 @@
 import {RitualPlan, RitualContext} from "../types.js";
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import {Persona} from '../types.js';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = path.dirname(_filename);
-
-const ANALYSIS_PROMPT_TEMPLATE = fs.readFileSync(path.resolve(_dirname, './static_parts/analysis_prompt_template.promptPart'), 'utf8');
+const ANALYSIS_PROMPT_TEMPLATE = fs.readFileSync(path.resolve(process.cwd(), 'core/prompts/static_parts/analysis_prompt_template.promptPart'), 'utf8');
 
 export function generateAnalysisPrompt({output, index, plan, original_input, context}: {
     output: string,

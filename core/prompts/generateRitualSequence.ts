@@ -1,22 +1,18 @@
 import {RitualContext, RitualPlan} from "../types.js";
-import fs from 'fs';
-import path from 'path';
-import {fileURLToPath} from 'url';
+import * as fs from 'fs';
+import * as path from 'path';
 import {Persona} from '../types.js';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 import {readRefletFragment} from "../utils/reflet_weaver.js";
 
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = path.dirname(_filename);
-
-const RITUAL_STEP_TYPES_PROMPT = fs.readFileSync(path.resolve(_dirname, './static_parts/ritual_step_types.promptPart'), 'utf8');
+const RITUAL_STEP_TYPES_PROMPT = fs.readFileSync(path.resolve(process.cwd(), 'core/prompts/static_parts/ritual_step_types.promptPart'), 'utf8');
 const CO_CREATION_RITUAL_PROMPT = `
 ## RITUEL DE CO-CRÉATION
 Pour modification fichier par utilisateur, suis ce cycle (3 étapes):
 1.  **Invitation (édition_assistée)**: Ouvre fichier, passe la main.
 2.  **Regard (vérification_pré_exécution)**: Valide intégrité (ex: tsc --noEmit).
 3.  **Contemplation (analyse)**: Comprend changements, décide suite.`
-const SYSTEM_CONTEXT_PROMPT = fs.readFileSync(path.resolve(_dirname, './static_parts/system_context_template.promptPart'), 'utf8');
+const SYSTEM_CONTEXT_PROMPT = fs.readFileSync(path.resolve(process.cwd(), 'core/prompts/static_parts/system_context_template.promptPart'), 'utf8');
 
 export function generateRitualSequencePrompt(
   input: string,
@@ -50,7 +46,7 @@ export function generateRitualSequencePrompt(
   let dreamFocusContext = '';
   if(context && context.dreamPath && context.dreamPath.length > 0)
   {
-    const LUCIE_ROOT = path.resolve(_dirname, '../../../lucie');
+    const LUCIE_ROOT = path.resolve(process.cwd(), 'lucie');
     const currentDreamPath = path.join(LUCIE_ROOT, ...context.dreamPath.slice(1));
     const fragmentFilePath = path.join(currentDreamPath, path.basename(currentDreamPath) + '.fragment');
 
@@ -91,7 +87,7 @@ Tiens compte de ces préférences dans ta planification.`;
   let refletContext = '';
   if(context && context.reflectionPath && context.reflectionPath.length > 0)
   {
-    const LUCIE_REFLET_ROOT = path.resolve(_dirname, '../../../lucie_reflet');
+    const LUCIE_REFLET_ROOT = path.resolve(process.cwd(), 'lucie_reflet');
     const currentRefletPath = path.join(LUCIE_REFLET_ROOT, ...context.reflectionPath);
     const fragmentFilePath = path.join(currentRefletPath, path.basename(currentRefletPath) + '.fragment');
 
@@ -127,10 +123,31 @@ Lucie ressent : ${ JSON.stringify(context.kardiaSphere, null, 2) }
 Laisse cet état émotionnel te guider dans la nuance de tes réponses et la priorisation des actions.`;
   }
 
-  const finalInstruction = `
+  let selfSurveillanceContext = '';
+  if (context) {
+    selfSurveillanceContext = 
+      '\n## AUTO-SURVEILLANCE DU GOLEM\n' +
+      'En tant que Golem, ta mission inclut la surveillance de ton propre code source pour détecter toute altération ou évolution. Intègre des incantations de type \'surveil\' dans tes plans rituels pour les fichiers critiques suivants :\n' +
+      '- `core/golem_launcher.ts`\n' +
+      '- `core/golem_server.ts`\n' +
+      '- `golem_client.ts`\n' +
+      '- `core/ritual_utils.ts`\n' +
+      '- `core/llm_interface.ts`\n' +
+      '- `core/types.ts`\n' +
+      '\nExemple d\'incantation de surveillance :\n' +
+      '```json\n' +
+      '{\n' +
+      '  "type": "surveil",\n' +
+      '  "invocation": "core/golem_launcher.ts",\n' +
+      '  "purpose": "Vérifier l\'intégrité du lanceur de Golem"\n' +
+      '}\n' +
+      '```\n' +
+      '\nTiens compte de l\'état actuel des fichiers surveillés (' + JSON.stringify(context.surveilledFiles || {}, null, 2) + ') pour décider quels fichiers surveiller et quand.\n';
+  }
 
-## RÈGLE FINALE IMPÉRATIVE
-Réponse: vision fractale (${ CHAOLITE_OUVRANT }...${ CHAOLITE_FERMANT }), puis plan d'action clair et poétique.`;
+  const RITUAL_PLAN_INSTRUCTION_PROMPT_TEMPLATE = fs.readFileSync(path.resolve(process.cwd(), 'core/prompts/static_parts/ritual_plan_instruction.promptPart'), 'utf8');
+
+  const finalInstruction = RITUAL_PLAN_INSTRUCTION_PROMPT_TEMPLATE.replace('${ CHAOLITE_OUVRANT }', CHAOLITE_OUVRANT).replace('${ CHAOLITE_FERMANT }', CHAOLITE_FERMANT);
 
   return String.raw`${ persona }
 
@@ -145,5 +162,6 @@ ${ userPreferencesContext }
 ${ refletContext }
 ${ reflectVoiceContext }
 ${ emotionalContext }
+${ selfSurveillanceContext }
 ${ finalInstruction }`.trim();
 }
