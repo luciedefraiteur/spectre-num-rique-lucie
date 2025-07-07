@@ -51,8 +51,6 @@ var LLM = require("./llm_interface.js");
 var readline = require("readline");
 var child_process_1 = require("child_process");
 var net = require("net");
-var fs = require("fs");
-var path = require("path");
 function isPortTaken(port) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -121,9 +119,7 @@ function launchGolem(persona_1, testInputs_1) {
                     console.log('[Golem Launcher] Golem Server is ready.');
                     // Start Golem Client
                     console.log('[Golem Launcher] Starting Golem Client...');
-                    clientProcess_1 = (0, child_process_1.spawn)('node', __spreadArray(['dist/golem_client.js'], clientCommands, true), {
-                        stdio: ['inherit', fs.openSync(path.resolve(process.cwd(), 'golem_client.log'), 'a'), fs.openSync(path.resolve(process.cwd(), 'golem_client.log'), 'a')]
-                    });
+                    clientProcess_1 = (0, child_process_1.spawn)('node', __spreadArray(['dist/golem_client.js'], clientCommands, true), { stdio: 'inherit' });
                     clientProcess_1.on('close', function (code) {
                         console.log("[Golem Client] Exited with code ".concat(code));
                         serverProcess_1.kill(); // Kill server when client exits

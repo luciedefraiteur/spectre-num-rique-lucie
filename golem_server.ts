@@ -16,7 +16,7 @@ const context: RitualContext = getInitialContext();
 
 const pendingClientRequests = new Map<string, (value: string) => void>();
 
-app.post('/golem/rituel', (async (req: Request, res: Response) => {
+app.post('/golem/rituel', async (req: Request, res: Response) => {
   const input: string = req.body.input;
   if (!input) {
     return res.status(400).json({ error: 'Input missing' });
@@ -29,9 +29,9 @@ app.post('/golem/rituel', (async (req: Request, res: Response) => {
   } catch (err) {
     res.status(500).json({ error: 'Internal error', details: err });
   }
-}) as any);
+});
 
-app.post('/golem/execute', (async (req: Request, res: Response) => {
+app.post('/golem/execute', async (req: Request, res: Response) => {
   const plan: RitualPlan = req.body.plan;
 
   const serverAsk = async (q: string): Promise<string> => {
@@ -59,7 +59,7 @@ app.post('/golem/execute', (async (req: Request, res: Response) => {
   } catch (err) {
     res.status(500).json({ error: 'Execution error', details: err });
   }
-}) as any);
+});
 
 app.post('/golem/client_response', (req: Request, res: Response) => {
   const { requestId, response } = req.body;

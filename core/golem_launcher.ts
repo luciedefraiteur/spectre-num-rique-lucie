@@ -54,9 +54,7 @@ export async function launchGolem(persona: Persona, testInputs?: string[], model
 
     // Start Golem Client
     console.log('[Golem Launcher] Starting Golem Client...');
-    const clientProcess = spawn('node', ['dist/golem_client.js', ...clientCommands], {
-      stdio: ['inherit', fs.openSync(path.resolve(process.cwd(), 'golem_client.log'), 'a'), fs.openSync(path.resolve(process.cwd(), 'golem_client.log'), 'a')]
-    });
+    const clientProcess = spawn('node', ['dist/golem_client.js', ...clientCommands], { stdio: 'inherit' });
 
     clientProcess.on('close', (code) => {
       console.log(`[Golem Client] Exited with code ${code}`);
