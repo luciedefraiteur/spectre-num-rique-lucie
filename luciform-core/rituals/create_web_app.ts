@@ -1,4 +1,4 @@
-import { Operation } from '../core_types.js';
+import { Operation } from '../types/base.js';
 
 /**
  * Creates a simple web application with an HTML file and a JavaScript file.

@@ -1,4 +1,4 @@
-import { RitualContext, RitualPlan, LLMModel } from '../core_types.js';
+import { RitualContext, RitualPlan, LLMModel } from '../types/base.js';
 import * as fs from 'fs';
 import * as path from 'path';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";

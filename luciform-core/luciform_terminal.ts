@@ -1,5 +1,5 @@
 import {generateRitual, executeRitualPlan} from './ritual_utils.js';
-import {RitualContext, RitualPlan, LLMModel} from './core_types.js';
+import {RitualContext, RitualPlan, LLMModel} from './types/base.js';
 import * as readline from 'readline';
 import {checkSystemTemperature} from './utils/temperature_monitor.js';
 import {Colors, colorize, displayRitualStepResult, startCursorAnimation, stopCursorAnimation} from './utils/ui_utils.js';
@@ -68,7 +68,7 @@ export async function runTerminalRitual(
     }
 
     // --- Pre-Execution Compilation Check ---
-    const compilationErrors = currentPlan.incantations.filter(inc => inc.type === 'help_request');
+    const compilationErrors = currentPlan.incantations.filter(inc => inc.type === 'divine');
     if (compilationErrors.length > 0) {
       console.error(colorize(`
 ❌ COMPILATION ERROR: The Luciform contains unparseable actions.`, Colors.FgRed));

@@ -1,4 +1,4 @@
-import {RitualContext, RitualPlan, CommandOutcome} from "../core_types.js";
+import {RitualContext, RitualPlan, CommandOutcome} from "../types/base.js";
 
 export function generateErrorRemediationPrompt({
   command,

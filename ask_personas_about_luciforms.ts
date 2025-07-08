@@ -31,15 +31,15 @@ async function askPersonasAboutLuciforms() {
 
   const prompt = `From your perspective, how do you perceive or interpret the concept of a 'luciform'? A luciform is a structured object (like JSON) that represents a single step in an AI's thought process, a record of actions, plans, and memories. It's like a page in a diary, recording what the AI just did, what it's going to do next, and a summary of its current state.`;
 
-  for (const persona of personas as Persona[]) {
+  for (const persona of personas) {
     console.log(`Asking ${persona} about Luciforms...`);
     try {
       const response = await getPersonaResponse(persona, prompt, minimalContext, undefined);
-      insights.push({ persona, response });
+      insights.push({ persona: persona, response });
       console.log(`--- ${persona}'s Insight ---\n${response}\n---------------------------\n`);
     } catch (error: any) {
       console.error(`Error asking ${persona} about Luciforms:`, error.message || error);
-      insights.push({ persona, response: `Error: ${error.message || error}` });
+      insights.push({ persona: persona, response: `Error: ${error.message || error}` });
     }
   }
 

@@ -1,4 +1,4 @@
-import { LLMModel, KardiaSphere, RitualPlan } from './core_types.js';
+import { LLMModel, KardiaSphere, RitualPlan } from './types/base.js';
 
 export interface Persona {
   name: string;

@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { Operation, ExecutableOperation } from './core_types.js';
+import { Operation, ExecutableOperation } from './types/base.js';
 import {parseLuciformDocument} from './luciform_parser/parser.js';
 import { LuciformDocument } from './luciform_parser/types.js';
 
@@ -27,7 +27,7 @@ function parseRitualContent(content: string, filePath: string): Ritual | null
 
     let operation: ExecutableOperation | null = null;
     try {
-        const luciformDoc: LuciformDocument = parseLuciformDocument(pasContent);
+        const luciformDoc: LuciformDocument = parseLuciformDocument(pasContent, async (message: string, logFileName?: string) => { console.log(message); });
         if (luciformDoc.pas.length > 0 && luciformDoc.pas[0].action) {
             const action = luciformDoc.pas[0].action;
             if (action.type === 'json_action') {

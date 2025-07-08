@@ -1,5 +1,5 @@
 import { LLMInterface } from '../llm_interface.js';
-import { RitualContext } from '../core_types.js';
+import { RitualContext } from '../types/base.js';
 import { getCpuTemperature } from './temperature_sensor.js';
 import { Colors, colorize } from './ui_utils.js';
 

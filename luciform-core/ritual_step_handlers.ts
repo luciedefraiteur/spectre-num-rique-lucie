@@ -2,7 +2,7 @@ import {handleSystemCommand} from './system_handler.js';
 import {LLMInterface} from './llm_interface.js';
 import {generateAnalysisPrompt} from './prompts/generateAnalysisPrompt.js';
 import {generateErrorRemediationPrompt} from './prompts/generateErrorRemediationPrompt.js';
-import { Incantation, RitualContext, StepResult, CommandOutcome, LLMModel, Promenade, AskLucie, AskPersona, Message, ShellCommand, CreateFile, ExecuteTypescriptFile, RitualPlan } from './core_types.js';
+import { Incantation, RitualContext, StepResult, CommandOutcome, LLMModel, Promenade, AskLucie, AskPersona, Message, ShellCommand, CreateFile, ExecuteTypescriptFile, RitualPlan } from './types/base.js';
 import * as path from 'path';
 import * as fs from 'fs';
 import {parse} from './permissive_parser/index.js';

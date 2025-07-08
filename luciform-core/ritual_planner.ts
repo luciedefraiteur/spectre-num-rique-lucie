@@ -1,4 +1,4 @@
-import { RitualContext, RitualPlan, LLMModel } from './core_types.js';
+import { RitualContext, RitualPlan, LLMModel } from './types/base.js';
 import { LLMInterface } from './llm_interface.js';
 import { colorize, Colors } from './utils/ui_utils.js';
 import * as readline from 'readline';

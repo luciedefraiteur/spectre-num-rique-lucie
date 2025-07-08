@@ -1,8 +1,8 @@
-import {RitualPlan, RitualContext} from "../core_types.js";
+import {RitualPlan, RitualContext} from "../types/base.js";
 import * as fs from 'fs';
 import * as path from 'path';
 import {fileURLToPath} from 'url';
-import {Persona} from '../core_types.js';
+import {Persona} from '../types/base.js';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 
 const ANALYSIS_PROMPT_TEMPLATE = fs.readFileSync(path.resolve(path.dirname(import.meta.url.replace('file://', '')), './static_parts/analysis_prompt_template.promptPart'), 'utf8');

@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { LLMInterface } from './llm_interface.js';
 import { Persona } from './persona_types.js';
-import { RitualContext, LLMModel } from './core_types.js';
+import { RitualContext, LLMModel } from './types/base.js';
 import { personaLoader } from './persona_loader.js';
 
 const PERSONAS_DIRECTORY = path.resolve(process.cwd(), 'personas');

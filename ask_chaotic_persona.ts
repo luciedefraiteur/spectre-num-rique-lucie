@@ -1,5 +1,5 @@
 import { getPersonaResponse } from './luciform-core/personas.js';
-import { RitualContext } from './luciform-core/core_types.js';
+import { RitualContext } from './luciform-core/types/base.js';
 
 const minimalContext: RitualContext = {
   conduit: { 

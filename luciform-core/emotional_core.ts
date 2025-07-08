@@ -1,4 +1,4 @@
-import { RitualContext, KardiaSphere } from './core_types.js';
+import { RitualContext, KardiaSphere } from './types/base.js';
 import {LLMInterface} from './llm_interface.js';
 
 /**

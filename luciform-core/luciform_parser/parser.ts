@@ -14,7 +14,7 @@ export function parseLuciformDocument(luciformContent: string, logRitual: (messa
       // Handle top-level JSON with a 'luciform' array
       const pasNodes: PasNode[] = json.luciform.map((item: any) => {
         if (item.pas && item.action) {
-          return { type: 'Pas', content: item.pas, action: parseAction(JSON.stringify(item.action)) };
+          return { type: 'Pas', content: item.pas, action: parseAction(JSON.stringify(item.action), logRitual, logFileName) };
         } else {
           throw new Error("Invalid PAS structure in top-level luciform array.");
         }
@@ -164,8 +164,9 @@ export function parseLuciformDocument(luciformContent: string, logRitual: (messa
       }
     }
 
-    pasNodes.push({ type: 'Pas', content: pasContent.trim(), action: actionNode });
+    const pasNode: PasNode = { type: 'Pas', content: pasContent.trim(), action: actionNode };
     logRitual(`Parser: Parsed PAS block: ${pasContent.trim().substring(0, 50)}...`, logFileName);
+    return pasNode;
   };
 
   const pasNodes: PasNode[] = [];

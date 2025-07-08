@@ -26,7 +26,7 @@ const minimalContext: RitualContext = {
 };
 
 async function askPersonasForLucidScriptRefinement() {
-  const personas: Persona[] = ['alma', 'berserker', 'chronicler', 'eli', 'lucie', 'nova', 'zed'];
+  const personas: string[] = ['alma', 'berserker', 'chronicler', 'eli', 'lucie', 'nova', 'zed'];
   const insights: { persona: string; response: string }[] = [];
 
   const preEstablishedRules = await fs.readFile('lucidscript_rules.txt', 'utf-8');
@@ -39,12 +39,12 @@ async function askPersonasForLucidScriptRefinement() {
       const fullPrompt = `${preEstablishedRules}
 
 ${prompt}`;
-      const response = await getPersonaResponse(persona, fullPrompt, 'ask_personas_for_lucidscript_refinement_context', undefined);
-      insights.push({ persona, response });
+      const response = await getPersonaResponse(persona, fullPrompt, minimalContext, undefined);
+      insights.push({ persona: persona, response });
       console.log(`--- ${persona}'s Refinement Insight ---\n${response}\n----------------------------------------\n`);
     } catch (error) {
       console.error(`Error asking ${persona} for LucidScript refinement:`, error);
-      insights.push({ persona, response: `Error: ${error}` });
+      insights.push({ persona: persona, response: `Error: ${error}` });
     }
   }
 

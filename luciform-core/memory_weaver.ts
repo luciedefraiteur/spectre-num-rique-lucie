@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import {LLMInterface} from './llm_interface.js';
-import { RitualContext, VectorInscription, RitualPlan } from './core_types.js';
+import { RitualContext, VectorInscription, RitualPlan } from './types/base.js';
 
 const DEFAULT_MEMORY_ROOT = path.resolve(process.cwd(), 'core', 'mémoire_rituelle');
 

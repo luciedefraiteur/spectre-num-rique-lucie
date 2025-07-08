@@ -1,10 +1,11 @@
-import { RitualContext, RitualPlan } from './core_types.js';
+import { RitualContext, RitualPlan } from './types/base.js';
 import { runTerminalRitual } from './luciform_terminal.js';
 import { parseLuciformDocument } from './luciform_parser/parser.js';
 import { LuciformDocument, JsonActionNode } from './luciform_parser/types.js';
-import { codexLurkuitaeNavigator } from '../../codex-lurkuitae-navigator/dist/index.js';
+import { codexLurkuitaeNavigator } from '../../codex-lurkuitae-navigator/src/codex_lurkuitae_navigator.js';
 import * as fs from 'fs/promises';
 import * as readline from 'readline';
+import * as path from 'path';
 
 export async function orchestrateGolem(luciformPath: string) {
     const rl = readline.createInterface({
@@ -52,11 +53,8 @@ export async function orchestrateGolem(luciformPath: string) {
             goal: `Transmute ${path.basename(luciformPath)} into a Luciform and apply changes.`,
             complexity: "medium",
             incantations: [{
-                type: 'transmute_file',
-                invocation: luciformPath,
-                filePath: luciformPath,
-                originalContent: originalContent,
-                reason: error.message || "Unknown parsing error."
+                type: 'enact',
+                invocation: luciformPath
             }]
         };
         console.log("Orchestrator: Calling runTerminalRitual for transmutation ritual.");

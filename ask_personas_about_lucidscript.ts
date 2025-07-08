@@ -1,5 +1,5 @@
 import { getPersonaResponse } from './luciform-core/personas.js';
-import { RitualContext, Persona } from './luciform-core/core_types.js';
+import { RitualContext, Persona } from './luciform-core/types/base.js';
 import * as fs from 'fs/promises';
 
 const minimalContext: RitualContext = {
@@ -37,7 +37,7 @@ async function askPersonasAboutLucidScript()
     console.log(`Asking ${ persona } about LucidScript...`);
     try
     {
-      const response = await getPersonaResponse(persona.name, prompt, minimalContext, undefined);
+      const response = await getPersonaResponse(persona, prompt, minimalContext, undefined);
       insights.push({persona, response});
       console.log(`--- ${ persona }'s Insight on LucidScript ---
 ${ response }

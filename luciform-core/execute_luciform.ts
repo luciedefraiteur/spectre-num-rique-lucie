@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises';
 import { parseLuciformDocument } from './luciform_parser/parser.js';
-import { ExecutableOperation, Operation } from './core_types.js';
+import { ExecutableOperation, Operation, RitualContext } from './types/base.js';
 import { PromenadeActionNode, JsonActionNode, MessageActionNode, HelpRequestActionNode } from './luciform_parser/types.js';
 import { logRitual } from './log_writers.js';
 import { getPersonaResponse } from './personas.js';
@@ -14,7 +14,30 @@ export interface RitualExecutionStatus {
     error?: string;
 }
 
-const context = 'execute_luciform_context';
+import { RitualContext } from './types/base.js';
+
+const ritualContext: RitualContext = {
+  conduit: {
+    lastIncantation: '', lastOutcome: '', currentSanctum: '', terminalEssence: '', osEssence: '',
+    protoConsciousness: '', support: '', memory: '', state: '', energy: '', glitchFactor: 0,
+    almaInfluence: 0, eliInfluence: 0
+  },
+  kardiaSphere: { agapePhobos: 0, logosPathos: 0, harmoniaEris: 0 },
+  scroll: [],
+  maxScrollLength: 0,
+  incantation_history: [],
+  outcome_history: [],
+  step_results_history: [],
+  narrativeWeaving: {},
+  activeReflection: {},
+  user_preferences: '',
+  chantModeEnabled: false,
+  current_sanctum: '',
+  currentSanctumContent: '',
+  operatingSystem: '',
+  personality: '',
+  lifeSystem: {},
+};
 
 export async function executeLuciform(filePath: string, logFileName: string = 'ritual.log'): Promise<RitualExecutionStatus> {
     console.log(`[DEBUG] Current Working Directory: ${process.cwd()}`);
@@ -37,7 +60,7 @@ export async function executeLuciform(filePath: string, logFileName: string = 'r
     let mogReport = "";
     try {
         console.log("[DEBUG] Getting MOG report...");
-        mogReport = await getPersonaResponse('mog', `Analyze the following ritual:\n\n${content}`, context, undefined);
+        mogReport = await getPersonaResponse('mog', `Analyze the following ritual:\n\n${content}`, ritualContext, undefined);
         console.log(`[DEBUG] MOG Report: ${mogReport}`);
         await logRitual(`[MOG REPORT]\n${mogReport}`);
         console.log("[DEBUG] MOG report successful.");
@@ -53,7 +76,7 @@ export async function executeLuciform(filePath: string, logFileName: string = 'r
         process.stderr.write(`[ERROR] Failed to write RITUAL START to ritual.log: ${logError.message}\n`);
     }
 
-    const luciformDocument = parseLuciformDocument(content, context);
+    const luciformDocument = parseLuciformDocument(content, logRitual);
     const totalSteps = luciformDocument.pas.length;
     let completedSteps = 0;
 
@@ -80,8 +103,8 @@ export async function executeLuciform(filePath: string, logFileName: string = 'r
                             jsonAction.operation.type === 'ask_lucie' ||
                             jsonAction.operation.type === 'message' ||
                             jsonAction.operation.type === 'ask_persona') { // Added ask_persona here
-                            operation = jsonAction.operation;
-                            console.log(`[DEBUG] JSON action operation detected: ${operation.type}`);
+                            operation = jsonAction.operation as Operation;
+                            console.log(`[DEBUG] JSON action operation detected: ${operation!.type}`);
                         } else {
                             console.warn(`[WARN] Non-executable operation type found in JSON action: ${jsonAction.operation.type}`);
                         }
@@ -89,7 +112,7 @@ export async function executeLuciform(filePath: string, logFileName: string = 'r
                     case 'help_request':
                         const helpRequestOp = pas.action as HelpRequestActionNode;
                         console.warn(`[WARN] Parser requested help: ${helpRequestOp.reason}. Raw content: ${helpRequestOp.rawContent}`);
-                        const syngrapheResponse = await getPersonaResponse('Syngraphe', `The parser encountered an issue: ${helpRequestOp.reason}. The problematic content was: ${helpRequestOp.rawContent}. Please provide guidance on how to correct this Luciform action.`, context, undefined);
+                        const syngrapheResponse = await getPersonaResponse('Syngraphe', `The parser encountered an issue: ${helpRequestOp.reason}. The problematic content was: ${helpRequestOp.rawContent}. Please provide guidance on how to correct this Luciform action.`, ritualContext, undefined);
                         console.log(`[SYNGAPHE] Syngraphe says: ${syngrapheResponse}`);
                         break;
                     default:
@@ -134,7 +157,7 @@ export async function executeLuciform(filePath: string, logFileName: string = 'r
             } catch (logError: any) {
                 process.stderr.write(`[ERROR] Failed to write ERROR log: ${logError.message}\n`);
             }
-            const finalReport = await getPersonaResponse('mog', `The ritual has failed. Please provide a final report based on the following status: ${JSON.stringify({ success: false, completedSteps, totalSteps, failedStep: currentStep, error: errorMessage }, null, 2)}`, context, undefined);
+            const finalReport = await getPersonaResponse('mog', `The ritual has failed. Please provide a final report based on the following status: ${JSON.stringify({ success: false, completedSteps, totalSteps, failedStep: currentStep, error: errorMessage }, null, 2)}`, ritualContext, undefined);
             console.log(finalReport);
             try {
                 await logRitual(`[MOG FINAL REPORT]\n${finalReport}`);
@@ -157,7 +180,7 @@ export async function executeLuciform(filePath: string, logFileName: string = 'r
     } catch (logError: any) {
         process.stderr.write(`[ERROR] Failed to write RITUAL SUCCESS log: ${logError.message}\n`);
     }
-    const finalReport = await getPersonaResponse('mog', `The ritual has finished. Please provide a final report based on the following status: ${JSON.stringify({ success: true, completedSteps, totalSteps }, null, 2)}`, context, undefined);
+    const finalReport = await getPersonaResponse('mog', `The ritual has finished. Please provide a final report based on the following status: ${JSON.stringify({ success: true, completedSteps, totalSteps }, null, 2)}`, ritualContext, undefined);
     console.log(finalReport);
     try {
         await logRitual(`[MOG FINAL REPORT]\n${finalReport}`);

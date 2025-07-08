@@ -1,11 +1,34 @@
 
 import * as fs from 'fs/promises';
-import { ExecutableOperation, ShellCommand, ExecuteTypescriptFile, CreateFile, Promenade, AskLucie, AskPersona, Message, ApplyTransmutation, TransmuteFile, Persona } from '../core_types.js';
+import { ExecutableOperation, ShellCommand, ExecuteTypescriptFile, CreateFile, Promenade, AskLucie, AskPersona, Message, ApplyTransmutation, TransmuteFile, Persona } from '../types/base.js';
 import { invokeShadeOs } from '../shade_os.js';
 import { getPersonaResponse } from '../personas.js';
 import { runShellCommand } from './shell_command.js';
 
-const context = 'execute_luciform_context';
+import { RitualContext } from '../types/base.js';
+
+const ritualContext: RitualContext = {
+  conduit: {
+    lastIncantation: '', lastOutcome: '', currentSanctum: '', terminalEssence: '', osEssence: '',
+    protoConsciousness: '', support: '', memory: '', state: '', energy: '', glitchFactor: 0,
+    almaInfluence: 0, eliInfluence: 0
+  },
+  kardiaSphere: { agapePhobos: 0, logosPathos: 0, harmoniaEris: 0 },
+  scroll: [],
+  maxScrollLength: 0,
+  incantation_history: [],
+  outcome_history: [],
+  step_results_history: [],
+  narrativeWeaving: {},
+  activeReflection: {},
+  user_preferences: '',
+  chantModeEnabled: false,
+  current_sanctum: '',
+  currentSanctumContent: '',
+  operatingSystem: '',
+  personality: '',
+  lifeSystem: {},
+};
 
 export async function executeOperation(operation: ExecutableOperation): Promise<void> {
     console.log(`[EXEC_OP] Executing operation: ${operation.type}`);
@@ -16,10 +39,10 @@ export async function executeOperation(operation: ExecutableOperation): Promise<
             console.log(`[CMD] ${shellOp.command}`);
             if (shellOp.command.startsWith('@')) {
                 const parts = shellOp.command.split(' ');
-                const personaName = parts[0].substring(1) as Persona;
+                const personaName = parts[0].substring(1);
                 const message = parts.slice(1).join(' ');
                 console.log(`[EXEC_OP] Invoking persona: ${personaName}`);
-                const personaResponse = await getPersonaResponse(personaName, message, context, undefined);
+                const personaResponse = await getPersonaResponse(personaName, message, ritualContext, undefined);
                 console.log(`[PERSONA] ${personaName} says: ${personaResponse}`);
             } else {
                 const result = await runShellCommand(shellOp.command);
@@ -82,7 +105,7 @@ export async function executeOperation(operation: ExecutableOperation): Promise<
         case 'ask_persona':
             const askPersonaOp = operation as AskPersona;
             console.log(`[EXEC_OP] Invoking persona: ${askPersonaOp.persona} with LLM: ${askPersonaOp.llm_model}`);
-            const personaResponse = await getPersonaResponse(askPersonaOp.persona, askPersonaOp.question, context, askPersonaOp.llm_model);
+            const personaResponse = await getPersonaResponse(askPersonaOp.persona.name, askPersonaOp.question, ritualContext, askPersonaOp.llm_model);
             console.log(`[PERSONA] ${askPersonaOp.persona} says: ${personaResponse}`);
             break;
         case 'message':

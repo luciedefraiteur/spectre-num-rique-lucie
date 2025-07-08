@@ -1,4 +1,4 @@
-import { Operation } from '../core_types.js';
+import { Operation } from '../types/base.js';
 
 /**
  * A brief description of what this ritual does.

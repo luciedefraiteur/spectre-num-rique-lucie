@@ -1,12 +1,9 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { executeRitual, getInitialContext } from './luciform-core/ritual_utils.js';
+import { executeRitualPlan, getInitialContext } from './luciform-core/ritual_utils.js';
+import { RitualContext, LLMModel, RitualPlan } from './luciform-core/types/base.js';
 import { runTerminalRitual } from './luciform-core/luciform_terminal.js';
-import { RitualContext } from './luciform-core/types.js';
-import { displayWelcomeMessage } from './luciform-core/utils/ui_utils.js';
-import { LLMInterface, LLMModel } from './luciform-core/llm_interface.js';
-import { PermissiveParser } from './luciform-core/permissive_parser/index.js';
 import * as readline from 'readline';
 import fs from 'fs';
 import path from 'path';
@@ -85,7 +82,16 @@ async function main()
     {
       break;
     }
-    await runTerminalRitual(initialContext, rl, ask, [userInput], model, () => { });
+    const plan: RitualPlan = {
+      title: 'User Input',
+      goal: 'Process user input',
+      incantations: [{
+        type: 'query',
+        invocation: userInput,
+      }],
+      complexity: 'low',
+    };
+    await runTerminalRitual(initialContext, rl, ask, plan, [], model, () => { });
   }
   rl.close();
 }

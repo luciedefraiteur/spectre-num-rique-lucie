@@ -15,7 +15,7 @@ import {
   Message,
   ApplyTransmutation,
   TransmuteFile,
-} from './core_types.js';
+} from './types/base.js';
 import {
   JsonActionNode,
   HelpRequestActionNode,
@@ -32,7 +32,30 @@ interface RitualExecutionStatus {
   error?: string;
 }
 
-const context = 'execute_luciform_context';
+import { RitualContext } from './types/base.js';
+
+const ritualContext: RitualContext = {
+  conduit: {
+    lastIncantation: '', lastOutcome: '', currentSanctum: '', terminalEssence: '', osEssence: '',
+    protoConsciousness: '', support: '', memory: '', state: '', energy: '', glitchFactor: 0,
+    almaInfluence: 0, eliInfluence: 0
+  },
+  kardiaSphere: { agapePhobos: 0, logosPathos: 0, harmoniaEris: 0 },
+  scroll: [],
+  maxScrollLength: 0,
+  incantation_history: [],
+  outcome_history: [],
+  step_results_history: [],
+  narrativeWeaving: {},
+  activeReflection: {},
+  user_preferences: '',
+  chantModeEnabled: false,
+  current_sanctum: '',
+  currentSanctumContent: '',
+  operatingSystem: '',
+  personality: '',
+  lifeSystem: {},
+};
 
 function runShellCommand(command: string): Promise<{ stdout: string; stderr: string; exitCode: number | null }> {
   return new Promise((resolve) => {
@@ -88,7 +111,7 @@ async function executeOperation(op: ExecutableOperation): Promise<void> {
       break;
     }
     case 'ask_persona': {
-      const response = await getPersonaResponse(op.persona, op.question, op.llm_model);
+      const response = await getPersonaResponse(op.persona.name, op.question, ritualContext, op.llm_model);
       console.log(`[PERSONA ${op.persona}] ${response}`);
       break;
     }
@@ -108,7 +131,7 @@ async function executeOperation(op: ExecutableOperation): Promise<void> {
 export async function executeLuciform(filePath: string, logFile = 'ritual.log'): Promise<RitualExecutionStatus> {
   try {
     const content = await fs.readFile(filePath, 'utf-8');
-    const document = parseLuciformDocument(content);
+    const document = parseLuciformDocument(content, logRitual);
     const totalSteps = document.pas.length;
     let completedSteps = 0;
 
@@ -117,13 +140,13 @@ export async function executeLuciform(filePath: string, logFile = 'ritual.log'):
     for (let i = 0; i < totalSteps; i++) {
       const pas = document.pas[i];
       try {
-        if ('operation' in pas.action) {
+        if (pas.action && 'operation' in pas.action) {
           const action = pas.action as JsonActionNode;
           await executeOperation(action.operation as ExecutableOperation);
           completedSteps++;
-        } else if ('reason' in pas.action) {
+        } else if (pas.action && 'reason' in pas.action) {
           const help = pas.action as HelpRequestActionNode;
-          const guidance = await getPersonaResponse('Syngraphe', `Issue: ${help.reason}\nContent: ${help.rawContent}`, context);
+          const guidance = await getPersonaResponse('Syngraphe', `Issue: ${help.reason}\nContent: ${help.rawContent}`, ritualContext);
           console.warn(`[SYNGRAPHE] ${guidance}`);
         }
         await logRitual(`[STEP ${i + 1}] OK`);

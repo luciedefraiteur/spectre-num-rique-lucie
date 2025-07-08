@@ -2,7 +2,7 @@ import {handleSystemCommand} from './system_handler.js';
 import {LLMInterface} from './llm_interface.js';
 import {generateRitualSequencePrompt} from './prompts/generateRitualSequence.js';
 import {generateAnalysisPrompt} from './prompts/generateAnalysisPrompt.js';
-import { RitualPlan, RitualContext, StepResult, Incantation, LLMModel, Operation, ExecutableOperation } from './core_types.js';
+import { RitualPlan, RitualContext, StepResult, Incantation, LLMModel, Operation, ExecutableOperation } from './types/base.js';
 import * as path from 'path';
 import * as fs from 'fs';
 import {parse} from './permissive_parser/index.js';

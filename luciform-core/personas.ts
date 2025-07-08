@@ -1,5 +1,5 @@
 import { LLMInterface } from './llm_interface.js';
-import { Persona, LLMModel, RitualContext } from './core_types.js';
+import { Persona, LLMModel, RitualContext } from './types/base.js';
 import { personaLoader } from './persona_loader.js';
 import { createPersona } from './persona_creator.js';
 

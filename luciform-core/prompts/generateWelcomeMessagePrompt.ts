@@ -1,4 +1,4 @@
-import {RitualContext} from "../core_types.js";
+import {RitualContext} from "../types/base.js";
 
 export function generateWelcomeMessagePrompt(context: RitualContext): string
 {
