@@ -36,18 +36,33 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAIHelp = getAIHelp;
-function getAIHelp(rawContent, reason) {
+exports.codexLurkuitaeNavigator = codexLurkuitaeNavigator;
+var parser_js_1 = require("../packages/luciform-ai-parser/src/parser.js");
+var index_js_1 = require("../packages/luciform-executor/src/index.js");
+var index_js_2 = require("../packages/luciform-ai-interface/src/index.js");
+function codexLurkuitaeNavigator(luciformContent, context, logRitual, logFileName) {
     return __awaiter(this, void 0, void 0, function () {
-        var mockOperation;
+        var luciformDocument, error_1;
         return __generator(this, function (_a) {
-            console.log("AI HELP: Requesting assistance for: ".concat(reason));
-            console.log("AI HELP: Raw content: ".concat(rawContent));
-            mockOperation = {
-                type: 'message',
-                message: "AI MOCK RESPONSE: You asked for help with: ".concat(rawContent)
-            };
-            return [2 /*return*/, { type: 'json_action', operation: mockOperation }];
+            switch (_a.label) {
+                case 0:
+                    console.log("CodexLurkuitaeNavigator: Starting intelligent parsing and execution.");
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    luciformDocument = (0, parser_js_1.parseLuciformDocument)(luciformContent, logRitual, logFileName);
+                    console.log("CodexLurkuitaeNavigator: Parsing complete. Starting execution.");
+                    return [4 /*yield*/, (0, index_js_1.executeLuciform)(luciformDocument, logRitual, index_js_2.getAIHelp, logFileName)];
+                case 2:
+                    _a.sent();
+                    console.log("CodexLurkuitaeNavigator: Execution complete.");
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _a.sent();
+                    console.error("CodexLurkuitaeNavigator: Error during parsing or execution:", error_1);
+                    throw error_1; // Re-throw the error after logging
+                case 4: return [2 /*return*/];
+            }
         });
     });
 }

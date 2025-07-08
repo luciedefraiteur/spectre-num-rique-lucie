@@ -11,5 +11,10 @@
     "rootDir": "./src"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.old.ts"]
+  "exclude": ["src/**/*.old.ts"],
+  "references": [
+    { "path": "../luciform-types" },
+    { "path": "../luciform-ai-interface" },
+    { "path": "../luciform-personas" }
+  ]
 }

@@ -1,21 +1,19 @@
-import { TokenType } from './types';
-const TYPE_NAMES = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tokenizer = void 0;
+var types_1 = require("./types");
+var TYPE_NAMES = [
     "???",
     "OBJ_OPEN", "OBJ_CLOSE", "ARR_OPEN", "ARR_CLOSE",
     "STRING", "NUMBER", "SPECIAL", "COLON",
     "NEWLINE", "ACTION_START", "PAS_SEPARATOR", "LUCIFORM_SYGIL", "LEGACY_COMMAND"
 ];
-class Context {
-    RX_DECIMAL = /^-?(\.[0-9]+|[0-9]+(\.[0-9]+)?)([eE]-?[0-9]+)?$/;
-    RX_HEXA = /^-?0x[0-9a-f]+$/i;
-    RX_OCTAL = /^-?0o[0-7]+$/i;
-    RX_BINARY = /^-?0b[01]+$/i;
-    eaters;
-    source;
-    end;
-    index;
-    tokens;
-    constructor() {
+var Context = /** @class */ (function () {
+    function Context() {
+        this.RX_DECIMAL = /^-?(\.[0-9]+|[0-9]+(\.[0-9]+)?)([eE]-?[0-9]+)?$/;
+        this.RX_HEXA = /^-?0x[0-9a-f]+$/i;
+        this.RX_OCTAL = /^-?0o[0-7]+$/i;
+        this.RX_BINARY = /^-?0b[01]+$/i;
         this.eaters = [
             this.eatBlanks.bind(this),
             this.eatSymbol.bind(this),
@@ -29,14 +27,14 @@ class Context {
         this.index = 0;
         this.tokens = [];
     }
-    tokenize(source) {
+    Context.prototype.tokenize = function (source) {
         this.source = source;
         this.end = source.length;
         this.index = 0;
         this.tokens = [];
-        let eater;
-        let eaterIndex;
-        let currentSourceIndex;
+        var eater;
+        var eaterIndex;
+        var currentSourceIndex;
         while (this.index < this.end) {
             currentSourceIndex = this.index;
             for (eaterIndex = 0; eaterIndex < this.eaters.length; eaterIndex++) {
@@ -50,35 +48,39 @@ class Context {
             }
         }
         return this.tokens;
-    }
-    is(...args) {
-        let arg;
-        for (let k = 0; k < args.length; k++) {
+    };
+    Context.prototype.is = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var arg;
+        for (var k = 0; k < args.length; k++) {
             arg = args[k];
             if (this.source.substring(this.index, this.index + arg.length) === arg)
                 return true;
         }
         return false;
-    }
-    fail(msg) {
+    };
+    Context.prototype.fail = function (msg) {
         if (typeof msg === 'undefined')
-            msg = `Invalid char at ${this.index}!`;
+            msg = "Invalid char at ".concat(this.index, "!");
         throw { index: this.index, source: this.source, message: msg };
-    }
-    eos() { return this.index >= this.end; }
-    peek() {
+    };
+    Context.prototype.eos = function () { return this.index >= this.end; };
+    Context.prototype.peek = function () {
         return this.eos() ? null : this.source[this.index];
-    }
-    next() {
+    };
+    Context.prototype.next = function () {
         return this.eos() ? null : this.source[this.index++];
-    }
-    back() {
+    };
+    Context.prototype.back = function () {
         if (this.index > 0)
             this.index--;
-    }
-    addToken(type, index, value) {
-        let tokenIndex;
-        let tokenValue;
+    };
+    Context.prototype.addToken = function (type, index, value) {
+        var tokenIndex;
+        var tokenValue;
         if (typeof index === 'undefined') {
             tokenIndex = this.index;
             tokenValue = value;
@@ -96,29 +98,29 @@ class Context {
             index: tokenIndex,
             value: tokenValue
         });
-    }
-    eatBlanks() {
+    };
+    Context.prototype.eatBlanks = function () {
         while (" \t\n\r".indexOf(this.peek() || '') !== -1)
             this.index++;
-    }
-    eatSymbol() {
-        let tkn = null;
-        const c = this.peek();
+    };
+    Context.prototype.eatSymbol = function () {
+        var tkn = null;
+        var c = this.peek();
         switch (c) {
             case '{':
-                tkn = TokenType.OBJ_OPEN;
+                tkn = types_1.TokenType.OBJ_OPEN;
                 break;
             case '}':
-                tkn = TokenType.OBJ_CLOSE;
+                tkn = types_1.TokenType.OBJ_CLOSE;
                 break;
             case '[':
-                tkn = TokenType.ARR_OPEN;
+                tkn = types_1.TokenType.ARR_OPEN;
                 break;
             case ']':
-                tkn = TokenType.ARR_CLOSE;
+                tkn = types_1.TokenType.ARR_CLOSE;
                 break;
             case ':':
-                tkn = TokenType.COLON;
+                tkn = types_1.TokenType.COLON;
                 break;
         }
         if (c === ',') {
@@ -129,15 +131,15 @@ class Context {
             this.addToken(tkn);
             this.index++;
         }
-    }
-    eatComment() {
-        const savedIndex = this.index;
+    };
+    Context.prototype.eatComment = function () {
+        var savedIndex = this.index;
         if (this.peek() !== '/')
             return;
         this.index++;
-        const c = this.next();
+        var c = this.next();
         if (c === '/') {
-            const endOfSingleComment = this.source.indexOf('\n', this.index);
+            var endOfSingleComment = this.source.indexOf('\n', this.index);
             if (endOfSingleComment === -1) {
                 this.index = this.end;
             }
@@ -146,7 +148,7 @@ class Context {
             }
         }
         else if (c === '*') {
-            const endOfComment = this.source.indexOf('*/', this.index);
+            var endOfComment = this.source.indexOf('*/', this.index);
             if (endOfComment === -1) {
                 this.index = this.end;
             }
@@ -157,30 +159,30 @@ class Context {
         else {
             this.index = savedIndex;
         }
-    }
-    eatMultilineString() {
+    };
+    Context.prototype.eatMultilineString = function () {
         if (!this.is('```'))
             return;
-        const start = this.index;
+        var start = this.index;
         this.index += 3;
-        const endOfMultiline = this.source.indexOf('```', this.index);
+        var endOfMultiline = this.source.indexOf('```', this.index);
         if (endOfMultiline === -1) {
             this.index = start;
             this.fail("Missing end of multiline string");
         }
-        const str = this.source.substring(start + 3, endOfMultiline);
-        this.addToken(TokenType.STRING, start, str);
+        var str = this.source.substring(start + 3, endOfMultiline);
+        this.addToken(types_1.TokenType.STRING, start, str);
         this.index = endOfMultiline + 3;
-    }
-    eatString() {
-        const quote = this.peek();
+    };
+    Context.prototype.eatString = function () {
+        var quote = this.peek();
         if (quote !== '"' && quote !== "'")
             return;
-        const start = this.index;
+        var start = this.index;
         this.index++;
-        let escape = false;
-        let str = '';
-        let c;
+        var escape = false;
+        var str = '';
+        var c;
         while (!this.eos()) {
             c = this.next();
             if (c === null)
@@ -199,7 +201,7 @@ class Context {
                 escape = true;
             }
             else if (c === quote) {
-                this.addToken(TokenType.STRING, start, str);
+                this.addToken(types_1.TokenType.STRING, start, str);
                 return;
             }
             else {
@@ -208,14 +210,14 @@ class Context {
         }
         this.index = start;
         this.fail("Missing end of string");
-    }
-    eatIdentifier() {
-        const start = this.index;
-        let c = this.peek();
+    };
+    Context.prototype.eatIdentifier = function () {
+        var start = this.index;
+        var c = this.peek();
         if (c === null || " \t\n\r,:[]{}".indexOf(c) !== -1 || this.is("//", "/*"))
             return;
         this.index++;
-        let str = c;
+        var str = c;
         while (!this.eos()) {
             c = this.peek();
             if (c === null || " \t\n\r,:[]{}".indexOf(c) !== -1 || this.is("//", "/*"))
@@ -224,10 +226,10 @@ class Context {
             this.index++;
         }
         if (this.RX_DECIMAL.test(str)) {
-            this.addToken(TokenType.NUMBER, start, parseFloat(str));
+            this.addToken(types_1.TokenType.NUMBER, start, parseFloat(str));
         }
         else if (this.RX_HEXA.test(str)) {
-            this.addToken(TokenType.NUMBER, start, parseInt(str, 16));
+            this.addToken(types_1.TokenType.NUMBER, start, parseInt(str, 16));
         }
         else if (this.RX_OCTAL.test(str)) {
             if (str.charAt(0) === '-') {
@@ -236,7 +238,7 @@ class Context {
             else {
                 str = str.substring(2);
             }
-            this.addToken(TokenType.NUMBER, start, parseInt(str, 8));
+            this.addToken(types_1.TokenType.NUMBER, start, parseInt(str, 8));
         }
         else if (this.RX_BINARY.test(str)) {
             if (str.charAt(0) === '-') {
@@ -245,11 +247,11 @@ class Context {
             else {
                 str = str.substring(2);
             }
-            this.addToken(TokenType.NUMBER, start, parseInt(str, 2));
+            this.addToken(types_1.TokenType.NUMBER, start, parseInt(str, 2));
         }
         else {
-            let type = TokenType.SPECIAL;
-            let value = str;
+            var type = types_1.TokenType.SPECIAL;
+            var value = str;
             if (str === 'null')
                 value = null;
             else if (str === 'undefined')
@@ -259,22 +261,23 @@ class Context {
             else if (str === 'false')
                 value = false;
             else
-                type = TokenType.STRING;
+                type = types_1.TokenType.STRING;
             this.addToken(type, start, value);
         }
-    }
-}
-export const Tokenizer = {
-    OBJ_OPEN: TokenType.OBJ_OPEN,
-    OBJ_CLOSE: TokenType.OBJ_CLOSE,
-    ARR_OPEN: TokenType.ARR_OPEN,
-    ARR_CLOSE: TokenType.ARR_CLOSE,
-    STRING: TokenType.STRING,
-    NUMBER: TokenType.NUMBER,
-    SPECIAL: TokenType.SPECIAL,
-    COLON: TokenType.COLON,
+    };
+    return Context;
+}());
+exports.Tokenizer = {
+    OBJ_OPEN: types_1.TokenType.OBJ_OPEN,
+    OBJ_CLOSE: types_1.TokenType.OBJ_CLOSE,
+    ARR_OPEN: types_1.TokenType.ARR_OPEN,
+    ARR_CLOSE: types_1.TokenType.ARR_CLOSE,
+    STRING: types_1.TokenType.STRING,
+    NUMBER: types_1.TokenType.NUMBER,
+    SPECIAL: types_1.TokenType.SPECIAL,
+    COLON: types_1.TokenType.COLON,
     tokenize: function (source) {
-        const ctx = new Context();
+        var ctx = new Context();
         return ctx.tokenize(source);
     },
     getTypeName: function (type) { return TYPE_NAMES[type]; }

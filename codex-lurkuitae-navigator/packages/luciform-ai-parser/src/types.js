@@ -1,4 +1,7 @@
-export var TokenType;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TokenType = void 0;
+var TokenType;
 (function (TokenType) {
     TokenType[TokenType["UNKNOWN"] = 0] = "UNKNOWN";
     TokenType[TokenType["OBJ_OPEN"] = 1] = "OBJ_OPEN";
@@ -15,4 +18,4 @@ export var TokenType;
     TokenType[TokenType["LUCIFORM_SYGIL"] = 12] = "LUCIFORM_SYGIL";
     TokenType[TokenType["LEGACY_COMMAND"] = 13] = "LEGACY_COMMAND";
     TokenType[TokenType["EOF"] = 14] = "EOF"; // Added for end of file
-})(TokenType || (TokenType = {}));
+})(TokenType || (exports.TokenType = TokenType = {}));
