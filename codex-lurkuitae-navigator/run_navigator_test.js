@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var codex_lurkuitae_navigator_1 = require("./src/codex_lurkuitae_navigator");
+var codexLurkuitaeNavigator = (await Promise.resolve().then(function () { return require('./dist/src/codex_lurkuitae_navigator.js'); })).codexLurkuitaeNavigator;
 var fs = require("fs/promises");
 var path = require("path");
 function runTestRitual() {
@@ -86,7 +86,7 @@ function runTestRitual() {
                 case 2:
                     _a.trys.push([2, 4, , 5]);
                     console.log("Running test ritual from: ".concat(luciformPath));
-                    return [4 /*yield*/, (0, codex_lurkuitae_navigator_1.codexLurkuitaeNavigator)(luciformContent, context, logRitual, 'test_ritual.log')];
+                    return [4 /*yield*/, codexLurkuitaeNavigator(luciformContent, context, logRitual, 'test_ritual.log')];
                 case 3:
                     _a.sent();
                     console.log("Test ritual completed successfully.");

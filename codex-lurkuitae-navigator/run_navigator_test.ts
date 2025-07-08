@@ -1,4 +1,4 @@
-import { codexLurkuitaeNavigator } from './src/codex_lurkuitae_navigator';
+const { codexLurkuitaeNavigator } = await import('./dist/src/codex_lurkuitae_navigator.js');
 import * as fs from 'fs/promises';
 import * as path from 'path';
 

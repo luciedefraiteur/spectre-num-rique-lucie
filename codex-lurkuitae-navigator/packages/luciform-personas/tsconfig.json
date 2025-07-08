@@ -1,10 +1,17 @@
 {
   "extends": "../../../tsconfig.base.json",
+  "references": [
+    { "path": "../luciform-types" },
+    { "path": "../luciform-executor" },
+    { "path": "../luciform-utils" }
+  ],
   "compilerOptions": {
     "composite": true,
     "outDir": "./dist",
-    "rootDir": "../",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true
   },
-  "include": ["src/**/*.ts", "../luciform-types/src/**/*.ts", "../luciform-executor/src/**/*.ts", "../luciform-utils/src/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

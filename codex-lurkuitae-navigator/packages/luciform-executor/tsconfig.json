@@ -8,13 +8,10 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.old.ts"],
-  "references": [
-    { "path": "../luciform-types" },
-    { "path": "../luciform-ai-interface" },
-    { "path": "../luciform-personas" }
-  ]
+  "exclude": ["src/**/*.old.ts"]
 }

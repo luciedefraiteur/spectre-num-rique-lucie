@@ -1,25 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "es2022",
+    "target": "ES2022",
+    "module": "NodeNext",
     "lib": ["es2022"],
-    "outDir": "./dist",
+    "outDir": "./dist/root-output",
     "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "declaration": true,
-    "paths": {
-      "@lurkuitae/luciform-types": ["./packages/luciform-types/src"],
-      "@lurkuitae/luciform-parser": ["./packages/luciform-parser/src"],
-      "@lurkuitae/luciform-executor": ["./packages/luciform-executor/src"],
-      "@lurkuitae/luciform-personas": ["./packages/luciform-personas/src"],
-      "@lurkuitae/luciform-utils": ["./packages/luciform-utils/src"],
-      "@lurkuitae/luciform-ai-parser": ["./packages/luciform-ai-parser/src"],
-      "@lurkuitae/luciform-ai-interface": ["./packages/luciform-ai-interface/src"]
-    }
+    "composite": true
   },
   "files": ["src/codex_lurkuitae_navigator.ts"],
   "exclude": ["node_modules", "dist"]

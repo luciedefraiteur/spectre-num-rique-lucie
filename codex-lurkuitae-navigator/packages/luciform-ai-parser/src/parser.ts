@@ -1,6 +1,6 @@
-import { Tokenizer } from './tokenizer';
-import { TokenType, Token } from './types';
-import { LuciformDocument, Operation, PasNode, ActionNode, PromenadeActionNode, JsonActionNode, MessageActionNode, AIHelpRequestActionNode } from '../../luciform-types/src/base';
+import { Tokenizer } from './tokenizer.js';
+import { TokenType, Token } from './types.js';
+import { LuciformDocument, Operation, PasNode, ActionNode, PromenadeActionNode, JsonActionNode, MessageActionNode, AIHelpRequestActionNode } from '../../luciform-types/src/base.js';
 
 function getAIHelp(rawContent: string, reason: string, logRitual: (message: string, logFileName?: string) => Promise<void>, logFileName?: string): ActionNode {
   logRitual(`AI HELP: Requesting assistance for: ${reason}`, logFileName);

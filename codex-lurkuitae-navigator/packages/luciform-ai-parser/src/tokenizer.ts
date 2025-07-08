@@ -1,4 +1,4 @@
-import { TokenType, Token } from './types';
+import { TokenType, Token } from './types.js';
 
 const TYPE_NAMES: string[] = [
   "???",
