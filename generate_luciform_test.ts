@@ -1,4 +1,28 @@
-import { getPersonaResponse } from './core/personas.js';
+import { getPersonaResponse } from './luciform-core/personas.js';
+import { RitualContext } from './luciform-core/core_types.js';
+
+const minimalContext: RitualContext = {
+  conduit: { 
+    lastIncantation: '', lastOutcome: '', currentSanctum: '', terminalEssence: '', osEssence: '',
+    protoConsciousness: '', support: '', memory: '', state: '', energy: '', glitchFactor: 0,
+    almaInfluence: 0, eliInfluence: 0
+  },
+  kardiaSphere: { agapePhobos: 0, logosPathos: 0, harmoniaEris: 0 },
+  scroll: [],
+  maxScrollLength: 0,
+  incantation_history: [],
+  outcome_history: [],
+  step_results_history: [],
+  narrativeWeaving: {},
+  activeReflection: {},
+  user_preferences: '',
+  chantModeEnabled: false,
+  current_sanctum: '',
+  currentSanctumContent: '',
+  operatingSystem: '',
+  personality: '',
+  lifeSystem: {},
+};
 import * as fs from 'fs/promises';
 
 async function generateLuciformTest() {
@@ -20,7 +44,7 @@ Replace <Your context here>, <file_path>, and <file_content> with appropriate va
 
   console.log("Asking Lucie to generate a luciform...");
   try {
-    const luciformContent = await getPersonaResponse('lucie', prompt);
+    const luciformContent = await getPersonaResponse('lucie', prompt, minimalContext, undefined);
     console.log("\n--- Generated Luciform (Raw) ---");
     console.log(luciformContent);
     console.log("----------------------------------");

@@ -5,16 +5,16 @@
 1 verbose cli   'run',
 1 verbose cli   'build',
 1 verbose cli   '--prefix',
-1 verbose cli   'golem-server'
+1 verbose cli   'golem-client'
 1 verbose cli ]
 2 info using npm@2.15.12
 3 info using node@v18.19.1
 4 verbose run-script [ 'prebuild', 'build', 'postbuild' ]
-5 info prebuild golem-server@0.1.0
-6 info build golem-server@0.1.0
+5 info prebuild golem-client@0.1.0
+6 info build golem-client@0.1.0
 7 verbose unsafe-perm in lifecycle true
-8 info golem-server@0.1.0 Failed to exec build script
-9 verbose stack Error: golem-server@0.1.0 build: `tsc --project tsconfig.json`
+8 info golem-client@0.1.0 Failed to exec build script
+9 verbose stack Error: golem-client@0.1.0 build: `tsc --project tsconfig.json`
 9 verbose stack Exit status 2
 9 verbose stack     at EventEmitter.<anonymous> (/home/luciedefraiteur/spectre2/node_modules/npm/lib/utils/lifecycle.js:217:16)
 9 verbose stack     at EventEmitter.emit (node:events:517:28)
@@ -22,24 +22,24 @@
 9 verbose stack     at ChildProcess.emit (node:events:517:28)
 9 verbose stack     at maybeClose (node:internal/child_process:1098:16)
 9 verbose stack     at ChildProcess._handle.onexit (node:internal/child_process:303:5)
-10 verbose pkgid golem-server@0.1.0
+10 verbose pkgid golem-client@0.1.0
 11 verbose cwd /home/luciedefraiteur/spectre2
 12 error Linux 6.11.0-28-generic
-13 error argv "/usr/bin/node" "/home/luciedefraiteur/spectre2/node_modules/.bin/npm" "run" "build" "--prefix" "golem-server"
+13 error argv "/usr/bin/node" "/home/luciedefraiteur/spectre2/node_modules/.bin/npm" "run" "build" "--prefix" "golem-client"
 14 error node v18.19.1
 15 error npm  v2.15.12
 16 error code ELIFECYCLE
-17 error golem-server@0.1.0 build: `tsc --project tsconfig.json`
+17 error golem-client@0.1.0 build: `tsc --project tsconfig.json`
 17 error Exit status 2
-18 error Failed at the golem-server@0.1.0 build script 'tsc --project tsconfig.json'.
-18 error This is most likely a problem with the golem-server package,
+18 error Failed at the golem-client@0.1.0 build script 'tsc --project tsconfig.json'.
+18 error This is most likely a problem with the golem-client package,
 18 error not with npm itself.
 18 error Tell the author that this fails on your system:
 18 error     tsc --project tsconfig.json
 18 error You can get information on how to open an issue for this project with:
-18 error     npm bugs golem-server
+18 error     npm bugs golem-client
 18 error Or if that isn't available, you can get their info via:
 18 error
-18 error     npm owner ls golem-server
+18 error     npm owner ls golem-client
 18 error There is likely additional logging output above.
 19 verbose exit [ 1, true ]

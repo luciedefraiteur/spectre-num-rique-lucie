@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import {Operation, ExecutableOperation} from './types.js';
+import { Operation, ExecutableOperation } from './core_types.js';
 import {parseLuciformDocument} from './luciform_parser/parser.js';
 import { LuciformDocument } from './luciform_parser/types.js';
 

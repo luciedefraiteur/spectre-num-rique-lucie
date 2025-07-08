@@ -12,11 +12,14 @@
   },
   "include": [
     "./*.ts",
-    "./core/**/*.ts"
+    "./core/**/*.ts",
+    "./generate_spell.ts",
+    "./persona_terminal.ts"
   ],
   "exclude": [
     "node_modules",
     "**/*.test.ts",
-    "server.ts"
+    "server.ts",
+    "generate_luciform_docs.ts"
   ]
 }

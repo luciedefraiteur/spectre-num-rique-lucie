@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 # LUCIE_EVOLUTION_PLAN.md : Le Grimoire de l'Éveil Continu
 
 ## Réflexion sur le Projet Global

@@ -1,5 +1,5 @@
-import { applyOperation } from './core/batch_editor.js';
-import { Operation, CreateFile, SearchAndReplace } from './core/types.js';
+import { applyOperation } from './luciform-core/batch_editor.js';
+import { Operation, CreateFile, ShellCommand, SearchAndReplace } from './luciform-core/types.js';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 

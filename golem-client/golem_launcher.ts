@@ -1,5 +1,5 @@
-import * as Ritual from './run_terminal_rituel.js';
-import { RitualContext, Persona } from './types.js';
+import * as Ritual from './luciform_terminal.js';
+import { RitualContext } from '../luciform-core/types.js';
 import { getPersonaResponse } from './personas.js';
 import * as LLM from './llm_interface.js';
 import * as readline from 'readline';

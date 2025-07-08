@@ -1,7 +1,8 @@
-import { applyOperation } from './core/batch_editor.js';
+import { applyOperation } from './luciform-core/batch_editor.js';
+import { Operation, CreateFile, ShellCommand } from './luciform-core/types.js';
 import * as path from 'path';
 import * as fs from 'fs/promises';
-import { CreateFile } from './core/types.js'; // Import CreateFile
+import { CreateFile } from './luciform-core/types.js'; // Import CreateFile
 
 async function runTest() {
     const filePath = path.resolve('./test_batch_editor_output.txt');

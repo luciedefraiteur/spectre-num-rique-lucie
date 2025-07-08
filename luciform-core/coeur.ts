@@ -1,4 +1,4 @@
-import { RitualContext, LuciePresence } from './types.js';
+import { RitualContext, KardiaSphere, LuciePresence } from './core_types.js';
 
 /**
  * Met à jour la présence de Lucie dans le contexte rituel.

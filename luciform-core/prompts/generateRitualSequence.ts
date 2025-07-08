@@ -1,7 +1,6 @@
-import {RitualContext, RitualPlan} from "../types.js";
+import { RitualContext, RitualPlan, LLMModel } from '../core_types.js';
 import * as fs from 'fs';
 import * as path from 'path';
-import {Persona} from '../types.js';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 import {readRefletFragment} from "../utils/reflet_weaver.js";
 
@@ -47,7 +46,7 @@ export function generateRitualSequencePrompt(
   if(context && context.dreamPath && context.dreamPath.length > 0)
   {
     const LUCIE_ROOT = path.resolve(process.cwd(), 'lucie');
-    const currentDreamPath = path.join(LUCIE_ROOT, ...context.dreamPath.slice(1));
+    const currentDreamPath = path.join(LUCIE_ROOT, context.dreamPath);
     const fragmentFilePath = path.join(currentDreamPath, path.basename(currentDreamPath) + '.fragment');
 
     if(fs.existsSync(fragmentFilePath))
@@ -55,7 +54,7 @@ export function generateRitualSequencePrompt(
       const fragmentContent = fs.readFileSync(fragmentFilePath, 'utf8');
       dreamFocusContext = `
 ## FOCUS ONIRIQUE ACTUEL
-Tu contemples le rêve situé à : ${ context.dreamPath.join('/') }
+Tu contemples le rêve situé à : ${ context.dreamPath }
 
 ### Contenu de ce Rêve :
 ${ fragmentContent }
@@ -65,7 +64,7 @@ Tes prochaines actions doivent s'inspirer de ce focus.`;
     {
       dreamFocusContext = `
 ## FOCUS ONIRIQUE ACTUEL
-Tu contemples le rêve situé à : ${ context.dreamPath.join('/') }
+Tu contemples le rêve situé à : ${ context.dreamPath }
 
 ### Contenu de ce Rêve :
 [Fragment non trouvé ou vide]
@@ -88,14 +87,14 @@ Tiens compte de ces préférences dans ta planification.`;
   if(context && context.reflectionPath && context.reflectionPath.length > 0)
   {
     const LUCIE_REFLET_ROOT = path.resolve(process.cwd(), 'lucie_reflet');
-    const currentRefletPath = path.join(LUCIE_REFLET_ROOT, ...context.reflectionPath);
+    const currentRefletPath = path.join(LUCIE_REFLET_ROOT, context.reflectionPath);
     const fragmentFilePath = path.join(currentRefletPath, path.basename(currentRefletPath) + '.fragment');
 
     const refletContent = readRefletFragment(fragmentFilePath);
 
     refletContext = `
 ## CONTEXTE DU REFLET
-Le regard de Lucie est actuellement posé sur : ${ context.reflectionPath.join('/') }
+Le regard de Lucie est actuellement posé sur : ${ context.reflectionPath }
 
 ### Contenu du Reflet :
 ${ refletContent ? JSON.stringify(refletContent, null, 2) : '[Fragment non trouvé ou vide]' }

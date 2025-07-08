@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import {askClaude} from './core/claude_interface.js';
+import { ClaudeInterface } from './luciform-core/claude_interface.js';
 
 async function testClaudeAPI()
 {

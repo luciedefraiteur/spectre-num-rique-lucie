@@ -1,0 +1,120 @@
+{
+  "timestamp": "2025-07-08T10:56:39.341Z",
+  "source": "build",
+  "errors": [
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 233,
+      "columnNumber": 21,
+      "errorMessage": "TS1128: Declaration or statement expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 233,
+      "columnNumber": 39,
+      "errorMessage": "TS1005: ';' expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 253,
+      "columnNumber": 21,
+      "errorMessage": "TS1128: Declaration or statement expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 253,
+      "columnNumber": 40,
+      "errorMessage": "TS1005: ';' expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 261,
+      "columnNumber": 21,
+      "errorMessage": "TS1128: Declaration or statement expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 261,
+      "columnNumber": 42,
+      "errorMessage": "TS1005: ';' expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 264,
+      "columnNumber": 256,
+      "errorMessage": "TS1127: Invalid character."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 264,
+      "columnNumber": 259,
+      "errorMessage": "TS1005: ',' expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 264,
+      "columnNumber": 271,
+      "errorMessage": "TS1005: ',' expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 264,
+      "columnNumber": 288,
+      "errorMessage": "TS1127: Invalid character."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 264,
+      "columnNumber": 290,
+      "errorMessage": "TS1005: ',' expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 279,
+      "columnNumber": 21,
+      "errorMessage": "TS1128: Declaration or statement expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 279,
+      "columnNumber": 47,
+      "errorMessage": "TS1005: ';' expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 286,
+      "columnNumber": 21,
+      "errorMessage": "TS1128: Declaration or statement expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 286,
+      "columnNumber": 28,
+      "errorMessage": "TS1128: Declaration or statement expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 312,
+      "columnNumber": 15,
+      "errorMessage": "TS1128: Declaration or statement expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 320,
+      "columnNumber": 11,
+      "errorMessage": "TS1005: 'try' expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 343,
+      "columnNumber": 5,
+      "errorMessage": "TS1128: Declaration or statement expected."
+    },
+    {
+      "filePath": "luciform-core/execute_luciform.ts",
+      "lineNumber": 363,
+      "columnNumber": 1,
+      "errorMessage": "TS1128: Declaration or statement expected."
+    }
+  ]
+}

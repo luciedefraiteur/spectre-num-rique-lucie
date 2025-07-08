@@ -6,6 +6,8 @@ export interface Operation {
 export interface LuciformDocument {
   type: 'LuciformDocument';
   pas: PasNode[];
+  sygil?: string;
+  meta?: any;
 }
 
 export interface PasNode {
@@ -14,7 +16,24 @@ export interface PasNode {
   action: ActionNode | null;
 }
 
-export type ActionNode = PromenadeActionNode | JsonActionNode | MessageActionNode;
+export type ActionNode = PromenadeActionNode | JsonActionNode | MessageActionNode | AskPersonaActionNode | EntangleWithActionNode | ScryOrbActionNode | HelpRequestActionNode;
+
+export interface EntangleWithActionNode {
+  type: 'entangle_with';
+  luciform_path: string;
+}
+
+export interface ScryOrbActionNode {
+  type: 'scry_orb';
+  target: string;
+  goal: string;
+}
+
+export interface AskPersonaActionNode {
+  type: 'ask_persona';
+  persona: string;
+  question: string;
+}
 
 export interface PromenadeActionNode {
   type: 'promenade';
@@ -29,4 +48,10 @@ export interface JsonActionNode {
 export interface MessageActionNode {
   type: 'message';
   message: string;
+}
+
+export interface HelpRequestActionNode {
+  type: 'help_request';
+  rawContent: string;
+  reason: string;
 }

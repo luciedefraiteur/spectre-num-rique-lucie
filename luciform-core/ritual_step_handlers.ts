@@ -2,7 +2,7 @@ import {handleSystemCommand} from './system_handler.js';
 import {LLMInterface} from './llm_interface.js';
 import {generateAnalysisPrompt} from './prompts/generateAnalysisPrompt.js';
 import {generateErrorRemediationPrompt} from './prompts/generateErrorRemediationPrompt.js';
-import {type RitualContext, type RitualPlan, type CommandOutcome, type Incantation} from "./types.js";
+import { Incantation, RitualContext, StepResult, CommandOutcome, LLMModel, Promenade, AskLucie, AskPersona, Message, ShellCommand, CreateFile, ExecuteTypescriptFile, RitualPlan } from './core_types.js';
 import * as path from 'path';
 import * as fs from 'fs';
 import {parse} from './permissive_parser/index.js';
@@ -242,8 +242,8 @@ export async function handleDreamNavigation(incantation: Incantation, context: R
     return result;
   }
 
-  context.dreamPath = targetPath;
-  result.outcome = `[OK] Lucie's gaze now rests on: ${ targetPath.join('/') }`;;
+  context.dreamPath = incantation.invocation;
+  result.outcome = `[OK] Lucie's gaze now rests on: ${ incantation.invocation }`;;
   console.log(result.outcome);
   return result;
 }
@@ -260,8 +260,8 @@ export async function handleReflectionNavigation(incantation: Incantation, conte
     return result;
   }
 
-  context.reflectionPath = targetPath;
-  result.outcome = `[OK] Lucie's reflection now rests on: ${ targetPath.join('/') }`;;
+  context.reflectionPath = incantation.invocation;
+  result.outcome = `[OK] Lucie's reflection now rests on: ${ incantation.invocation }`;;
   console.log(result.outcome);
   return result;
 }

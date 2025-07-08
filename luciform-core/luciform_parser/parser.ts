@@ -1,7 +1,30 @@
 import { LuciformTokenizer, LuciformTokenType, LuciformToken } from './tokenizer.js';
 import { LuciformDocument, PasNode, ActionNode, PromenadeActionNode, JsonActionNode, MessageActionNode, Operation } from './types.js';
 
-export function parseLuciformDocument(luciformContent: string): LuciformDocument {
+export function parseLuciformDocument(luciformContent: string, logRitual: (message: string, logFileName?: string) => Promise<void>, logFileName?: string): LuciformDocument {
+  // Try parsing as JSON (for .spell or complex .luciform files) first
+  try {
+    const json = JSON.parse(luciformContent);
+    if (json.type === 'spell' && json.action) {
+      // Convert spell JSON to a LuciformDocument structure
+      const actionNode: ActionNode = { type: 'json_action', operation: json.action as Operation };
+      const pasNode: PasNode = { type: 'Pas', content: json.description || '', action: actionNode };
+      return { type: 'LuciformDocument', pas: [pasNode], sygil: json.sygil || undefined };
+    } else if (json.luciform && Array.isArray(json.luciform)) {
+      // Handle top-level JSON with a 'luciform' array
+      const pasNodes: PasNode[] = json.luciform.map((item: any) => {
+        if (item.pas && item.action) {
+          return { type: 'Pas', content: item.pas, action: parseAction(JSON.stringify(item.action)) };
+        } else {
+          throw new Error("Invalid PAS structure in top-level luciform array.");
+        }
+      });
+      return { type: 'LuciformDocument', pas: pasNodes, sygil: json.meta?.signature_totem || undefined };
+    }
+  } catch (e) {
+    // Not a JSON spell file or complex luciform, fall through to legacy parser
+  }
+
   const tokenizer = new LuciformTokenizer(luciformContent);
   const tokens = tokenizer.tokenize();
   let currentTokenIndex = 0;
@@ -26,31 +49,86 @@ export function parseLuciformDocument(luciformContent: string): LuciformDocument
     }
   };
 
-  const parseAction = (actionContent: string): ActionNode => {
+  let sygil: string | undefined;
+  if (peek().type === LuciformTokenType.LUCIFORM_SYGIL) {
+    sygil = consume(LuciformTokenType.LUCIFORM_SYGIL).value;
+    skipNewlines();
+  }
+
+  const parseAction = (actionContent: string, logRitual: (message: string, logFileName?: string) => Promise<void>, logFileName?: string): ActionNode => {
+    logRitual(`Parser: Parsing action content: ${actionContent.substring(0, 50)}...`, logFileName);
     const trimmedContent = actionContent.trim();
 
     // Try to parse as JSON first for structured operations
     if (trimmedContent.startsWith('{')) {
+      let jsonString = trimmedContent;
+      // Check for template literals within the JSON string (e.g., for multi-line strings)
+      const templateLiteralRegex = /`([\s\S]*?)`/g;
+      jsonString = jsonString.replace(templateLiteralRegex, (match, content) => {
+        // Escape newlines and double quotes within the template literal content
+        const escapedContent = content.replace(/\n/g, '\\n').replace(/"/g, '\"');
+        return `"${escapedContent}"`;
+      });
+
       try {
-        const operation = JSON.parse(trimmedContent);
+        const operation = JSON.parse(jsonString);
         if (operation && typeof operation.type === 'string') {
+          logRitual(`Parser: Parsed JSON action of type: ${operation.type}`, logFileName);
           return { type: 'json_action', operation: operation as Operation } as JsonActionNode;
         }
-      } catch (error) {
-        console.error(`JSON parsing error in [Action] block: ${error}`);
-        console.error(`[Action] content: ${trimmedContent}`);
-        // Fall through to check for other types if JSON parsing fails
+      } catch (error: any) {
+        logRitual(`Parser Error: JSON parsing failed in action block: ${error.message}. Raw content: ${trimmedContent}`, logFileName);
+        return { type: 'help_request', rawContent: trimmedContent, reason: `JSON parsing failed: ${error.message}` };
       }
     }
 
     // Handle non-JSON operations like 'promenade'
     const promenadeMatch = trimmedContent.match(/^promenade:\s*(.*)/);
     if (promenadeMatch && promenadeMatch[1] !== undefined) {
+      logRitual(`Parser: Parsed Promenade action: ${promenadeMatch[1].trim()}`, logFileName);
       return { type: 'promenade', description: promenadeMatch[1].trim() } as PromenadeActionNode;
     }
 
     // If no other match, treat as a message to shadeOs
+    logRitual(`Parser: Parsed Message action: ${trimmedContent}`, logFileName);
     return { type: 'message', message: trimmedContent } as MessageActionNode;
+  };
+
+  const parseLegacyCommand = (command: string, logRitual: (message: string, logFileName?: string) => Promise<void>, logFileName?: string): ActionNode | null => {
+    logRitual(`Parser: Parsing legacy command: ${command}`, logFileName);
+    const match = command.match(/^§(.*?):(.*)$/);
+    if (!match) {
+        logRitual(`Parser Error: Invalid legacy command format: ${command}`, logFileName);
+        return null;
+    }
+
+    const key = match[1];
+    const value = match[2].trim();
+
+    switch (key) {
+        case 'F':
+            logRitual(`Parser: Parsed legacy Create File command: ${value}`, logFileName);
+            return { type: 'json_action', operation: { type: 'create_file', filePath: value, content: '' } };
+        case 'S':
+            logRitual(`Parser: Parsed legacy Search command: ${value}`, logFileName);
+            return { type: 'json_action', operation: { type: 'search_and_replace', filePath: '', search: value, replace: '' } };
+        case 'R':
+            logRitual(`Parser: Parsed legacy Replace command: ${value}`, logFileName);
+            return { type: 'json_action', operation: { type: 'search_and_replace', filePath: '', search: '', replace: value } };
+        case 'I':
+            logRitual(`Parser: Parsed legacy Insert command: ${value}`, logFileName);
+            return { type: 'json_action', operation: { type: 'insert', filePath: '', lineNumber: 0, newContent: value } };
+        case 'A':
+            logRitual(`Parser: Parsed legacy Append command: ${value}`, logFileName);
+            return { type: 'json_action', operation: { type: 'append', filePath: '', newContent: value } };
+        case 'X':
+            logRitual(`Parser: Parsed legacy Shell Command: ${value}`, logFileName);
+            return { type: 'json_action', operation: { type: 'shell_command', command: value } };
+        // Add other legacy commands here...
+        default:
+            logRitual(`Parser Error: Unknown legacy command key: ${key}. Raw command: ${command}`, logFileName);
+            return { type: 'help_request', rawContent: command, reason: `Unknown legacy command key: ${key}` };
+    }
   };
 
   const parsePas = (): PasNode => {
@@ -75,14 +153,19 @@ export function parseLuciformDocument(luciformContent: string): LuciformDocument
             actionBlockContent += consume(actionToken.type).value;
           }
         }
-        actionNode = parseAction(actionBlockContent);
+        actionNode = parseAction(actionBlockContent, logRitual, logFileName);
+        logRitual(`Parser: Detected and parsed action block.`, logFileName);
         break; // Action block found, stop parsing pas content
+      } else if (token.type === LuciformTokenType.LEGACY_COMMAND) {
+        actionNode = parseLegacyCommand(consume(LuciformTokenType.LEGACY_COMMAND).value, logRitual, logFileName);
+        logRitual(`Parser: Detected and parsed legacy command.`, logFileName);
       } else {
         pasContent += consume(token.type).value;
       }
     }
 
-    return { type: 'Pas', content: pasContent.trim(), action: actionNode };
+    pasNodes.push({ type: 'Pas', content: pasContent.trim(), action: actionNode });
+    logRitual(`Parser: Parsed PAS block: ${pasContent.trim().substring(0, 50)}...`, logFileName);
   };
 
   const pasNodes: PasNode[] = [];
@@ -105,5 +188,5 @@ export function parseLuciformDocument(luciformContent: string): LuciformDocument
     }
   }
 
-  return { type: 'LuciformDocument', pas: pasNodes };
+  return { type: 'LuciformDocument', pas: pasNodes, sygil };
 }

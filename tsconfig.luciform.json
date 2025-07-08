@@ -13,6 +13,7 @@
     "golem_server.ts",
     "golem_client.ts",
     "core/golem_launcher.ts",
-    "server.ts"
+    "server.ts",
+    "generate_luciform_docs.ts"
   ]
 }

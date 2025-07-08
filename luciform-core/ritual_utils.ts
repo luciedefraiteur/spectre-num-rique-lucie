@@ -1,8 +1,8 @@
 import {handleSystemCommand} from './system_handler.js';
-import {LLMInterface, LLMModel} from './llm_interface.js';
+import {LLMInterface} from './llm_interface.js';
 import {generateRitualSequencePrompt} from './prompts/generateRitualSequence.js';
 import {generateAnalysisPrompt} from './prompts/generateAnalysisPrompt.js';
-import {type RitualContext, type RitualPlan, type CommandOutcome, type Incantation} from "./types.js";
+import { RitualPlan, RitualContext, StepResult, Incantation, LLMModel, Operation, ExecutableOperation } from './core_types.js';
 import * as path from 'path';
 import * as fs from 'fs';
 import {parse} from './permissive_parser/index.js';
@@ -10,7 +10,6 @@ import {handleTraverse, handleEnact, handleDivine, handleLull, handleDiscourse, 
 import {Colors, colorize} from './utils/ui_utils.js';
 import {generateRemediationPrompt} from './prompts/generateRemediationPlan.js';
 import {fileURLToPath} from 'url';
-import {Persona} from './types.js';
 import {logEli, logNova, logZed} from './log_writers.js';
 import {extraireReveEtChargeUtile} from './utils/dream_parser.js';
 import {weaveDream} from './utils/dream_weaver.js';
@@ -68,8 +67,8 @@ Note: Pour la navigation dans les répertoires, utilise l'étape 'changer_dossie
     },
     personality: 'lurkuitae',
     confusion_counter: 0,
-    dreamPath: ['lucie'],
-    reflectionPath: ['lucie_reflet'],
+    dreamPath: 'lucie',
+    reflectionPath: 'lucie_reflet',
     maxScrollLength: 10,
     activeReflection: null,
     user_preferences: '',

@@ -1,6 +1,6 @@
-import { getInitialContext } from './core/ritual_utils.js';
-import { parseLuciform } from './core/utils/luciform_parser.js';
-import { updateLuciePresence } from './core/coeur.js';
+import { getInitialContext } from './luciform-core/ritual_utils.js';
+import { parseLuciform } from './luciform-core/utils/luciform_parser.js';
+import { updateLuciePresence } from './luciform-core/coeur.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 

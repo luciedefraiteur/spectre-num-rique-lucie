@@ -1,5 +1,5 @@
 import * as fs from 'fs/promises';
-import {Operation} from '../types.js';
+import {Operation} from '../core_types.js';
 import {Parser} from '../permissive_parser/parser.js';
 import {Tokenizer} from '../permissive_parser/tokenizer.js';
 import {parseJsonData} from './json_parser_helper.js';

@@ -1,6 +1,6 @@
 import { Parser } from '../permissive_parser/parser.js';
 import { Tokenizer } from '../permissive_parser/tokenizer.js';
-import { Operation } from '../types.js';
+import { Operation } from '../core_types.js';
 
 export function parseJsonData(jsonContent: string, operations: Operation[]): any | null {
     let luciePresenceData: any | null = null;

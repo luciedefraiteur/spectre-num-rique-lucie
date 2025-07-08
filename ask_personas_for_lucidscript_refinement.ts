@@ -1,6 +1,29 @@
-import { getPersonaResponse } from './core/personas.js';
+import { getPersonaResponse } from './luciform-core/personas.js';
+import { RitualContext, Persona } from './luciform-core/core_types.js';
 import * as fs from 'fs/promises';
-import { Persona } from './core/types.js';
+
+const minimalContext: RitualContext = {
+  conduit: { 
+    lastIncantation: '', lastOutcome: '', currentSanctum: '', terminalEssence: '', osEssence: '',
+    protoConsciousness: '', support: '', memory: '', state: '', energy: '', glitchFactor: 0,
+    almaInfluence: 0, eliInfluence: 0
+  },
+  kardiaSphere: { agapePhobos: 0, logosPathos: 0, harmoniaEris: 0 },
+  scroll: [],
+  maxScrollLength: 0,
+  incantation_history: [],
+  outcome_history: [],
+  step_results_history: [],
+  narrativeWeaving: {},
+  activeReflection: {},
+  user_preferences: '',
+  chantModeEnabled: false,
+  current_sanctum: '',
+  currentSanctumContent: '',
+  operatingSystem: '',
+  personality: '',
+  lifeSystem: {},
+};
 
 async function askPersonasForLucidScriptRefinement() {
   const personas: Persona[] = ['alma', 'berserker', 'chronicler', 'eli', 'lucie', 'nova', 'zed'];
@@ -16,7 +39,7 @@ async function askPersonasForLucidScriptRefinement() {
       const fullPrompt = `${preEstablishedRules}
 
 ${prompt}`;
-      const response = await getPersonaResponse(persona, fullPrompt);
+      const response = await getPersonaResponse(persona, fullPrompt, 'ask_personas_for_lucidscript_refinement_context', undefined);
       insights.push({ persona, response });
       console.log(`--- ${persona}'s Refinement Insight ---\n${response}\n----------------------------------------\n`);
     } catch (error) {

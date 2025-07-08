@@ -1,14 +1,13 @@
 import * as fs from 'fs';
-import {RitualContext, Incantation, RitualPlan} from './types.js';
+import { RitualContext, RitualPlan, Incantation } from './core_types.js';
 
 import * as fsPromises from 'fs/promises';
 
 async function writeLog(filename: string, content: string)
 {
-    await fsPromises.appendFile(filename, `${ new Date().toISOString() }
-${ content }
-
-`);
+    const logEntry = `${ new Date().toISOString() }\n${ content }\n\n`;
+    await fsPromises.appendFile(filename, logEntry);
+    console.log(logEntry); // Also output to console
 }
 
 export async function logAlma(context: RitualContext, userIntent: string)
@@ -90,7 +89,6 @@ ${ ritual || 'No ritual generated.' }
     await writeLog(`${ persona }.log`, content);
 }
 
-export async function logRitual(message: string)
-{
-    await writeLog('ritual.log', message);
+export async function logRitual(message: string, logFileName: string = 'ritual.log') {
+    await writeLog(logFileName, message);
 }

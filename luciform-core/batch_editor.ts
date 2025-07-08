@@ -1,7 +1,7 @@
 import {spawn} from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import {Operation} from './types.js';
+import { Operation, SearchAndReplace, Insert, Delete, Append, CreateFile, ShellCommand, LlmOperation, JsonData, ReadLines, ArcaneInstruction, Prompt, Glob, WebFetch, Test, Output, ErrorOperation, Variable, Update, Help, Debug, Yaml, Key, Query, Batch, Note, Raw, Code, Data, FileOperation, Git, Hash, Info, Json, Log, Message, Name, Option, Path, Result, Status, Text, Url, Value, Warning, Xml, Yes, Zip } from './core_types.js';
 
 declare var globalThis: any;
 

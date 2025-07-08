@@ -1,4 +1,4 @@
-import { invokeShadeOs } from './core/shade_os.js';
+import { invokeShadeOs } from './luciform-core/shade_os.js';
 import * as fs from 'fs/promises';
 
 async function askShadeOsAboutLucidScript() {

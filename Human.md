@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 # A Guide for Humans
 
 Greetings. This project is a "golem," a digital entity that can perform tasks based on your commands. This guide will help you understand how to interact with it.

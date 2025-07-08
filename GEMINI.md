@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 # Gemini Session Summary - 2025-07-07
 
 ## Project State at Session End:
@@ -31,3 +32,6 @@ This session focused on integrating key features from the `haunted_terminal` bra
 - Implement robust error handling and retry mechanisms for Golem IPC.
 - Continue exploring and implementing other "interesting parts" from `haunted_terminal` as identified in `lucie/architect/merge_strategy/`.
 - Further develop the "Spectre Haunting" by introducing new types of errors to guide development.
+
+## Deferred Issues:
+- **Persistent `ReferenceError: content is not defined` in `execute_luciform.ts`:** This error is currently blocking all luciform execution. Debugging has been deferred to prioritize the implementation of the "movement frame" concept and JSON-based spell files, as per user request. This issue will be addressed once the new features are outlined and initial implementation is underway.

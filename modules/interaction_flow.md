@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 # Luciform Interaction Flow
 
 This document describes the high-level state transitions between the Luciform system's command/mode cycle:
@@ -28,5 +29,3 @@ The interaction loop consists of three key states, with explicit transitions:
 - Each phase is implemented as a PowerShell cmdlet for direct invocation.
 - Intermediate data (state matrices, insights, logs) is typically stored in LucieMemory or as output from commands.
 - State progression can be automated (looped) or manually advanced by user invocation.
-
-

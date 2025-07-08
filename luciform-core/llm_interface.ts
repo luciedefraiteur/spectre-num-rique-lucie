@@ -1,19 +1,9 @@
 import {spawn} from 'child_process';
 import * as os from 'os';
-import {RitualContext} from "./types.js";
+import { LLMModel, RitualContext } from './core_types.js';
 import {generateWaitMessagePrompt} from './prompts/generateWaitMessagePrompt.js';
 
-export enum LLMModel
-{
-  CodeLlama = "codellama:7b-instruct",
-  CodeLlamaCode = "codellama:7b-code",
-  Llama3 = "llama3",
-  Mistral = "mistral",
-  OpenAI = "openai",
-  Gemini = "gemini",
-  Claude = "claude",
-  Random = "random"
-}
+
 
 function escapeJson(input: string): string
 {

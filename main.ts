@@ -1,13 +1,13 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import {getInitialContext} from './core/ritual_utils.js';
-import {runTerminalRitual} from './core/run_terminal_rituel.js';
-import {RitualContext} from './core/types.js';
+import { executeRitual, getInitialContext } from './luciform-core/ritual_utils.js';
+import { runTerminalRitual } from './luciform-core/luciform_terminal.js';
+import { RitualContext } from './luciform-core/types.js';
+import { displayWelcomeMessage } from './luciform-core/utils/ui_utils.js';
+import { LLMInterface, LLMModel } from './luciform-core/llm_interface.js';
+import { PermissiveParser } from './luciform-core/permissive_parser/index.js';
 import * as readline from 'readline';
-import {demonstrateCursorControl} from './core/utils/ui_utils.js';
-import {LLMModel} from './core/llm_interface.js';
-import {parse} from './core/permissive_parser/index.js';
 import fs from 'fs';
 import path from 'path';
 import {Worker} from 'worker_threads';

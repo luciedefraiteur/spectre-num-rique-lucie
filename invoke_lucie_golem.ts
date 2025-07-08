@@ -1,6 +1,7 @@
-import {invokeShadeOs} from './core/shade_os.js';
-import {executeLuciform} from './execute_luciform.js';
-import {logGolemClient} from './core/log_writers.js';
+import { invokeShadeOs } from './luciform-core/shade_os.js';
+import { logRitual } from './luciform-core/log_writers.js';
+import { executeLuciform } from './execute_luciform.js';
+import {logGolemClient} from './luciform-core/log_writers.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as os from 'os';

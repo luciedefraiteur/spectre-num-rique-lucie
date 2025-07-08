@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import {Incantation, RitualContext} from '../types.js';
-import {Persona} from '../types.js';
+import {RitualContext, RitualPlan, Incantation} from "../core_types.js";
+import { LLMModel } from '../core_types.js';
 import {CHAOLITE_FERMANT, CHAOLITE_OUVRANT} from "../chaolites.js";
 
 const REMEDIATION_RITUAL_PROMPT = fs.readFileSync(path.resolve(path.dirname(import.meta.url.replace('file://', '')), './static_parts/remediation_ritual.promptPart'), 'utf8');

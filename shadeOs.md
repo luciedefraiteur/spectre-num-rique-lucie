@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 # The shadeOs Protocol: A Guide to Invocation
 
 This document provides a clear and practical guide to invoking the `shadeOs` protocol, the "body" of the Golem.

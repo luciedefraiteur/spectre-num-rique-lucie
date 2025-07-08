@@ -1,7 +1,7 @@
 
-import {Lexer} from './core/ts_parser/lexer.js';
-import {Parser} from './core/ts_parser/parser.js';
-import {FunctionDeclarationNode, ReturnStatementNode, NumericLiteralNode} from './core/ts_parser/types.js';
+import { Lexer } from './luciform-core/ts_parser/lexer.js';
+import { Parser } from './luciform-core/ts_parser/parser.js';
+import { Token, NodeType, FunctionDeclarationNode, ReturnStatementNode, NumericLiteralNode } from './luciform-core/ts_parser/types.js';
 
 function runTest()
 {

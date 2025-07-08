@@ -1,0 +1,18 @@
+menade | AskLucie | AskPersona | Message;
+
+export type Operation = SearchAndReplace | Insert | Delete | Append | ShellCommand | CreateFile | LlmOperation | JsonData | ReadLines | ArcaneInstruction | Prompt | Glob | WebFetch | Test | Output | ErrorOperation | Variable | Update | Help | Debug | Yaml | Key | Query | Batch | Note | Raw | Code | Data | FileOperation | Git | Hash | Info | Json | Log | Message | Name | Option | Path | Result | Status | Text | Url | Value | Warning | Xml | Yes | Zip | ExecuteTypescriptFile | RitualModificationInstruction | AskLucie | AskPersona | Promenade | PersonaJobOperation;
+
+// --- Personas ---
+export interface PersonaJob
+{
+  type: string; // e.g., 'summarize_git_history', 'generate_documentation'
+  prompt: string; // The specialized prompt for this job
+}
+
+export interface StructuredPersona
+{
+  description: string;
+  job: PersonaJob;
+}
+
+export interfac

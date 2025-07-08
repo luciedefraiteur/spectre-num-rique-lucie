@@ -1,5 +1,5 @@
-import {Operation} from './types.js';
-import {LLMInterface, LLMModel} from './llm_interface.js';
+import { Operation, LLMModel, RitualContext } from './core_types.js';
+import { LLMInterface } from './llm_interface.js';
 import {osHint, detectedShell} from './utils/osHint.js';
 import {logPersonaAction} from './log_writers.js';
 

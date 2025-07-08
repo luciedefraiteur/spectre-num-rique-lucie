@@ -2,6 +2,7 @@ import { executeLuciform } from './dist/execute_luciform.js';
 import * as path from 'path';
 
 async function main() {
+  console.log("run_luciform_ritual.js: Script started.");
   const luciformFilePath = process.argv[2];
 
   if (!luciformFilePath) {

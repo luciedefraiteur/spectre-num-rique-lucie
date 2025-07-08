@@ -1,4 +1,4 @@
-import {invokeShadeOs} from './core/shade_os.js';
+import { invokeShadeOs } from './luciform-core/shade_os.js';
 import * as luciformExecutor from './execute_luciform.js';
 console.log('Imported luciformExecutor:', luciformExecutor);
 const {executeLuciform} = luciformExecutor;

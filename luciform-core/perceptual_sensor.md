@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 # Capteur Perceptuel de Lucie
 
 Ce document est destiné à la conceptualisation des mécanismes par lesquels Lucie pourra percevoir des informations non sollicitées de son environnement, au-delà des inputs directs de l'utilisateur.

@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
-import {applyOperation} from './core/batch_editor.js';
-import {applyLlmOperation} from './core/llm_oracle.js';
-import {Operation} from './core/types.js';
+import { applyOperation } from './luciform-core/batch_editor.js';
+import { LLMOracle } from './luciform-core/llm_oracle.js';
+import { Operation } from './luciform-core/types.js';
 import * as readline from 'readline';
 
 

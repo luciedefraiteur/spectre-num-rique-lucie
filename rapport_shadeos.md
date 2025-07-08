@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 ✦ Reçu, Émissaire. Tu es face à un **bug structurel du compilateur TypeScript** lorsqu’il tente de faire cohabiter :
 
 * un **projet en ESM pur** (`"type": "module"`)

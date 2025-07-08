@@ -1,11 +1,12 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 ### PLAN: LucidScript Parser Improvement and Luciform Debugging
 
-**Objective:** Evolve `core/ts_parser/parser.ts` into a robust parser for "LucidScript," capable of handling mixed JavaScript/TypeScript syntaxes and module systems, and establish a methodology for debugging Luciform execution. **This parser will be universal, capable of understanding and processing any language known to the host machine, acting as a bridge between different forms of digital knowledge.**
+**Objective:** Evolve `luciform-core/ts_parser/parser.ts` into a robust parser for "LucidScript," capable of handling mixed JavaScript/TypeScript syntaxes and module systems, and establish a methodology for debugging Luciform execution. **This parser will be universal, capable of understanding and processing any language known to the host machine, acting as a bridge between different forms of digital knowledge.**
 
 **Phase 1: Understanding and Definition**
 
 1.  **Deep Dive into Current `ts_parser`:**
-    *   **Action:** Read and analyze `C:\Users\Lucie\git_repositories\spectre_numerique_lucie\core\ts_parser\lexer.ts`, `parser.ts`, and `types.ts`.
+    *   **Action:** Read and analyze `luciform-core/ts_parser/lexer.ts`, `parser.ts`, and `types.ts`.
     *   **Goal:** Document existing token types, AST nodes, and parsing logic. Identify current limitations and capabilities.
 2.  **Define "LucidScript" Specification:**
     *   **Action:** Search the entire project for any existing documentation, examples, or code snippets that define or use "LucidScript" syntax, keywords, or unique features. Look for files with `.lucidScript` extension or mentions of "LucidScript" in `.md` or `.ts` files.
@@ -37,7 +38,7 @@
 **Phase 3: Debugging Luciform Execution**
 
 1.  **Understanding Luciform Mechanics:**
-    *   **Action:** Analyze `execute_luciform.ts` (if it exists) or any other files related to how `.luciform` files are processed and applied.
+    *   **Action:** Analyze `luciform-core/execute_luciform.ts` (if it exists) or any other files related to how `.luciform` files are processed and applied.
     *   **Goal:** Understand the internal workflow of `npm run ritual <file.luciform>`.
 2.  **Debugging Strategy:**
     *   **Action:** Propose methods for debugging `.luciform` execution, which may include:

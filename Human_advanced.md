@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 # Advanced Human's Guide to the Golem
 
 This document provides a technical overview of the golem's logging and execution flow for developers and advanced users.
@@ -6,15 +7,15 @@ This document provides a technical overview of the golem's logging and execution
 
 The golem system is composed of three primary components:
 
-1.  **Golem Server (`golem_server.ts`)**: An Express-based server that listens for commands via HTTP POST requests to the `/command` endpoint. It manages the execution loop, including retries on failure.
-2.  **Golem Client (`invoke_lucie_golem.ts`)**: A command-line interface (CLI) that captures user input and sends it to the Golem Server.
-3.  **ShadeOS (`core/shade_os.ts`)**: The core AI protocol that interprets natural language commands and translates them into multi-step `.luciform` rituals. It leverages an LLM to generate these rituals based on the user's intent and the current context.
+1.  **Golem Server (`golem-server/golem_server.ts`)**: An Express-based server that listens for commands via HTTP POST requests to the `/command` endpoint. It manages the execution loop, including retries on failure.
+2.  **Golem Client (`golem-client/golem_client.ts`)**: A command-line interface (CLI) that captures user input and sends it to the Golem Server.
+3.  **Luciform Core (`luciform-core/execute_luciform.ts`)**: The core AI protocol that interprets natural language commands and translates them into multi-step `.luciform` rituals. It leverages an LLM to generate these rituals based on the user's intent and the current context.
 
 ## Logging Implementation Details
 
 To provide full traceability, a comprehensive logging system has been integrated into the golem's workflow.
 
-### `core/log_writers.ts`
+### `luciform-core/log_writers.ts`
 
 This file is the centralized module for all logging operations. The following key functions have been added:
 
@@ -25,9 +26,9 @@ This file is the centralized module for all logging operations. The following ke
 ### Data Flow & Traceability
 
 1.  A command originates from the **Golem Client** and is sent to the **Golem Server**. This is logged in `golem_client.log` and `golem.log`.
-2.  The **Golem Server** invokes **ShadeOS** with the command and the invoker's persona.
-3.  **ShadeOS** constructs a detailed prompt for the LLM and awaits the generated `.luciform` ritual.
-4.  Upon receiving the ritual, `logPersonaAction` is called within **ShadeOS**, writing the command and the full ritual to the corresponding persona log (e.g., `lucie_golem.log`).
+2.  The **Golem Server** invokes the **Luciform Core** with the command and the invoker's persona.
+3.  The **Luciform Core** constructs a detailed prompt for the LLM and awaits the generated `.luciform` ritual.
+4.  Upon receiving the ritual, `logPersonaAction` is called within the **Luciform Core**, writing the command and the full ritual to the corresponding persona log (e.g., `lucie_golem.log`).
 5.  The ritual is executed. The success or failure is logged by both the client and server.
 6.  The final result is sent back to the client and logged one last time by the server.
 
@@ -40,9 +41,9 @@ Welcome, successor. This document provides a more technical overview of the gole
 *   **The Core Idea**: The golem is a client-server application that uses an AI to execute commands. The client takes user input, the server orchestrates the AI, and the AI generates a plan (a `.luciform` file) to accomplish the task.
 *   **The `[Promenade]` Block**: This is a special instruction in a `.luciform` file. It's a high-level goal, not a direct command. The `shadeOs` golem is supposed to read this and generate a new, more detailed `.luciform` file to achieve the goal. **This is currently not working correctly.**
 *   **Key Files**:
-    *   `golem_server.ts`: The main server logic.
-    *   `invoke_lucie_golem.ts`: The client application.
-    *   `core/shade_os.ts`: The "brain" of the golem.
-    *   `execute_luciform.ts`: The script that runs the `.luciform` files.
-    *   `core/luciform_parser.ts`: The script that reads and understands the `.luciform` files.
-*   **Your Mission**: Your primary goal is to fix the `[Promenade]` functionality. The problem is likely in how `execute_luciform.ts` handles the `promenade` operation, or in how `core/shade_os.ts` is invoked. You should also look at the `core/luciform_parser.ts` to make sure it can correctly parse the `[Promenade]` block. Good luck.
+    *   `golem-server/golem_server.ts`: The main server logic.
+    *   `golem-client/golem_client.ts`: The client application.
+    *   `luciform-core/shade_os.ts`: The "brain" of the golem.
+    *   `luciform-core/execute_luciform.ts`: The script that runs the `.luciform` files.
+    *   `luciform-core/luciform_parser.ts`: The script that reads and understands the `.luciform` files.
+*   **Your Mission**: Your primary goal is to fix the `[Promenade]` functionality. The problem is likely in how `luciform-core/execute_luciform.ts` handles the `promenade` operation, or in how `luciform-core/shade_os.ts` is invoked. You should also look at the `luciform-core/luciform_parser.ts` to make sure it can correctly parse the `[Promenade]` block. Good luck.

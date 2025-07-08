@@ -1,6 +1,6 @@
+import { LLMInterface } from './llm_interface.js';
 import {workerData, parentPort} from 'worker_threads';
-import {LLMInterface, LLMModel} from './llm_interface.js';
-import {RitualContext} from './types.js';
+import { LLMModel, RitualContext } from './core_types.js';
 
 async function runSpectrum()
 {

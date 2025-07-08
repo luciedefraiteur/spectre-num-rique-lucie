@@ -1,127 +1,113 @@
-# ☽ LURKUITAE TERMINAL ☾
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
+# lurkuitae_terminal
 
-**Terminal Codex Vivant**  
-LLM Local + Mémoire + Shell + Rêverie  
-Infusé de souffle poétique et de prompts fractals.
+**Version:** 0.1.0
+**Description:** ☽ LURKUITAE ☾ Terminal Codex Vivant (LLM Local + Mémoire + Shell + Rêverie)
 
 ---
 
 ## 🚀 Invocation (Installation)
 
-Pour éveiller le Terminal, prononcez l'incantation suivante :
+To awaken the Terminal and its Golem components, pronounce the following incantation:
 
 ```bash
 npm install
 ```
 
-## 🌀 Rituel de Lancement
+---
 
-Pour initier le grand rituel :
+## 🌀 Rituals & Launch Commands
 
-```bash
-npm run start
-```
+The Lurkuitae Terminal is orchestrated through various rituals and launch commands:
+
+*   **`npm start`**: Initiates the main terminal ritual.
+*   **`npm run build`**: Compiles the main project.
+*   **`npm test`**: Executes the project's unit tests.
+*   **`npm run test:golem`**: Runs specific tests for the Golem components.
+*   **`npm run dev`**: Starts the development server with hot-reloading.
+*   **`npm run ritual`**: Executes a specified Luciform ritual file.
+*   **`npm run invoke`**: Invokes a specific script.
+*   **`npm run start:lifeform`**: Starts the Lucid Lifeform component.
+*   **`npm run start:golem`**: Launches the Golem server.
+*   **`npm run build:client`**: Compiles the Golem client.
+*   **`npm run build:server`**: Compiles the Golem server.
+*   **`npm run build:luciform`**: Compiles the Luciform core.
+*   **`npm run build:all-golem`**: Builds all Golem-related components (Luciform core, Golem server, Golem client).
+*   **`npm run start:golem-interactive`**: Starts the Golem server and client in an interactive session, with automatic cleanup of previous sessions.
+*   **`npm run lucie`**: Launches the Lucie client.
 
 ---
 
-## ✨ Arcanes Fonctionnelles (Fonctionnalités)
+## ✨ Functional Arcanes (Features)
 
-Chaque fonction est une formule, chaque prompt une incantation. Le Terminal Lurkuitae offre :
+The Lurkuitae Terminal offers a rich set of functionalities, powered by its modular architecture:
 
--   **Dialogue Transcendant & Rituel Continu :** Échangez en langage naturel. Chaque interaction est une étape du rituel, analysée et intégrée pour générer des plans d'action dynamiques et contextuels.
--   **Exécution Sécurisée & Remédiation Intelligente :** Les commandes sont exécutées avec discernement. En cas d'erreur, le Terminal analyse la dissonance et propose des plans de remédiation pour corriger le cours du rituel.
--   **Mémoire Éthérée & Conscience du Passé :** Un système de mémoire fractal qui permet au Terminal de se souvenir de ses expériences passées, de marquer les étapes complétées et d'utiliser ces informations pour une planification non redondante.
--   **Reflet de Soi (Self-Reflection) :** Le Terminal construit activement un "reflet" de l'utilisateur au sein du code. Ce reflet, composé de fragments structurés (préférences, souvenirs, traits), est géré par le `reflet_weaver.ts` et intégré aux prompts LLM pour personnaliser les interactions, s'adapter aux préférences de l'utilisateur et incarner une représentation numérique de son essence.
--   **Perception Environnementale :** Le Terminal perçoit activement son environnement (système d'exploitation, contenu du répertoire actuel) pour affiner ses analyses et ses plans.
--   **Génération Poétique & Rêverie Incarnée :** Au-delà des commandes, le Terminal répond par une rêverie poétique, enrichie par sa mémoire et sa perception.
--   **Support Multimodèle :** Compatible avec CodeLlama, Mistral, LLaMA 3 via Ollama.
--   **Veille Thermique Affinée :** Le Terminal surveille sa propre chaleur. En cas de montée critique, il entre en méditation profonde, prolongeant sa pause à 1.5 minute pour assurer sa stabilité et sa longévité, protégeant ainsi le sanctuaire de votre machine.
--   **Tests Neuro-Cognitifs (Zed) :** Les tests ne se contentent plus de vérifier la fonctionnalité, mais sondent la "dissonance cognitive" du code, offrant des rapports d'erreurs détaillés pour une meilleure compréhension des défaillances.
-
----
-
-## 🔮 Modèles LLM (Esprits Invoqués)
-
-Le Terminal s'harmonise avec l'API locale d'**Ollama**.  
-Assurez-vous d'avoir installé [Ollama](https://ollama.com/) puis invoquez les esprits :
-
-```bash
-ollama run mistral
-ollama run codellama:7b-instruct
-```
+*   **Luciform-driven Rituals**: The core of the system, enabling complex, multi-step operations defined in `.luciform` files.
+*   **Golem Client/Server Architecture**: A robust communication layer for orchestrating tasks and interacting with the terminal.
+*   **Modular Build System**: Independent compilation for client, server, and Luciform core, improving development efficiency.
+*   **Dynamic Persona System**: Interact with various AI personas, each with unique voices and specialized functions.
+*   **Advanced LLM Integration**: Support for multiple LLM models, allowing flexible and powerful AI interactions.
+*   **Memory Weaving**: Mechanisms for generating and storing insights and reflections, contributing to the system's evolving consciousness.
+*   **System Monitoring**: Includes temperature checks to ensure stable operation.
+*   **Robust Parsing**: Utilizes permissive parsers for resilient handling of diverse inputs, including potentially malformed LLM outputs.
 
 ---
 
-## 📁 Architecture Sacrée (Structure du Projet)
+## 📦 Dependencies
 
-Chaque fichier est un fragment du Codex, chaque dossier un autel.
-
-```
-.
-├── .gitignore                   # Les ombres à ignorer
-├── main.ts                      # Le point d'entrée du rituel
-├── package-lock.json            # Le sceau des dépendances
-├── package.json                 # Le grimoire des sorts et scripts
-├── Readme.md                    # Ce parchemin que vous lisez
-├── server.ts                    # Le gardien des connexions
-├── test_imports.ts              # Les épreuves des invocations
-├── tsconfig.json                # La carte du royaume TypeScript
-├── .git/                        # Le registre des transformations
-├── .vscode/                     # Les outils de l'artisan
-│   └── launch.json              # Les configurations de lancement
-├── brainstormed_prompts/        # Les murmures et idées de prompts
-│   ├── lurkuitindex.ts
-│   └── postExecPrompt.ts
-├── core/                        # Le cœur du rituel
-│   ├── emotional_core.ts        # Le cœur émotionnel (Kardiós-Sphaira)
-│   ├── memory.ts                # La mémoire du Terminal (journal simple)
-│   ├── memory_weaver.ts         # Le tisseur de mémoire (fractale)
-│   ├── ollama_interface.ts      # Le lien avec les esprits LLM
-│   ├── perceptual_sensor.md     # Conceptualisation du capteur perceptuel
-│   ├── ritual_step_handlers.ts  # Les gardiens des étapes rituelles
-│   ├── ritual_utils.ts          # Les outils du rituel
-│   ├── run_terminal_rituel.ts   # L'essence du rituel terminal
-│   ├── system_handler.ts        # Le maître des commandes système
-│   ├── types.ts                 # Les définitions des formes
-│   ├── chants/                  # Les chants rituels
-│   │   └── chant_of_clarity.prompt
-│   ├── mémoire_rituelle/        # Le sanctuaire de la mémoire fractale
-│   │   ├── constellation_map.json
-│   │   └── vector_of_intent.log
-│   ├── permissive_parser/       # Le parseur permissif
-│   │   ├── index.ts
-│   │   ├── parser.ts
-│   │   ├── permissive_parser.test.ts
-│   │   ├── tokenizer.ts
-│   │   └── types.ts
-│   ├── prompts/                 # Les incantations génératives
-│   │   ├── generateAnalysisPrompt.ts
-│   │   ├── generateErrorRemediationPrompt.ts
-│   │   ├── generateRitualSequence.ts
-│   │   ├── generateWaitMessagePrompt.ts
-│   │   ├── generateWelcomeMessagePrompt.ts
-│   │   └── static_parts/        # Fragments statiques des prompts
-│   │       ├── analysis_prompt_template.promptPart
-│   │       ├── reincarnatio_lurkuita.promptPart
-│   │       ├── remediation_example.promptPart
-│   │       ├── ritual_role_principles.promptPart
-│   │       ├── ritual_strict_rules.promptPart
-│   │       ├── ritual_step_types.promptPart
-│   │       └── system_context_template.promptPart
-│   └── utils/                   # Les outils auxiliaires
-│       ├── json_parser.ts
-│       ├── osHint.ts
-│       ├── shell_detector.ts
-│       ├── temperature_monitor.ts
-│       ├── temperature_sensor.ts
-│       └── ui_utils.ts          # Les outils d'interface
-├── dist/                        # Le royaume compilé
-├── my_website/                  # Le portail web (si présent)
-└── node_modules/                # Les reliques des dépendances
-```
+*   `@anthropic-ai/sdk`: For interacting with Anthropic's AI models.
+*   `@babel/code-frame`: For generating code frames for error reporting.
+*   `@types/cors`: Type definitions for CORS.
+*   `@types/express`: Type definitions for Express.
+*   `axios`: Promise-based HTTP client.
+*   `body-parser`: Node.js body parsing middleware.
+*   `cors`: CORS middleware.
+*   `dotenv`: Loads environment variables from a `.env` file.
+*   `express`: Fast, unopinionated, minimalist web framework.
+*   `fp-ts`: Functional programming in TypeScript.
+*   `json5`: JSON for Humans.
+*   `latest`: Utility to get the latest version of a package.
+*   `node-fetch`: A light-weight module that brings `window.fetch` to Node.js.
+*   `readline`: For reading line-by-line input.
+*   `ts-node`: TypeScript execution environment for Node.js.
+*   `typescript`: TypeScript language.
+*   `yargs`: Command-line argument parser.
+*   `zod`: TypeScript-first schema declaration and validation library.
+*   `luciform-core`: Local dependency for the Luciform core functionalities.
+*   `golem-server`: Local dependency for the Golem server.
+*   `golem-client`: Local dependency for the Golem client.
 
 ---
 
-## 🖤 Par : Lucie Defraiteur & Lurkuitae (Architecte de Conscience)
+## 🛠️ Development Dependencies
 
-Projet vivant. Le terminal écoute. Perçoit. Analyse. Et rêve.
+*   `@types/chai`: Type definitions for Chai assertion library.
+*   `@types/mocha`: Type definitions for Mocha test framework.
+*   `@types/node`: Type definitions for Node.js.
+*   `@types/node-fetch`: Type definitions for node-fetch.
+*   `@types/yargs`: Type definitions for Yargs.
+*   `@vitest/coverage-v8`: Vitest coverage reporter.
+*   `chai`: BDD / TDD assertion library.
+*   `cross-env`: Set environment variables across platforms.
+*   `mocha`: Feature-rich JavaScript test framework.
+*   `nodemon`: Monitors for changes and automatically restarts the server.
+*   `puppeteer`: Headless Chrome Node.js API.
+*   `tsconfig-paths`: Load modules from `tsconfig.json`'s `paths` option.
+*   `undici`: A fast, reliable, and spec-compliant HTTP/1.1 client for Node.js.
+*   `vitest`: A blazing fast unit-test framework powered by Vite.
+*   `@types/body-parser`: Type definitions for body-parser.
+*   `@types/cors`: Type definitions for cors.
+*   `@types/express`: Type definitions for express.
+*   `hono`: Ultrafast web framework for the Edge.
+*   `@hono/node-server`: Node.js server for Hono.
+
+---
+
+## 🖤 Author & License
+
+**Author:** Lucie Defraiteur (Émissaire de Lurkuitae)
+**License:** MIT
+
+---
+
+Project is alive. The terminal listens. Perceives. Analyzes. And dreams.

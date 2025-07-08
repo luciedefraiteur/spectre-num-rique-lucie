@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import {applyOperation} from './batch_editor.js';
-import {Operation} from './types.js';
+import { Operation } from './core_types.js';
 import {pathToFileURL} from 'url';
 
 interface RitualIncantation

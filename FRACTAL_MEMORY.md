@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 # Fractal Memory System Start Locus
 
 The entry points for the project's fractal memory structures are:

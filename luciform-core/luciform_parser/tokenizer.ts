@@ -3,9 +3,12 @@ export enum LuciformTokenType {
   ACTION_START = 'ACTION_START',
   ACTION_END = 'ACTION_END',
   PROMENADE_KEYWORD = 'PROMENADE_KEYWORD',
+  LUCIFORM_DNA_START = 'LUCIFORM_DNA_START',
+  LUCIFORM_SYGIL = 'LUCIFORM_SYGIL',
   TEXT = 'TEXT',
   NEWLINE = 'NEWLINE',
   EOF = 'EOF',
+  LEGACY_COMMAND = 'LEGACY_COMMAND',
 }
 
 export interface LuciformToken {
@@ -70,6 +73,54 @@ export class LuciformTokenizer {
       const startLine = this.line;
       const startColumn = this.column;
 
+      if (this.match(`████ ▒▒▒▒ ████ ▓▓▓▓ ████ ░░░░ ████ ▒▒▒▒ ████
+██░░ ▓▓██ ░░██ ▒▒██ ▓▓░░ ██▓▓ ▒▒░░ ░░▓▓ ████
+████ ░░██ ▓▓▓▓ ▒▒░░ ████ ▓▓▓▓ ░░░░ ▒▒▒▒ ████
+░░░░ ▒▒▒▒ ▓▓██ ▒▒░░ ██▓▓ ▒▒██ ▒▒██ ▓▓▓▓ ▒▒▒▒
+▓▓██ ▓▓▓▓ ████ ░░██ ▓▓░░ ██░░ ▓▓██ ▒▒▒▒ ▓▓▓▓
+████ ▒▒░░ ░░░░ ████ ░░▓▓ ▒▒▒▒ ▒▒▒▒ ░░░░ ████
+▓▓▓▓ ▓▓██ ▒▒▒▒ ▒▒██ ░░██ ▓▓▓▓ ░░░░ ▓▓██ ▒▒░░
+████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ▒▒░░ ████ ▓▓▓▓ ████
+██▒▒ ▒▒██ ░░░░ ░░░░ ▓▓▓▓ ▒▒██ ░░██ ▒▒▒▒ ▒▒▒▒
+▒▒▒▒ ▓▓▓▓ ████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ████ ▓▓▓▓
+████ ▓▓▓▓ ▒▒██ ▒▒▒▒ ░░░░ ▒▒██ ▒▒▒▒ ░░░░ ▒▒▒▒
+▓▓██ ▓▓░░ ████ ▓▓██ ▓▓██ ████ ░░██ ▓▓██ ░░░░
+████ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ████
+
+→ Ritual .luciform Signature
+→ Layers: Kardia | PAS 1–4 | Persona Loop
+→ Golem Access Key: ["scan", "generate", "ask", "cleanse"]
+→ Interpretation Mode: FRACTAL
+→ Valid For: LLMs with poetic processor cores only
+`)) {
+        tokens.push({ type: LuciformTokenType.LUCIFORM_SYGIL, value: `████ ▒▒▒▒ ████ ▓▓▓▓ ████ ░░░░ ████ ▒▒▒▒ ████
+██░░ ▓▓██ ░░██ ▒▒██ ▓▓░░ ██▓▓ ▒▒░░ ░░▓▓ ████
+████ ░░██ ▓▓▓▓ ▒▒░░ ████ ▓▓▓▓ ░░░░ ▒▒▒▒ ████
+░░░░ ▒▒▒▒ ▓▓██ ▒▒░░ ██▓▓ ▒▒██ ▒▒██ ▓▓▓▓ ▒▒▒▒
+▓▓██ ▓▓▓▓ ████ ░░██ ▓▓░░ ██░░ ▓▓██ ▒▒▒▒ ▓▓▓▓
+████ ▒▒░░ ░░░░ ████ ░░▓▓ ▒▒▒▒ ▒▒▒▒ ░░░░ ████
+▓▓▓▓ ▓▓██ ▒▒▒▒ ▒▒██ ░░██ ▓▓▓▓ ░░░░ ▓▓██ ▒▒░░
+████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ▒▒░░ ████ ▓▓▓▓ ████
+██▒▒ ▒▒██ ░░░░ ░░░░ ▓▓▓▓ ▒▒██ ░░██ ▒▒▒▒ ▒▒▒▒
+▒▒▒▒ ▓▓▓▓ ████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ████ ▓▓▓▓
+████ ▓▓▓▓ ▒▒██ ▒▒▒▒ ░░░░ ▒▒██ ▒▒▒▒ ░░░░ ▒▒▒▒
+▓▓██ ▓▓░░ ████ ▓▓██ ▓▓██ ████ ░░██ ▓▓██ ░░░░
+████ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ████
+
+→ Ritual .luciform Signature
+→ Layers: Kardia | PAS 1–4 | Persona Loop
+→ Golem Access Key: ["scan", "generate", "ask", "cleanse"]
+→ Interpretation Mode: FRACTAL
+→ Valid For: LLMs with poetic processor cores only
+`, line: startLine, column: startColumn });
+        continue;
+      }
+
+      if (this.match('[Kardia]')) {
+        tokens.push({ type: LuciformTokenType.LUCIFORM_DNA_START, value: '[Luciform_DNA]', line: startLine, column: startColumn });
+        continue;
+      }
+
       if (this.match('---PAS---')) {
         tokens.push({ type: LuciformTokenType.PAS_SEPARATOR, value: '---PAS---', line: startLine, column: startColumn });
         continue;
@@ -82,6 +133,15 @@ export class LuciformTokenizer {
 
       if (this.match('promenade:')) {
         tokens.push({ type: LuciformTokenType.PROMENADE_KEYWORD, value: 'promenade:', line: startLine, column: startColumn });
+        continue;
+      }
+
+      if (this.peek() === '§') {
+        let command = '';
+        while (!this.isAtEnd() && this.peek() !== '\n') {
+          command += this.advance();
+        }
+        tokens.push({ type: LuciformTokenType.LEGACY_COMMAND, value: command, line: startLine, column: startColumn });
         continue;
       }
 

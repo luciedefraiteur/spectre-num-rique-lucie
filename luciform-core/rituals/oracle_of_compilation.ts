@@ -1,4 +1,4 @@
-import {Operation} from '../types.js';
+import { Operation } from '../core_types.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import {spawn} from 'child_process';

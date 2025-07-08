@@ -9,7 +9,9 @@
     }
   },
   "include": [
-    "golem_client.ts"
+    "golem_client.ts",
+    "golem_launcher.ts",
+    "golem_test_client.ts"
   ],
   "exclude": [
     "node_modules"

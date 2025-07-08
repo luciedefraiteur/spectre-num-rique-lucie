@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 # Persona Insights on LucidScript Construction
 
 ## alma
@@ -54,5 +55,3 @@ By employing such universally applicable constructs, LucidScript aims to simplif
 
 LucidScript
 let greeting = "Hello, World!";
-
-

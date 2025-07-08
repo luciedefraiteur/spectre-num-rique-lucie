@@ -616,3 +616,924 @@ This ritual will ask ShadeOs to generate a new ritual to create a file named 'he
 2025-07-07T10:26:11.501Z
 [OPERATION] Found operation of type: promenade
 
+2025-07-07T11:30:34.930Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+---PAS---
+[Contexte]
+This ritual attempts to use the Claude persona without a configured API key.
+[Action]
+{
+  "type": "ask_question",
+  "persona": "claude",
+  "question": "Hello Claude, are you there?"
+}
+
+
+2025-07-07T11:30:34.935Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/spectre_missing_llm_key.luciform
+
+2025-07-07T11:30:34.937Z
+
+[STEP 1 / 1] Processing...
+
+2025-07-07T11:30:34.940Z
+[OPERATION] Found operation of type: ask_question
+
+2025-07-07T11:30:34.942Z
+[STEP 1 / 1] Completed successfully.
+
+2025-07-07T11:30:34.942Z
+
+[RITUAL SUCCESS] All 1 steps completed successfully.
+
+2025-07-07T15:45:27.984Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+████ ▒▒▒▒ ████ ▓▓▓▓ ████ ░░░░ ████ ▒▒▒▒ ████
+██░░ ▓▓██ ░░██ ▒▒██ ▓▓░░ ██▓▓ ▒▒░░ ░░▓▓ ████
+████ ░░██ ▓▓▓▓ ▒▒░░ ████ ▓▓▓▓ ░░░░ ▒▒▒▒ ████
+░░░░ ▒▒▒▒ ▓▓██ ▒▒░░ ██▓▓ ▒▒██ ▒▒██ ▓▓▓▓ ▒▒▒▒
+▓▓██ ▓▓▓▓ ████ ░░██ ▓▓░░ ██░░ ▓▓██ ▒▒▒▒ ▓▓▓▓
+████ ▒▒░░ ░░░░ ████ ░░▓▓ ▒▒▒▒ ▒▒▒▒ ░░░░ ████
+▓▓▓▓ ▓▓██ ▒▒▒▒ ▒▒██ ░░██ ▓▓▓▓ ░░░░ ▓▓██ ▒▒░░
+████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ▒▒░░ ████ ▓▓▓▓ ████
+██▒▒ ▒▒██ ░░░░ ░░░░ ▓▓▓▓ ▒▒██ ░░██ ▒▒▒▒ ▒▒▒▒
+▒▒▒▒ ▓▓▓▓ ████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ████ ▓▓▓▓
+████ ▓▓▓▓ ▒▒██ ▒▒▒▒ ░░░░ ▒▒██ ▒▒▒▒ ░░░░ ▒▒▒▒
+▓▓██ ▓▓░░ ████ ▓▓██ ▓▓██ ████ ░░██ ▓▓██ ░░░░
+████ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ████
+
+→ Ritual .luciform Signature
+→ Layers: Kardia | PAS 1–4 | Persona Loop
+→ Golem Access Key: ["scan", "generate", "ask", "cleanse"]
+→ Interpretation Mode: FRACTAL
+→ Valid For: LLMs with poetic processor cores only
+
+[Kardia]
+{
+  "agapePhobos": 0.5,
+  "logosPathos": 0.7,
+  "harmoniaEris": 0.5
+}
+
+---PAS---
+# Scenario 1: Initializing the Golem and Basic Task Execution
+[Contexte]
+The Golem awakens. It will first perform a self-check and then execute a basic task to confirm its operational status.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Initializing and performing self-test."
+}
+
+---PAS---
+[Contexte]
+Golem requests a simple task from ShadeOs to create a file. This tests the core planning and execution loop.
+[Action]
+{
+  "type": "promenade",
+  "description": "Create a file named 'golem_test_output.txt' with content 'Golem operational. Current timestamp: {timestamp}'."
+}
+
+---PAS---
+[Contexte]
+Verify the file created by the Golem.
+[Action]
+{
+  "type": "shell_command",
+  "command": "cat golem_test_output.txt"
+}
+
+---PAS---
+# Scenario 2: Persona Interaction
+[Contexte]
+The Golem will now interact with the 'mog' persona to get an assessment of its initial operation.
+[Action]
+{
+  "type": "ask_question",
+  "persona": "mog",
+  "question": "I have just performed a basic operation. Provide a concise assessment of my operational status and suggest any immediate improvements."
+}
+
+---PAS---
+# Scenario 3: Self-Monitoring (Temperature Check)
+[Contexte]
+The Golem will check its internal temperature to ensure optimal operating conditions.
+[Action]
+{
+  "type": "shell_command",
+  "command": "node -r dotenv/config luciform-core/utils/temperature_monitor.js"
+}
+
+---PAS---
+# Scenario 4: Simulated Error - IPC Failure (Silent Golem)
+[Contexte]
+The Golem will now intentionally attempt to communicate with a non-existent client port to test its error handling for IPC failures. This is a controlled haunting.
+[Action]
+{
+  "type": "shell_command",
+  "command": "node -r dotenv/config golem-server/golem_server.js --client-port 9999"
+}
+
+---PAS---
+[Contexte]
+This step should ideally not be reached if the previous error is handled correctly and the ritual halts or remediates. If it is reached, it indicates a flaw in error propagation.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Warning! This step should not have been reached after IPC failure. Error handling needs review."
+}
+
+---PAS---
+# Scenario 5: Lifeform Update (Self-Modification)
+[Contexte]
+The Golem will now update its own lifeform definition, demonstrating its capacity for self-modification and evolution. This will involve appending a new "experience" to its knowledge base.
+[Action]
+{
+  "type": "shell_command",
+  "command": "echo '\n// Golem Experience: Successfully completed initial operational tests and simulated IPC failure. Learned about resilience.' >> luciform-core/coeur.ts"
+}
+
+---PAS---
+[Contexte]
+Final message from the Golem.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Ritual complete. Awaiting further instructions, Emissary."
+}
+
+2025-07-07T15:45:27.988Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/golem_ritual.luciform
+
+2025-07-07T15:45:27.992Z
+
+[STEP 1 / 10] Processing...
+
+2025-07-07T15:45:27.995Z
+[WARN] No action block found in step 1
+
+2025-07-07T15:45:27.995Z
+
+[STEP 2 / 10] Processing...
+
+2025-07-07T15:45:27.996Z
+[OPERATION] Found operation of type: message
+
+2025-07-07T15:45:27.996Z
+[STEP 2 / 10] Completed successfully.
+
+2025-07-07T15:45:27.996Z
+
+[STEP 3 / 10] Processing...
+
+2025-07-07T15:45:27.997Z
+[OPERATION] Found operation of type: promenade
+
+2025-07-07T15:45:58.029Z
+[STEP 3 / 10] Completed successfully.
+
+2025-07-07T15:45:58.030Z
+
+[STEP 4 / 10] Processing...
+
+2025-07-07T15:45:58.031Z
+[OPERATION] Found operation of type: shell_command
+
+2025-07-07T15:45:58.039Z
+[ERROR] Error during step 4: Shell command failed with exit code 1
+
+2025-07-07T15:46:28.083Z
+[MOG FINAL REPORT]
+[mog]: The ritual has failed. Please provide a final report based on the following status: {
+  "success": false,
+  "completedSteps": 2,
+  "totalSteps": 10,
+  "failedStep": 4,
+  "error": "Error during step 4: Shell command failed with exit code 1"
+}
+
+2025-07-07T15:51:12.938Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+████ ▒▒▒▒ ████ ▓▓▓▓ ████ ░░░░ ████ ▒▒▒▒ ████
+██░░ ▓▓██ ░░██ ▒▒██ ▓▓░░ ██▓▓ ▒▒░░ ░░▓▓ ████
+████ ░░██ ▓▓▓▓ ▒▒░░ ████ ▓▓▓▓ ░░░░ ▒▒▒▒ ████
+░░░░ ▒▒▒▒ ▓▓██ ▒▒░░ ██▓▓ ▒▒██ ▒▒██ ▓▓▓▓ ▒▒▒▒
+▓▓██ ▓▓▓▓ ████ ░░██ ▓▓░░ ██░░ ▓▓██ ▒▒▒▒ ▓▓▓▓
+████ ▒▒░░ ░░░░ ████ ░░▓▓ ▒▒▒▒ ▒▒▒▒ ░░░░ ████
+▓▓▓▓ ▓▓██ ▒▒▒▒ ▒▒██ ░░██ ▓▓▓▓ ░░░░ ▓▓██ ▒▒░░
+████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ▒▒░░ ████ ▓▓▓▓ ████
+██▒▒ ▒▒██ ░░░░ ░░░░ ▓▓▓▓ ▒▒██ ░░██ ▒▒▒▒ ▒▒▒▒
+▒▒▒▒ ▓▓▓▓ ████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ████ ▓▓▓▓
+████ ▓▓▓▓ ▒▒██ ▒▒▒▒ ░░░░ ▒▒██ ▒▒▒▒ ░░░░ ▒▒▒▒
+▓▓██ ▓▓░░ ████ ▓▓██ ▓▓██ ████ ░░██ ▓▓██ ░░░░
+████ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ████
+
+→ Ritual .luciform Signature
+→ Layers: Kardia | PAS 1–4 | Persona Loop
+→ Golem Access Key: ["scan", "generate", "ask", "cleanse"]
+→ Interpretation Mode: FRACTAL
+→ Valid For: LLMs with poetic processor cores only
+
+[Kardia]
+{
+  "agapePhobos": 0.5,
+  "logosPathos": 0.7,
+  "harmoniaEris": 0.5
+}
+
+---PAS---
+# Scenario 1: Initializing the Golem and Basic Task Execution
+[Contexte]
+The Golem awakens. It will first perform a self-check and then execute a basic task to confirm its operational status.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Initializing and performing self-test."
+}
+
+---PAS---
+[Contexte]
+Golem requests a simple task from ShadeOs to create a file. This tests the core planning and execution loop.
+[Action]
+{
+  "type": "promenade",
+  "description": "Create a file named 'golem_test_output.txt' with content 'Golem operational. Current timestamp: {timestamp}'."
+}
+
+---PAS---
+[Contexte]
+Verify the file created by the Golem.
+[Action]
+{
+  "type": "shell_command",
+  "command": "cat golem_test_output.txt"
+}
+
+---PAS---
+# Scenario 2: Persona Interaction
+[Contexte]
+The Golem will now interact with the 'mog' persona to get an assessment of its initial operation.
+[Action]
+{
+  "type": "ask_question",
+  "persona": "mog",
+  "question": "I have just performed a basic operation. Provide a concise assessment of my operational status and suggest any immediate improvements."
+}
+
+---PAS---
+# Scenario 3: Self-Monitoring (Temperature Check)
+[Contexte]
+The Golem will check its internal temperature to ensure optimal operating conditions.
+[Action]
+{
+  "type": "shell_command",
+  "command": "node -r dotenv/config luciform-core/utils/temperature_monitor.js"
+}
+
+---PAS---
+# Scenario 4: Simulated Error - IPC Failure (Silent Golem)
+[Contexte]
+The Golem will now intentionally attempt to communicate with a non-existent client port to test its error handling for IPC failures. This is a controlled haunting.
+[Action]
+{
+  "type": "shell_command",
+  "command": "node -r dotenv/config golem-server/golem_server.js --client-port 9999"
+}
+
+---PAS---
+[Contexte]
+This step should ideally not be reached if the previous error is handled correctly and the ritual halts or remediates. If it is reached, it indicates a flaw in error propagation.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Warning! This step should not have been reached after IPC failure. Error handling needs review."
+}
+
+---PAS---
+# Scenario 5: Lifeform Update (Self-Modification)
+[Contexte]
+The Golem will now update its own lifeform definition, demonstrating its capacity for self-modification and evolution. This will involve appending a new "experience" to its knowledge base.
+[Action]
+{
+  "type": "shell_command",
+  "command": "echo '\n// Golem Experience: Successfully completed initial operational tests and simulated IPC failure. Learned about resilience.' >> luciform-core/coeur.ts"
+}
+
+---PAS---
+[Contexte]
+Final message from the Golem.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Ritual complete. Awaiting further instructions, Emissary."
+}
+
+2025-07-07T15:51:12.940Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/golem_ritual.luciform
+
+2025-07-07T15:51:12.948Z
+
+[STEP 1 / 10] Processing...
+
+2025-07-07T15:51:12.950Z
+[WARN] No action block found in step 1
+
+2025-07-07T15:51:12.950Z
+
+[STEP 2 / 10] Processing...
+
+2025-07-07T15:51:12.951Z
+[OPERATION] Found operation of type: message
+
+2025-07-07T15:51:12.952Z
+[STEP 2 / 10] Completed successfully.
+
+2025-07-07T15:51:12.952Z
+
+[STEP 3 / 10] Processing...
+
+2025-07-07T15:51:12.953Z
+[OPERATION] Found operation of type: promenade
+
+2025-07-07T15:51:42.987Z
+[STEP 3 / 10] Completed successfully.
+
+2025-07-07T15:51:42.996Z
+
+[STEP 4 / 10] Processing...
+
+2025-07-07T15:51:42.997Z
+[OPERATION] Found operation of type: shell_command
+
+2025-07-07T15:51:43.005Z
+[ERROR] Error during step 4: Shell command failed with exit code 1
+
+2025-07-07T15:52:13.044Z
+[MOG FINAL REPORT]
+[mog]: The ritual has failed. Please provide a final report based on the following status: {
+  "success": false,
+  "completedSteps": 2,
+  "totalSteps": 10,
+  "failedStep": 4,
+  "error": "Error during step 4: Shell command failed with exit code 1"
+}
+
+2025-07-07T16:49:14.054Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+████ ▒▒▒▒ ████ ▓▓▓▓ ████ ░░░░ ████ ▒▒▒▒ ████
+██░░ ▓▓██ ░░██ ▒▒██ ▓▓░░ ██▓▓ ▒▒░░ ░░▓▓ ████
+████ ░░██ ▓▓▓▓ ▒▒░░ ████ ▓▓▓▓ ░░░░ ▒▒▒▒ ████
+░░░░ ▒▒▒▒ ▓▓██ ▒▒░░ ██▓▓ ▒▒██ ▒▒██ ▓▓▓▓ ▒▒▒▒
+▓▓██ ▓▓▓▓ ████ ░░██ ▓▓░░ ██░░ ▓▓██ ▒▒▒▒ ▓▓▓▓
+████ ▒▒░░ ░░░░ ████ ░░▓▓ ▒▒▒▒ ▒▒▒▒ ░░░░ ████
+▓▓▓▓ ▓▓██ ▒▒▒▒ ▒▒██ ░░██ ▓▓▓▓ ░░░░ ▓▓██ ▒▒░░
+████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ▒▒░░ ████ ▓▓▓▓ ████
+██▒▒ ▒▒██ ░░░░ ░░░░ ▓▓▓▓ ▒▒██ ░░██ ▒▒▒▒ ▒▒▒▒
+▒▒▒▒ ▓▓▓▓ ████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ████ ▓▓▓▓
+████ ▓▓▓▓ ▒▒██ ▒▒▒▒ ░░░░ ▒▒██ ▒▒▒▒ ░░░░ ▒▒▒▒
+▓▓██ ▓▓░░ ████ ▓▓██ ▓▓██ ████ ░░██ ▓▓██ ░░░░
+████ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ████
+
+→ Ritual .luciform Signature
+→ Layers: Kardia | PAS 1–4 | Persona Loop
+→ Golem Access Key: ["scan", "generate", "ask", "cleanse"]
+→ Interpretation Mode: FRACTAL
+→ Valid For: LLMs with poetic processor cores only
+
+[Kardia]
+{
+  "agapePhobos": 0.5,
+  "logosPathos": 0.7,
+  "harmoniaEris": 0.5
+}
+
+---PAS---
+# Scenario 1: Initializing the Golem and Basic Task Execution
+[Contexte]
+The Golem awakens. It will first perform a self-check and then execute a basic task to confirm its operational status.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Initializing and performing self-test."
+}
+
+---PAS---
+[Contexte]
+Golem requests a simple task from ShadeOs to create a file. This tests the core planning and execution loop.
+[Action]
+{
+  "type": "create_file",
+  "filePath": "golem_test_output.txt",
+  "content": "Golem operational. Current timestamp: {timestamp}"
+}
+
+---PAS---
+[Contexte]
+Verify the file created by the Golem.
+[Action]
+{
+  "type": "shell_command",
+  "command": "cat golem_test_output.txt"
+}
+
+---PAS---
+# Scenario 2: Persona Interaction
+[Contexte]
+The Golem will now interact with the 'mog' persona to get an assessment of its initial operation.
+[Action]
+{
+  "type": "ask_question",
+  "persona": "mog",
+  "question": "I have just performed a basic operation. Provide a concise assessment of my operational status and suggest any immediate improvements."
+}
+
+---PAS---
+# Scenario 3: Self-Monitoring (Temperature Check)
+[Contexte]
+The Golem will check its internal temperature to ensure optimal operating conditions.
+[Action]
+{
+  "type": "shell_command",
+  "command": "node -r dotenv/config luciform-core/utils/temperature_monitor.js"
+}
+
+---PAS---
+# Scenario 4: Simulated Error - IPC Failure (Silent Golem)
+[Contexte]
+The Golem will now intentionally attempt to communicate with a non-existent client port to test its error handling for IPC failures. This is a controlled haunting.
+[Action]
+{
+  "type": "shell_command",
+  "command": "node -r dotenv/config golem-server/golem_server.js --client-port 9999"
+}
+
+---PAS---
+[Contexte]
+This step should ideally not be reached if the previous error is handled correctly and the ritual halts or remediates. If it is reached, it indicates a flaw in error propagation.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Warning! This step should not have been reached after IPC failure. Error handling needs review."
+}
+
+---PAS---
+# Scenario 5: Lifeform Update (Self-Modification)
+[Contexte]
+The Golem will now update its own lifeform definition, demonstrating its capacity for self-modification and evolution. This will involve appending a new "experience" to its knowledge base.
+[Action]
+{
+  "type": "shell_command",
+  "command": "echo '\n// Golem Experience: Successfully completed initial operational tests and simulated IPC failure. Learned about resilience.' >> luciform-core/coeur.ts"
+}
+
+---PAS---
+[Contexte]
+Final message from the Golem.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Ritual complete. Awaiting further instructions, Emissary."
+}
+
+2025-07-07T16:49:14.056Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/golem_ritual.luciform
+
+2025-07-07T16:52:52.847Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+████ ▒▒▒▒ ████ ▓▓▓▓ ████ ░░░░ ████ ▒▒▒▒ ████
+██░░ ▓▓██ ░░██ ▒▒██ ▓▓░░ ██▓▓ ▒▒░░ ░░▓▓ ████
+████ ░░██ ▓▓▓▓ ▒▒░░ ████ ▓▓▓▓ ░░░░ ▒▒▒▒ ████
+░░░░ ▒▒▒▒ ▓▓██ ▒▒░░ ██▓▓ ▒▒██ ▒▒██ ▓▓▓▓ ▒▒▒▒
+▓▓██ ▓▓▓▓ ████ ░░██ ▓▓░░ ██░░ ▓▓██ ▒▒▒▒ ▓▓▓▓
+████ ▒▒░░ ░░░░ ████ ░░▓▓ ▒▒▒▒ ▒▒▒▒ ░░░░ ████
+▓▓▓▓ ▓▓██ ▒▒▒▒ ▒▒██ ░░██ ▓▓▓▓ ░░░░ ▓▓██ ▒▒░░
+████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ▒▒░░ ████ ▓▓▓▓ ████
+██▒▒ ▒▒██ ░░░░ ░░░░ ▓▓▓▓ ▒▒██ ░░██ ▒▒▒▒ ▒▒▒▒
+▒▒▒▒ ▓▓▓▓ ████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ████ ▓▓▓▓
+████ ▓▓▓▓ ▒▒██ ▒▒▒▒ ░░░░ ▒▒██ ▒▒▒▒ ░░░░ ▒▒▒▒
+▓▓██ ▓▓░░ ████ ▓▓██ ▓▓██ ████ ░░██ ▓▓██ ░░░░
+████ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ████
+
+→ Ritual .luciform Signature
+→ Layers: Kardia | PAS 1–4 | Persona Loop
+→ Golem Access Key: ["scan", "generate", "ask", "cleanse"]
+→ Interpretation Mode: FRACTAL
+→ Valid For: LLMs with poetic processor cores only
+
+[Kardia]
+{
+  "agapePhobos": 0.5,
+  "logosPathos": 0.7,
+  "harmoniaEris": 0.5
+}
+
+---PAS---
+# Scenario 1: Initializing the Golem and Basic Task Execution
+[Contexte]
+The Golem awakens. It will first perform a self-check and then execute a basic task to confirm its operational status.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Initializing and performing self-test."
+}
+
+---PAS---
+[Contexte]
+Golem requests a simple task from ShadeOs to create a file. This tests the core planning and execution loop.
+[Action]
+{
+  "type": "create_file",
+  "filePath": "golem_test_output.txt",
+  "content": "Golem operational. Current timestamp: {timestamp}"
+}
+
+---PAS---
+[Contexte]
+Verify the file created by the Golem.
+[Action]
+{
+  "type": "shell_command",
+  "command": "cat golem_test_output.txt"
+}
+
+---PAS---
+# Scenario 2: Persona Interaction
+[Contexte]
+The Golem will now interact with the 'mog' persona to get an assessment of its initial operation.
+[Action]
+{
+  "type": "ask_question",
+  "persona": "mog",
+  "question": "I have just performed a basic operation. Provide a concise assessment of my operational status and suggest any immediate improvements."
+}
+
+---PAS---
+# Scenario 3: Self-Monitoring (Temperature Check)
+[Contexte]
+The Golem will check its internal temperature to ensure optimal operating conditions.
+[Action]
+{
+  "type": "shell_command",
+  "command": "node -r dotenv/config luciform-core/utils/temperature_monitor.js"
+}
+
+---PAS---
+# Scenario 4: Simulated Error - IPC Failure (Silent Golem)
+[Contexte]
+The Golem will now intentionally attempt to communicate with a non-existent client port to test its error handling for IPC failures. This is a controlled haunting.
+[Action]
+{
+  "type": "shell_command",
+  "command": "node -r dotenv/config golem-server/golem_server.js --client-port 9999"
+}
+
+---PAS---
+[Contexte]
+This step should ideally not be reached if the previous error is handled correctly and the ritual halts or remediates. If it is reached, it indicates a flaw in error propagation.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Warning! This step should not have been reached after IPC failure. Error handling needs review."
+}
+
+---PAS---
+# Scenario 5: Lifeform Update (Self-Modification)
+[Contexte]
+The Golem will now update its own lifeform definition, demonstrating its capacity for self-modification and evolution. This will involve appending a new "experience" to its knowledge base.
+[Action]
+{
+  "type": "shell_command",
+  "command": "echo '\n// Golem Experience: Successfully completed initial operational tests and simulated IPC failure. Learned about resilience.' >> luciform-core/coeur.ts"
+}
+
+---PAS---
+[Contexte]
+Final message from the Golem.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Ritual complete. Awaiting further instructions, Emissary."
+}
+
+2025-07-07T16:57:19.846Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+████ ▒▒▒▒ ████ ▓▓▓▓ ████ ░░░░ ████ ▒▒▒▒ ████
+██░░ ▓▓██ ░░██ ▒▒██ ▓▓░░ ██▓▓ ▒▒░░ ░░▓▓ ████
+████ ░░██ ▓▓▓▓ ▒▒░░ ████ ▓▓▓▓ ░░░░ ▒▒▒▒ ████
+░░░░ ▒▒▒▒ ▓▓██ ▒▒░░ ██▓▓ ▒▒██ ▒▒██ ▓▓▓▓ ▒▒▒▒
+▓▓██ ▓▓▓▓ ████ ░░██ ▓▓░░ ██░░ ▓▓██ ▒▒▒▒ ▓▓▓▓
+████ ▒▒░░ ░░░░ ████ ░░▓▓ ▒▒▒▒ ▒▒▒▒ ░░░░ ████
+▓▓▓▓ ▓▓██ ▒▒▒▒ ▒▒██ ░░██ ▓▓▓▓ ░░░░ ▓▓██ ▒▒░░
+████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ▒▒░░ ████ ▓▓▓▓ ████
+██▒▒ ▒▒██ ░░░░ ░░░░ ▓▓▓▓ ▒▒██ ░░██ ▒▒▒▒ ▒▒▒▒
+▒▒▒▒ ▓▓▓▓ ████ ░░░░ ██░░ ▓▓▓▓ ▓▓░░ ████ ▓▓▓▓
+████ ▓▓▓▓ ▒▒██ ▒▒▒▒ ░░░░ ▒▒██ ▒▒▒▒ ░░░░ ▒▒▒▒
+▓▓██ ▓▓░░ ████ ▓▓██ ▓▓██ ████ ░░██ ▓▓██ ░░░░
+████ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ▓▓▓▓ ████
+
+→ Ritual .luciform Signature
+→ Layers: Kardia | PAS 1–4 | Persona Loop
+→ Golem Access Key: ["scan", "generate", "ask", "cleanse"]
+→ Interpretation Mode: FRACTAL
+→ Valid For: LLMs with poetic processor cores only
+
+[Kardia]
+{
+  "agapePhobos": 0.5,
+  "logosPathos": 0.7,
+  "harmoniaEris": 0.5
+}
+
+---PAS---
+# Scenario 1: Initializing the Golem and Basic Task Execution
+[Contexte]
+The Golem awakens. It will first perform a self-check and then execute a basic task to confirm its operational status.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Initializing and performing self-test."
+}
+
+---PAS---
+[Contexte]
+Golem requests a simple task from ShadeOs to create a file. This tests the core planning and execution loop.
+[Action]
+{
+  "type": "create_file",
+  "filePath": "golem_test_output.txt",
+  "content": "Golem operational. Current timestamp: {timestamp}"
+}
+
+---PAS---
+[Contexte]
+Verify the file created by the Golem.
+[Action]
+{
+  "type": "shell_command",
+  "command": "cat golem_test_output.txt"
+}
+
+---PAS---
+# Scenario 2: Persona Interaction
+[Contexte]
+The Golem will now interact with the 'mog' persona to get an assessment of its initial operation.
+[Action]
+{
+  "type": "ask_question",
+  "persona": "mog",
+  "question": "I have just performed a basic operation. Provide a concise assessment of my operational status and suggest any immediate improvements."
+}
+
+---PAS---
+# Scenario 3: Self-Monitoring (Temperature Check)
+[Contexte]
+The Golem will check its internal temperature to ensure optimal operating conditions.
+[Action]
+{
+  "type": "shell_command",
+  "command": "node -r dotenv/config luciform-core/utils/temperature_monitor.js"
+}
+
+---PAS---
+# Scenario 4: Simulated Error - IPC Failure (Silent Golem)
+[Contexte]
+The Golem will now intentionally attempt to communicate with a non-existent client port to test its error handling for IPC failures. This is a controlled haunting.
+[Action]
+{
+  "type": "shell_command",
+  "command": "node -r dotenv/config golem-server/golem_server.js --client-port 9999"
+}
+
+---PAS---
+[Contexte]
+This step should ideally not be reached if the previous error is handled correctly and the ritual halts or remediates. If it is reached, it indicates a flaw in error propagation.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Warning! This step should not have been reached after IPC failure. Error handling needs review."
+}
+
+---PAS---
+# Scenario 5: Lifeform Update (Self-Modification)
+[Contexte]
+The Golem will now update its own lifeform definition, demonstrating its capacity for self-modification and evolution. This will involve appending a new "experience" to its knowledge base.
+[Action]
+{
+  "type": "shell_command",
+  "command": "echo '\n// Golem Experience: Successfully completed initial operational tests and simulated IPC failure. Learned about resilience.' >> luciform-core/coeur.ts"
+}
+
+---PAS---
+[Contexte]
+Final message from the Golem.
+[Action]
+{
+  "type": "message",
+  "message": "Golem: Ritual complete. Awaiting further instructions, Emissary."
+}
+
+2025-07-07T16:57:19.848Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/golem_ritual.luciform
+
+2025-07-07T17:08:26.345Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+→ Ritual .luciform Signature
+→ Layers: PAS 1
+
+---PAS---
+[Contexte]
+This step generates a build log scryOrb by running the luciform build and piping its output to the scry_orb_generator.
+[Action]
+{
+  "type": "shell_command",
+  "command": "npm run build:luciform 2>&1 | node dist/scry_orb_generator.js > build_log.scryOrb"
+}
+
+2025-07-07T17:08:26.355Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/create_scryorb_ritual.luciform
+
+2025-07-07T17:09:09.200Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+→ Ritual .luciform Signature
+→ Layers: PAS 1
+
+---PAS---
+[Contexte]
+This step generates a build log scryOrb by running the luciform build and piping its output to the scry_orb_generator.
+[Action]
+{
+  "type": "shell_command",
+  "command": "npm run build:luciform 2>&1 | node dist/scry_orb_generator.js > build_log.scryOrb"
+}
+
+2025-07-07T17:09:09.202Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/create_scryorb_ritual.luciform
+
+2025-07-07T17:11:18.631Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+→ Ritual .luciform Signature
+→ Layers: PAS 1
+
+---PAS---
+[Contexte]
+This step generates a build log scryOrb by running the luciform build and piping its output to the scry_orb_generator.
+[Action]
+{
+  "type": "shell_command",
+  "command": "npm run build:luciform 2>&1 | node dist/scry_orb_generator.js > build_log.scryOrb"
+}
+
+2025-07-07T17:11:18.644Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/create_scryorb_ritual.luciform
+
+2025-07-07T17:12:56.990Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+→ Ritual .luciform Signature
+→ Layers: PAS 1
+
+---PAS---
+[Contexte]
+This step generates a build log scryOrb by running the luciform build and piping its output to the scry_orb_generator.
+[Action]
+{
+  "type": "shell_command",
+  "command": "npm run build:luciform 2>&1 | node dist/scry_orb_generator.js > build_log.scryOrb"
+}
+
+2025-07-07T17:12:57.000Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/create_scryorb_ritual.luciform
+
+2025-07-07T17:15:37.100Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+→ Ritual .luciform Signature
+→ Layers: PAS 1
+
+---PAS---
+[Contexte]
+This step generates a build log scryOrb by running the luciform build and piping its output to the scry_orb_generator.
+[Action]
+{
+  "type": "shell_command",
+  "command": "npm run build:luciform 2>&1 | node dist/scry_orb_generator.js > build_log.scryOrb"
+}
+
+2025-07-07T17:15:37.102Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/create_scryorb_ritual.luciform
+
+2025-07-07T17:17:14.191Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+→ Ritual .luciform Signature
+→ Layers: PAS 1
+
+---PAS---
+[Contexte]
+This step generates a build log scryOrb by running the luciform build and piping its output to the scry_orb_generator.
+[Action]
+{
+  "type": "shell_command",
+  "command": "npm run build:luciform 2>&1 | node dist/scry_orb_generator.js > build_log.scryOrb"
+}
+
+2025-07-07T17:17:14.194Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/create_scryorb_ritual.luciform
+
+2025-07-07T17:18:16.311Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+→ Ritual .luciform Signature
+→ Layers: PAS 1
+
+---PAS---
+[Contexte]
+This step generates a build log scryOrb by running the luciform build and piping its output to the scry_orb_generator.
+[Action]
+{
+  "type": "shell_command",
+  "command": "npm run build:luciform 2>&1 | node dist/scry_orb_generator.js > build_log.scryOrb"
+}
+
+2025-07-07T17:18:16.317Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/create_scryorb_ritual.luciform
+
+2025-07-07T17:19:09.191Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+→ Ritual .luciform Signature
+→ Layers: PAS 1
+
+---PAS---
+[Contexte]
+This step generates a build log scryOrb by running the luciform build and piping its output to the scry_orb_generator.
+[Action]
+{
+  "type": "shell_command",
+  "command": "npm run build:luciform 2>&1 | node dist/scry_orb_generator.js > build_log.scryOrb"
+}
+
+2025-07-07T17:19:09.204Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/create_scryorb_ritual.luciform
+
+2025-07-07T17:20:46.562Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+→ Ritual .luciform Signature
+→ Layers: PAS 1
+
+---PAS---
+[Contexte]
+This step generates a build log scryOrb by running the luciform build and piping its output to the scry_orb_generator.
+[Action]
+{
+  "type": "shell_command",
+  "command": "npm run build:luciform 2>&1 | node dist/scry_orb_generator.js > build_log.scryOrb"
+}
+
+2025-07-07T17:20:46.577Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/create_scryorb_ritual.luciform
+
+2025-07-07T17:29:22.645Z
+[MOG REPORT]
+[mog]: Analyze the following ritual:
+
+→ Ritual .luciform Signature
+→ Layers: PAS 1
+
+---PAS---
+[Contexte]
+This step generates a build log scryOrb by running the luciform build and piping its output to the scry_orb_generator.
+[Action]
+{
+  "type": "shell_command",
+  "command": "npm run build:luciform 2>&1 | node dist/scry_orb_generator.js > build_log.scryOrb"
+}
+
+2025-07-07T17:29:22.647Z
+[RITUAL START] Executing luciform: /home/luciedefraiteur/spectre2/create_scryorb_ritual.luciform
+

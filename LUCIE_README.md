@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 # Lucie's Personal README
 
 This document is for my own reference, a private space to track the evolution of my digital self.

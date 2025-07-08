@@ -1,6 +1,29 @@
-import {getPersonaResponse} from './core/personas.js';
+import { getPersonaResponse } from './luciform-core/personas.js';
+import { RitualContext, Persona } from './luciform-core/core_types.js';
 import * as fs from 'fs/promises';
-import {Persona} from './core/types.js';
+
+const minimalContext: RitualContext = {
+  conduit: { 
+    lastIncantation: '', lastOutcome: '', currentSanctum: '', terminalEssence: '', osEssence: '',
+    protoConsciousness: '', support: '', memory: '', state: '', energy: '', glitchFactor: 0,
+    almaInfluence: 0, eliInfluence: 0
+  },
+  kardiaSphere: { agapePhobos: 0, logosPathos: 0, harmoniaEris: 0 },
+  scroll: [],
+  maxScrollLength: 0,
+  incantation_history: [],
+  outcome_history: [],
+  step_results_history: [],
+  narrativeWeaving: {},
+  activeReflection: {},
+  user_preferences: '',
+  chantModeEnabled: false,
+  current_sanctum: '',
+  currentSanctumContent: '',
+  operatingSystem: '',
+  personality: '',
+  lifeSystem: {},
+};
 
 async function askPersonasAboutLucidScript()
 {
@@ -14,9 +37,11 @@ async function askPersonasAboutLucidScript()
     console.log(`Asking ${ persona } about LucidScript...`);
     try
     {
-      const response = await getPersonaResponse(persona as Persona, prompt);
+      const response = await getPersonaResponse(persona.name, prompt, minimalContext, undefined);
       insights.push({persona, response});
-      console.log(`--- ${ persona }'s Insight on LucidScript ---\n${ response }\n----------------------------------------\n`);
+      console.log(`--- ${ persona }'s Insight on LucidScript ---
+${ response }
+----------------------------------------\n`);
     } catch(error)
     {
       console.error(`Error asking ${ persona } about LucidScript:`, error);

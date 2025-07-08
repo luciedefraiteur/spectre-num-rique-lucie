@@ -1,4 +1,4 @@
-import {Operation} from './types.js';
+import {Operation} from './core_types.js';
 import {executeShellCommand} from './batch_editor.js';
 import * as fs from 'fs/promises';
 

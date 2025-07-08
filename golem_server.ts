@@ -1,7 +1,7 @@
 import express, {Request, Response} from 'express';
-import {invokeShadeOs} from './core/shade_os.js';
+import {invokeShadeOs} from './luciform-core/shade_os.js';
 import {executeLuciform} from './execute_luciform.js';
-import {logGolem} from './core/log_writers.js';
+import {logGolem} from './luciform-core/log_writers.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 

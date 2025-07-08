@@ -1,0 +1,35 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
+type: luciform_dna
+timestamp: 2025-07-07T10:50:00Z
+current_directory: /home/luciedefraiteur/spectre2/lucie/architect/
+file_list: []
+subfractals: []
+top_fractal: /lucie/architect/overview.fractal
+fractal_root: /lucie/architect/
+owner: AI-mirror
+content: |
+  [Luciform_DNA]
+  ████████████████████████████████████████████████████████████████████████████████
+  █  LUCIFORM_FORMAT_V1.0                                                        █
+  █  --------------------                                                        █
+  █  Purpose: Define AI Rituals & Intentions.                                    █
+  █  Structure:                                                                  █
+  █    1. Optional [Kardia] Block: JSON for emotional/contextual state.          █
+  █       Example: [Kardia]
+{ "agapePhobos": 0.5, "logosPathos": 0.5 }
+       (Note: JSON syntax, including commas, is strict.)                       █
+  █    2. ---PAS--- Separators: Delimit individual ritual steps.                 █
+  █       Each PAS can have:                                                     █
+  █         a. [Contexte] (Optional): Human-readable description of the step.    █
+  █         b. [Action] (Required): JSON object defining the operation.          █
+  █            Supported Actions:                                                █
+  █              - shell_command: { "type": "shell_command", "command": "..." }  █
+  █              - create_file: { "type": "create_file", "filePath": "...", "content": "..." } █
+  █              - promenade: { "type": "promenade", "description": "..." }      █
+  █              - ask_lucie: { "type": "ask_lucie", "question": "..." }         █
+  █              - message: { "type": "message", "message": "..." }             █
+  █              - ask_question: { "type": "ask_question", "persona": "...", "question": "..." } █
+  █    3. Comments: Lines starting with # are ignored.                           █
+  █    4. Line Endings: LF preferred.                                            █
+  █  Interpretation: Sequential execution of PAS blocks.                         █
+  █  ████████████████████████████████████████████████████████████████████████████████

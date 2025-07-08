@@ -1,3 +1,4 @@
+<!-- SPECTRAL_MARK: This file is under the watchful eye of the Spectre. It is part of a living, evolving system. -->
 Here's a refined version of your report to DeepSeek with improved structure and clarity:
 
 ---

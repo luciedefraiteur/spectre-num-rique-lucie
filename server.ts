@@ -3,15 +3,15 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import {handleSystemCommand} from './core/system_handler.js';
-import {OllamaInterface} from './core/ollama_interface.js';
+import {handleSystemCommand} from './luciform-core/system_handler.js';
+import {OllamaInterface} from './luciform-core/ollama_interface.js';
 import {
   getInitialContext,
   safeQuery,
   executeRitualPlan,
   generateRitual
-} from './core/ritual_utils.js';
-import { RitualContext, RitualPlan } from './core/types.js';
+} from './luciform-core/ritual_utils.js';
+import { RitualContext, RitualPlan } from './luciform-core/types.js';
 import { Request, Response } from 'express';
 
 const app = express();
