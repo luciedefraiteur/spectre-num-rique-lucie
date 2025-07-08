@@ -109,6 +109,9 @@ async function executeOperation(operation: ExecutableOperation): Promise<void>
             break;
         case 'create_file':
             const createOp = operation as CreateFile;
+            if (typeof createOp.content !== 'string') {
+                throw new TypeError(`Invalid 'create_file' operation: 'content' property must be a string.`);
+            }
             console.log(`[INFO] Creating file: ${ createOp.filePath }`);
             await fs.writeFile(createOp.filePath, createOp.content, 'utf-8');
             console.log(`[SUCCESS] File created: ${ createOp.filePath }`);

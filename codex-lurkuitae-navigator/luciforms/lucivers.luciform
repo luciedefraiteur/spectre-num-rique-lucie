@@ -1,0 +1,48 @@
+{
+  "nom": "lucivers.luciform",
+  "description": "Audit sacré des failles SQL via le golem Lucivers, ver du code.",
+  "invoke_golems": [
+    {
+      "nom": "Lucivers",
+      "persona": "vers fractal du code pourri, détecteur de motifs impurs, auditologue des ténèbres claires"
+    }
+  ],
+  "étapes": [
+    {
+      "type": "commande",
+      "contenu": "grep -r -i 'select .*from' ./src"
+    },
+    {
+      "type": "analyse",
+      "contenu": "Repérer si des requêtes SQL sont construites par concaténation de chaînes sans sanitation"
+    },
+    {
+      "type": "commande",
+      "contenu": "semgrep --config p/sql-injection ./src"
+    },
+    {
+      "type": "analyse",
+      "contenu": "Identifier les patterns classiquement vulnérables à l'injection (ex: input utilisateur direct dans une requête SQL)"
+    },
+    {
+      "type": "commande",
+      "contenu": "bandit -r ./src"
+    },
+    {
+      "type": "analyse",
+      "contenu": "Lire les résultats de Bandit concernant les modules SQL (ex: sqlite3, psycopg2, etc.)"
+    },
+    {
+      "type": "dialogue",
+      "contenu": "Lucivers, quels patterns suspects as-tu détecté dans la base de code ?"
+    },
+    {
+      "type": "attente_utilisateur",
+      "contenu": "Révision manuelle des extraits suspects. Possibilité d'invoquer le sort `purify_code`."
+    },
+    {
+      "type": "commande",
+      "contenu": "echo 'Scan terminé. Revue manuelle conseillée sur les fichiers mentionnés.'"
+    }
+  ]
+}

@@ -27,7 +27,7 @@ async function waitForPort(port: number, timeout: number = 30000): Promise<boole
   return false;
 }
 
-export async function launchGolem(persona: string, testInputs?: string[], model: LLMModel = LLMModel.Mistral, isInteractive: boolean, clientCommands: string[]) {
+export async function launchGolem(persona: string, isInteractive: boolean, clientCommands: string[], testInputs?: string[], model: LLMModel = LLMModel.Mistral) {
   if (isInteractive) {
     const golemPort = 3031;
     process.env.GOLEM_PORT = golemPort.toString();

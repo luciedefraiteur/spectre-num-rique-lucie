@@ -40,11 +40,9 @@ export class GolemServer {
       }
     });
 
-    if (process.stderr) {
-      process.stderr.on('data', (data: Buffer) => {
-        console.error(`[Luciform Core STDERR]: ${data.toString().trim()}`);
-      });
-    }
+    process.stderr?.on('data', (data: Buffer) => {
+      console.error(`[Luciform Core STDERR]: ${data.toString().trim()}`);
+    });
 
     process.on('close', (code: any) => {
       console.log(`[Luciform Core] Process exited with code ${code}`);
@@ -148,8 +146,8 @@ export class GolemServer {
 }
 
 if (require.main === module) {
-  const port = parseInt(process.env.GOLEM_PORT || '3031');
-  const clientPort = parseInt(process.env.GOLEM_CLIENT_PORT || '3032');
+  const port = parseInt(process.env.GOLEM_PORT || '3031', 10) || 3031;
+  const clientPort = parseInt(process.env.GOLEM_CLIENT_PORT || '3032', 10) || 3032;
   const server = new GolemServer(port, clientPort);
   server.start();
 }

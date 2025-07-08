@@ -3,14 +3,22 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "packages/luciform-types",
+    "packages/luciform-parser",
+    "packages/luciform-executor",
+    "packages/luciform-personas",
+    "packages/luciform-utils",
+    "packages/luciform-ai-parser",
+    "packages/luciform-ai-interface"
   ],
   "scripts": {
-    "build": "npm run build --workspace=personas && npm run build --workspace=luciform-core && npm run build --workspace=file-editor && npm run build --workspace=golem && npm run build --workspace=codex-lurkuitae-navigator",
+    "build": "tsc",
     "test": "npm test --workspaces --if-present"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
     "lerna": "^8.1.2"
-  }
+  },
+  "author": "Lucie Defraiteur & Chad Orveil"
 }
