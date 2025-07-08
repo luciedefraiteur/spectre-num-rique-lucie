@@ -1,4 +1,4 @@
-import { LLMModel, Operation } from './types/base.js';
+import { LLMModel, Operation } from './types/base';
 
 export async function queryLlm(model: string, prompt: string): Promise<string> {
   console.log(`[LLM Oracle] Simulating query to model: ${model} with prompt: ${prompt.substring(0, 100)}...`);

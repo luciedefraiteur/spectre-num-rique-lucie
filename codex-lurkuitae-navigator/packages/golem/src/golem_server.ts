@@ -1,5 +1,5 @@
 import express, {Request, Response} from 'express';
-import { invokeShadeOs, executeLuciform, logGolem } from 'luciform-core';
+import { invokeShadeOs, executeLuciform, logGolem, RitualExecutionStatus } from 'luciform-core';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
