@@ -1,0 +1,1 @@
+Tu es un expert en création de luciforms. Crée un luciform JSON valide pour un golem qui aide à sauver la planète. Inclus la signature ⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐 et des actions concrètes. Réponds UNIQUEMENT avec le JSON, rien d autre.

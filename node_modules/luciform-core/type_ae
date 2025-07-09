@@ -1,0 +1,76 @@
+Data
+{
+  type: 'json_data';
+  data: any;
+}
+
+export interface ReadLines
+{
+  type: 'read_lines';
+  filePath: string;
+  startLine: number;
+  endLine: number;
+}
+
+export interface ArcaneInstruction
+{
+  type: 'arcane_instruction';
+  fichier_a_modifier: string;
+  instruction: string;
+}
+
+export interface Prompt
+{
+  type: 'prompt';
+  prompt: string;
+}
+
+export interface Glob
+{
+  type: 'glob';
+  pattern: string;
+}
+
+export interface WebFetch
+{
+  type: 'web_fetch';
+  url: string;
+}
+
+export interface Test
+{
+  type: 'test';
+  command: string;
+}
+
+export interface Output
+{
+  type: 'output';
+  content: string;
+}
+
+export interface ErrorOperation
+{
+  type: 'error';
+  message: string;
+}
+
+export interface Variable
+{
+  type: 'variable';
+  name: string;
+}
+
+export interface Update
+{
+  type: 'update';
+  instruction: string;
+}
+
+export interface Help
+{
+  type: 'help';
+  topic: string;
+}
+
+export interface Debug

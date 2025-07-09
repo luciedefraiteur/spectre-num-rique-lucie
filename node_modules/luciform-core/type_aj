@@ -1,0 +1,36 @@
+e LLMRitualContext
+{
+  kardiaSphere: KardiaSphere;
+  scroll: {input: string; plan: RitualPlan}[];
+  maxScrollLength: number;
+  incantation_history: string[];
+  outcome_history: string[];
+  user_preferences: string;
+  chantModeEnabled: boolean;
+  current_sanctum: string;
+  currentSanctumContent: string;
+  operatingSystem: string;
+  personality: string;
+}
+
+export interface RitualExecutionStatus
+{
+    success: boolean;
+    completedSteps: number;
+    totalSteps: number;
+    failedStep?: number;
+    error?: string;
+    movementFrame?: MovementFrame; // New: Optional movement frame data
+}
+
+export interface MovementFrame {
+  currentStep: number;
+  history: { step: number; outcome: string; }[];
+  decision: 'next' | 'previous' | 'jumpTo' | 'spawn_golem' | 'continue_lifeform';
+  jumpToStep?: number;
+  golemConfig?: {
+    workspace: string;
+    goal: string;
+    initialRitual: string;
+  };
+}

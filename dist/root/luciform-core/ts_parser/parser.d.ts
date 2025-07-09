@@ -1,0 +1,38 @@
+import { Token } from './lexer.js';
+import { ASTNode } from './types.js';
+export declare class Parser {
+    private readonly tokens;
+    private current;
+    parseErrors: string[];
+    constructor(tokens: Token[]);
+    parse(): ASTNode[];
+    private declaration;
+    private importDeclaration;
+    private variableDeclaration;
+    private functionDeclaration;
+    private block;
+    private statement;
+    private expressionStatement;
+    private expression;
+    private assignment;
+    private equality;
+    private comparison;
+    private term;
+    private factor;
+    private unary;
+    private call;
+    private primary;
+    private requireCall;
+    private ifStatement;
+    private returnStatement;
+    private whileStatement;
+    private forStatement;
+    private callExpression;
+    private match;
+    private consume;
+    private check;
+    private advance;
+    private isAtEnd;
+    private peek;
+    private previous;
+}

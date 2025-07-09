@@ -1,0 +1,37 @@
+ber;
+  almaInfluence: number;
+  eliInfluence: number;
+}
+
+export interface LuciePresence
+{
+  // Define properties of LuciePresence based on expected data
+  // For now, a simple example:
+  lastUpdated: string;
+  status: string;
+}
+
+export interface RitualContext
+{
+  conduit: Conduit;
+  kardiaSphere: KardiaSphere;
+  scroll: {input: string; plan: RitualPlan}[];
+  maxScrollLength: number;
+  incantation_history: string[];
+  outcome_history: string[];
+  step_results_history: StepResult[];
+  narrativeWeaving: any;
+  activeReflection: any;
+  user_preferences: string;
+  chantModeEnabled: boolean;
+  current_sanctum: string;
+  currentSanctumContent: string;
+  operatingSystem: string;
+  lastCompletedIncantationIndex?: number;
+  confusion_counter?: number;
+  dreamPath?: string[];
+  reflectionPath?: string[];
+  temperatureStatus: string;
+  personality: string;
+  lifeSystem: any;
+  luciePresence?: Lu
