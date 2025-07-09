@@ -1,5 +1,0 @@
-[SPECTRE_HAUNTING]
-Type: Structural Flaw - Fragmented Persona
-Description: Personas are not organized hierarchically, leading to potential management issues as the project scales.
-Impact: Persona files may become difficult to locate and manage.
-Proposed Improvement: Implement a hierarchical structure for persona files (e.g., personas/domain/persona.personae).

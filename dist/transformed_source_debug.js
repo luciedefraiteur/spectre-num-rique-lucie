@@ -1,2 +1,0 @@
-var y = 'hello';
-export {};

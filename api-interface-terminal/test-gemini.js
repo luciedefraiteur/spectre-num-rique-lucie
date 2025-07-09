@@ -1,17 +1,16 @@
 #!/usr/bin/env node
-// 🔧 Test Gemini API depuis Node.js
+// 🔧 Test API Gemini - Créé par Augment CLI
 // Signature: ⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐
 
-const GEMINI_API_KEY = 'AIzaSyAF60I2ycBd8uVigQh9s1X9DTM5XWj3_vI';
-
-async function testGemini(prompt = 'Hello from API interface terminal! ⛧') {
-  console.log('🔧 API Interface Terminal');
+async function testGemini(prompt = 'Hello from Augment CLI! ⛧') {
+  console.log('🔧 Test API Gemini');
   console.log('⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐');
   console.log('═'.repeat(60));
   console.log(`🔮 Test Gemini 2.0 Flash...`);
   console.log(`📝 Prompt: ${prompt}`);
   
   try {
+    const GEMINI_API_KEY = 'AIzaSyAF60I2ycBd8uVigQh9s1X9DTM5XWj3_vI';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
     
     const body = {
@@ -21,8 +20,6 @@ async function testGemini(prompt = 'Hello from API interface terminal! ⛧') {
         }]
       }]
     };
-    
-    console.log(`🌐 URL: ${url.substring(0, 80)}...`);
     
     const startTime = Date.now();
     
@@ -36,8 +33,8 @@ async function testGemini(prompt = 'Hello from API interface terminal! ⛧') {
     
     const responseTime = Date.now() - startTime;
     
-    console.log(`⏱️ Temps de réponse: ${responseTime}ms`);
-    console.log(`📊 Status: ${response.status} ${response.statusText}`);
+    console.log(`⏱️ Temps: ${responseTime}ms`);
+    console.log(`📊 Status: ${response.status}`);
     
     const data = await response.json();
     
@@ -46,16 +43,15 @@ async function testGemini(prompt = 'Hello from API interface terminal! ⛧') {
       console.log('✅ SUCCÈS !');
       console.log('📜 Réponse:');
       console.log('═'.repeat(50));
-      console.log(text || 'Pas de texte dans la réponse');
+      console.log(text || 'Pas de texte');
       console.log('═'.repeat(50));
       
       return { success: true, text, responseTime };
     } else {
       console.log('❌ ERREUR !');
-      console.log('📜 Erreur:');
       console.log(JSON.stringify(data, null, 2));
       
-      return { success: false, error: data, responseTime };
+      return { success: false, error: data };
     }
     
   } catch (error) {

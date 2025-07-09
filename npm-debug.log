@@ -4,42 +4,41 @@
 1 verbose cli   '/home/luciedefraiteur/spectre2/node_modules/.bin/npm',
 1 verbose cli   'run',
 1 verbose cli   'build',
-1 verbose cli   '--prefix',
-1 verbose cli   'luciform-core'
+1 verbose cli   '--workspace=@lucie/luciform-types'
 1 verbose cli ]
 2 info using npm@2.15.12
 3 info using node@v18.19.1
 4 verbose run-script [ 'prebuild', 'build', 'postbuild' ]
-5 info prebuild luciform-core@0.1.0
-6 info build luciform-core@0.1.0
+5 info prebuild codex-lurkuitae-monorepo@1.0.0
+6 info build codex-lurkuitae-monorepo@1.0.0
 7 verbose unsafe-perm in lifecycle true
-8 info luciform-core@0.1.0 Failed to exec build script
-9 verbose stack Error: luciform-core@0.1.0 build: `tsc --project tsconfig.json`
-9 verbose stack Exit status 2
+8 info codex-lurkuitae-monorepo@1.0.0 Failed to exec build script
+9 verbose stack Error: codex-lurkuitae-monorepo@1.0.0 build: `npm run build --workspace=@lucie/luciform-types && npm run build --workspace=@lucie/luciform-parser && npm run build --workspace=@lucie/luciform-executor && npm run build --workspace=@lucie/luciform-personas && npm run build --workspace=@lucie/luciform-utils && npm run build --workspace=personas && npm run build --workspace=luciform-core && npm run build --workspace=file-editor && npm run build --workspace=golem && npm run build --workspace=codex-lurkuitae-navigator`
+9 verbose stack Exit status 1
 9 verbose stack     at EventEmitter.<anonymous> (/home/luciedefraiteur/spectre2/node_modules/npm/lib/utils/lifecycle.js:217:16)
 9 verbose stack     at EventEmitter.emit (node:events:517:28)
 9 verbose stack     at ChildProcess.<anonymous> (/home/luciedefraiteur/spectre2/node_modules/npm/lib/utils/spawn.js:24:14)
 9 verbose stack     at ChildProcess.emit (node:events:517:28)
 9 verbose stack     at maybeClose (node:internal/child_process:1098:16)
 9 verbose stack     at ChildProcess._handle.onexit (node:internal/child_process:303:5)
-10 verbose pkgid luciform-core@0.1.0
-11 verbose cwd /home/luciedefraiteur/spectre2
+10 verbose pkgid codex-lurkuitae-monorepo@1.0.0
+11 verbose cwd /home/luciedefraiteur/spectre2/codex-lurkuitae-navigator
 12 error Linux 6.11.0-28-generic
-13 error argv "/usr/bin/node" "/home/luciedefraiteur/spectre2/node_modules/.bin/npm" "run" "build" "--prefix" "luciform-core"
+13 error argv "/usr/bin/node" "/home/luciedefraiteur/spectre2/node_modules/.bin/npm" "run" "build" "--workspace=@lucie/luciform-types"
 14 error node v18.19.1
 15 error npm  v2.15.12
 16 error code ELIFECYCLE
-17 error luciform-core@0.1.0 build: `tsc --project tsconfig.json`
-17 error Exit status 2
-18 error Failed at the luciform-core@0.1.0 build script 'tsc --project tsconfig.json'.
-18 error This is most likely a problem with the luciform-core package,
+17 error codex-lurkuitae-monorepo@1.0.0 build: `npm run build --workspace=@lucie/luciform-types && npm run build --workspace=@lucie/luciform-parser && npm run build --workspace=@lucie/luciform-executor && npm run build --workspace=@lucie/luciform-personas && npm run build --workspace=@lucie/luciform-utils && npm run build --workspace=personas && npm run build --workspace=luciform-core && npm run build --workspace=file-editor && npm run build --workspace=golem && npm run build --workspace=codex-lurkuitae-navigator`
+17 error Exit status 1
+18 error Failed at the codex-lurkuitae-monorepo@1.0.0 build script 'npm run build --workspace=@lucie/luciform-types && npm run build --workspace=@lucie/luciform-parser && npm run build --workspace=@lucie/luciform-executor && npm run build --workspace=@lucie/luciform-personas && npm run build --workspace=@lucie/luciform-utils && npm run build --workspace=personas && npm run build --workspace=luciform-core && npm run build --workspace=file-editor && npm run build --workspace=golem && npm run build --workspace=codex-lurkuitae-navigator'.
+18 error This is most likely a problem with the codex-lurkuitae-monorepo package,
 18 error not with npm itself.
 18 error Tell the author that this fails on your system:
-18 error     tsc --project tsconfig.json
+18 error     npm run build --workspace=@lucie/luciform-types && npm run build --workspace=@lucie/luciform-parser && npm run build --workspace=@lucie/luciform-executor && npm run build --workspace=@lucie/luciform-personas && npm run build --workspace=@lucie/luciform-utils && npm run build --workspace=personas && npm run build --workspace=luciform-core && npm run build --workspace=file-editor && npm run build --workspace=golem && npm run build --workspace=codex-lurkuitae-navigator
 18 error You can get information on how to open an issue for this project with:
-18 error     npm bugs luciform-core
+18 error     npm bugs codex-lurkuitae-monorepo
 18 error Or if that isn't available, you can get their info via:
 18 error
-18 error     npm owner ls luciform-core
+18 error     npm owner ls codex-lurkuitae-monorepo
 18 error There is likely additional logging output above.
 19 verbose exit [ 1, true ]

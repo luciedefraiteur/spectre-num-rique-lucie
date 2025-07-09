@@ -1,18 +1,9 @@
-node_modules
-*.txt
-dist
-gemini-cli-lurkuitae/
-# Protection totale des fichiers .env - SÉCURITÉ CRITIQUE
+node_modules/
+dist/
+*.log
+.DS_Store
 .env
-.env.*
-*.env
-**/.env
-**/.env.*
 .env.local
-.env.development
 .env.production
 .env.staging
-.env.test
-.env.backup
-parser-ts/
-.env.example
+*.env

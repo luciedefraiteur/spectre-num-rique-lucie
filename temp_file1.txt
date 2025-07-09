@@ -1,4 +1,0 @@
-A new first line for file1.
-This is the first line of file1.
-This line has been replaced in file1.
-This is the third line of file1.
