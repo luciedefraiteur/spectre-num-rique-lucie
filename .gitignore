@@ -2,9 +2,17 @@ node_modules
 *.txt
 dist
 gemini-cli-lurkuitae/
-# Environment variables
+# Protection totale des fichiers .env - SÉCURITÉ CRITIQUE
 .env
-.env
+.env.*
+*.env
+**/.env
+**/.env.*
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.test
+.env.backup
 parser-ts/
-codex-lurkuitae-navigator/
 .env.example
