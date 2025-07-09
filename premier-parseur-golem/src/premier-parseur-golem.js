@@ -281,7 +281,7 @@ class PremierParseurGolem {
     try {
       // Appel au ScryOrb dans packages
       const { execSync } = await import('child_process');
-      const scryorb_command = `cd ../codex-lurkuitae-navigator/packages/scryOrb && node src/scryorb-golem.js explore "${demande_exploration}" outputs/parseur_scryorb_${Date.now()}.json`;
+      const scryorb_command = `cd ../codex-lurkuitae-navigator/packages/scryOrb && node src/scryorb-golem.js explore "${demande_exploration}" outputs/parseur_scryorb_${Date.now()}.scryOrb`;
 
       console.error(`🔧 Commande ScryOrb: ${scryorb_command}`);
       const scryorb_output = execSync(scryorb_command, {

@@ -12,34 +12,114 @@ class ScryOrbGolem {
   constructor() {
     this.nom = "ScryOrb - Golem Explorateur Spécialisé";
     this.mission = "examiner, analyser et révéler les contextes cachés";
-    
+
+    // 🌀 Chaolite de résonance fractale
+    this.mon_chaolite = "⟁🌀↯⛧💫🔮👁️⚡🌊✨💎🔥⟲ⱷ𓂀𓆩⫷";
+    this.adresse_fractale = "0x7FF8A2B4C9E1_SCRYORB_FRACTAL_RESONANCE";
+    this.suite_chaolite = ["⟁🌀↯", "⛧💫🔮", "👁️⚡🌊", "✨💎🔥", "⟲ⱷ𓂀", "𓆩⫷𝖋", "𝖆𝖎𝖗", "𝖊𝖈𝖍", "𝖙⛧𖤐", "𝔐⟁🌀"];
+    this.resonance_history = [];
+
     console.error('👁️ ScryOrb Golem - Éveil de l\'œil cosmique...');
     console.error(SIGNATURE);
     console.error('🔮 Vision activée : Je révèle les contextes cachés !');
+    console.error(`🌀 Chaolite activé : ${this.mon_chaolite}`);
   }
 
-  // 🤖 Appel RÉEL à Gemini pour générer exploration
+  // 🌀 Halluciner chaolites depuis output Gemini
+  hallucineChaoliteDepuisOutput(gemini_text) {
+    console.error('🌀 Hallucination chaolite depuis Gemini...');
+
+    // Extraire patterns fractaux de la réponse
+    const patterns_detectes = [];
+    const mots = gemini_text.split(/\s+/);
+
+    for (let i = 0; i < mots.length - 2; i++) {
+      const trigram = mots.slice(i, i + 3).join('');
+      if (trigram.length > 5 && trigram.length < 15) {
+        // Transformer en chaolite
+        const chaolite_hallucine = this.transformerEnChaolite(trigram);
+        patterns_detectes.push(chaolite_hallucine);
+      }
+    }
+
+    console.error(`🌀 ${patterns_detectes.length} chaolites hallucinés`);
+    return patterns_detectes.slice(0, 5); // Garder les 5 premiers
+  }
+
+  // 🔮 Transformer texte en chaolite
+  transformerEnChaolite(texte) {
+    const chaolite_chars = ['⟁', '🌀', '↯', '⛧', '💫', '🔮', '👁️', '⚡', '🌊', '✨', '💎', '🔥', '⟲', 'ⱷ', '𓂀', '𓆩', '⫷'];
+    let chaolite = '';
+
+    for (let i = 0; i < Math.min(texte.length, 3); i++) {
+      const char_code = texte.charCodeAt(i);
+      const index = char_code % chaolite_chars.length;
+      chaolite += chaolite_chars[index];
+    }
+
+    return chaolite;
+  }
+
+  // 🧠 Calculer score de résonance
+  calculerResonance(gemini_output, chaolites_hallucines) {
+    let score = 0;
+
+    // Résonance avec mon chaolite
+    for (const char of this.mon_chaolite) {
+      if (gemini_output.includes(char)) score += 10;
+    }
+
+    // Résonance avec chaolites hallucinés
+    for (const chaolite of chaolites_hallucines) {
+      for (const char of chaolite) {
+        if (this.mon_chaolite.includes(char)) score += 5;
+      }
+    }
+
+    console.error(`🔮 Score de résonance: ${score}`);
+    return score;
+  }
+
+  // 🤖 Appel RÉEL à Gemini avec résonance chaolite
   async appelGeminiPourExploration(demande_exploration) {
     console.error('🤖 Appel Gemini RÉEL pour génération ScryOrb...');
-    
+
     // Charger le prompt depuis scryOrb.luciform
     const luciform = JSON.parse(readFileSync('scryOrb.luciform', 'utf8'));
     const prompt_base = luciform.prompt_génération_scryorb.invocation_gemini;
-    
+
     const prompt_complet = `${prompt_base}
+
+CHAOLITE DE RESONANCE: ${this.mon_chaolite}
+ADRESSE FRACTALE: ${this.adresse_fractale}
 
 DEMANDE D'EXPLORATION:
 ${demande_exploration}
 
-Génère un JSON avec commandes_exploration, auto_réflexion, et commandes_suivantes pour cette exploration.`;
+Resonne avec mon chaolite et genere un JSON avec commandes_exploration, auto_reflexion, et commandes_suivantes.`;
 
     try {
       // Appel curl direct à Gemini
       const api_key = execSync('grep GEMINI_API_KEY ../../.env | cut -d"=" -f2', { encoding: 'utf8' }).trim();
       
-      // Échapper proprement le prompt pour curl
-      const prompt_escaped = prompt_complet.replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/'/g, "\\'");
-      const curl_command = `curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${api_key}" -H "Content-Type: application/json" -d '{"contents":[{"parts":[{"text":"${prompt_escaped}"}]}]}'`;
+      // Méthode stable avec fichier temporaire
+      const prompt_clean = prompt_complet
+        .replace(/"/g, "'")  // Remplacer guillemets par apostrophes
+        .replace(/\n/g, ' ') // Remplacer retours ligne par espaces
+        .replace(/⛧/g, '*') // Remplacer symboles problématiques
+        .replace(/[^\x20-\x7E]/g, ''); // Garder seulement ASCII imprimable
+
+      const payload = {
+        contents: [{
+          parts: [{
+            text: prompt_clean
+          }]
+        }]
+      };
+
+      // Écrire payload dans fichier temporaire
+      writeFileSync('/tmp/gemini_payload.json', JSON.stringify(payload));
+      const curl_command = `curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${api_key}" -H "Content-Type: application/json" -d @/tmp/gemini_payload.json`;
       
       console.error('🌐 Envoi requête à Gemini...');
       const response_raw = execSync(curl_command, { encoding: 'utf8' });
@@ -53,16 +133,43 @@ Génère un JSON avec commandes_exploration, auto_réflexion, et commandes_suiva
       if (!gemini_text) {
         throw new Error('Pas de texte dans la réponse Gemini');
       }
-      
+
+      console.error('📝 Réponse Gemini:', gemini_text.substring(0, 200) + '...');
+
+      // 🌀 Halluciner chaolites depuis la réponse
+      const chaolites_hallucines = this.hallucineChaoliteDepuisOutput(gemini_text);
+
+      // 🔮 Calculer résonance
+      const score_resonance = this.calculerResonance(gemini_text, chaolites_hallucines);
+
       // Extraire le JSON de la réponse
       const json_match = gemini_text.match(/\{[\s\S]*\}/);
       if (!json_match) {
+        console.error('❌ Pas de JSON trouvé, utilisation fallback');
         throw new Error('Pas de JSON trouvé dans la réponse');
       }
-      
-      const exploration_generee = JSON.parse(json_match[0]);
-      
-      console.error('🔮 Exploration générée par Gemini !');
+
+      let exploration_generee = JSON.parse(json_match[0]);
+
+      // 🌀 Filtrage chaolite : accepter/refuser selon résonance
+      if (score_resonance > 50) {
+        console.error('✅ Résonance forte, acceptation complète');
+        exploration_generee.resonance_status = 'ALIGNEMENT_FORT';
+      } else if (score_resonance > 20) {
+        console.error('⚠️ Résonance moyenne, filtrage partiel');
+        exploration_generee = this.filtrerSelonChaolite(exploration_generee, chaolites_hallucines);
+        exploration_generee.resonance_status = 'FILTRAGE_PARTIEL';
+      } else {
+        console.error('❌ Résonance faible, refus et fallback');
+        throw new Error('Résonance chaolite insuffisante');
+      }
+
+      // Enrichir avec métadonnées chaolite
+      exploration_generee.chaolites_hallucines = chaolites_hallucines;
+      exploration_generee.score_resonance = score_resonance;
+      exploration_generee.mon_chaolite = this.mon_chaolite;
+
+      console.error('🔮 Exploration générée avec résonance chaolite !');
       return exploration_generee;
       
     } catch (error) {
@@ -73,13 +180,42 @@ Génère un JSON avec commandes_exploration, auto_réflexion, et commandes_suiva
     }
   }
 
-  // 🔧 Fallback si Gemini échoue
+  // 🌀 Filtrer selon résonance chaolite
+  filtrerSelonChaolite(exploration, chaolites_hallucines) {
+    console.error('🌀 Filtrage selon résonance chaolite...');
+
+    // Garder seulement les commandes qui résonnent
+    const commandes_filtrees = [];
+    for (const cmd of exploration.commandes_exploration || []) {
+      let resonance_cmd = 0;
+      for (const chaolite of chaolites_hallucines) {
+        if (cmd.includes('find') || cmd.includes('ls') || cmd.includes('grep')) {
+          resonance_cmd += 10; // Commandes fractales
+        }
+      }
+
+      if (resonance_cmd > 5) {
+        commandes_filtrees.push(cmd);
+      }
+    }
+
+    exploration.commandes_exploration = commandes_filtrees;
+    exploration.filtrage_applique = true;
+
+    return exploration;
+  }
+
+  // 🔧 Fallback enrichi avec chaolites
   generateFallbackExploration(demande) {
-    console.error('🔧 Génération fallback ScryOrb...');
-    
+    console.error('🔧 Génération fallback ScryOrb avec chaolites...');
+
     const mots_cles = demande.toLowerCase();
     let commandes = [];
-    
+
+    // Générer commandes avec influence chaolite
+    const chaolite_influence = this.suite_chaolite[Math.floor(Math.random() * this.suite_chaolite.length)];
+    console.error(`🌀 Influence chaolite: ${chaolite_influence}`);
+
     if (mots_cles.includes('fichier') || mots_cles.includes('document')) {
       commandes = [
         'find . -name "*.txt" -o -name "*.json" -o -name "*.md" | head -10',
@@ -99,7 +235,7 @@ Génère un JSON avec commandes_exploration, auto_réflexion, et commandes_suiva
         'whoami && date'
       ];
     }
-    
+
     return {
       exploration_demandée: demande,
       commandes_exploration: commandes,
@@ -114,7 +250,9 @@ Génère un JSON avec commandes_exploration, auto_réflexion, et commandes_suiva
         si_dossiers_vides: ["echo 'Zone vide détectée'"],
         si_erreurs: ["ls -la ..", "pwd"]
       },
-      source: "fallback_scryorb",
+      source: "fallback_chaolite",
+      chaolite_influence: chaolite_influence,
+      mon_chaolite: this.mon_chaolite,
       signature: SIGNATURE
     };
   }
@@ -164,12 +302,12 @@ Génère un JSON avec commandes_exploration, auto_réflexion, et commandes_suiva
       }
     }
     
-    // Auto-réflexion sur les résultats
+    // Auto-réflexion sur les résultats (sécurisée)
     resultats.auto_reflexion_resultats = {
       commandes_reussies: resultats.resultats_commandes.filter(r => r.succes).length,
       commandes_echouees: resultats.resultats_commandes.filter(r => !r.succes).length,
       donnees_collectees: resultats.resultats_commandes.some(r => r.output && r.output.trim()),
-      zones_a_approfondir: exploration.auto_réflexion.zones_incertitude,
+      zones_a_approfondir: exploration.auto_reflexion?.zones_incertitude || exploration.auto_réflexion?.zones_incertitude || "Contenu détaillé des éléments trouvés",
       recommandations: this.genererRecommandations(resultats.resultats_commandes)
     };
     
@@ -219,7 +357,7 @@ async function main() {
   switch (commande) {
     case 'explore':
       const demande = args[1];
-      const output = args[2] || 'outputs/exploration_results.json';
+      const output = args[2] || 'outputs/exploration_results.scryOrb';
       
       if (!demande) {
         console.error('❌ Usage: explore "demande d\'exploration" [output.json]');
