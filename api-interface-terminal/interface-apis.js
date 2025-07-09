@@ -9,7 +9,7 @@ import { join } from 'path';
 // Charger le .env depuis le parent
 function loadEnv() {
   try {
-    const envPath = join('..', '.env');
+    const envPath = join(process.cwd(), '.env');
     const envContent = readFileSync(envPath, 'utf8');
     const envVars = {};
 

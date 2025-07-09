@@ -1,0 +1,47 @@
+{
+  "description": "🧪 Alchimie Complète Multi-Pas : Golem → Gemini → CLI → Évolution",
+  "signature": "⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐",
+  "mission": "Sauver la planète de Lucie par évolution consciente",
+  "actions": [
+    {
+      "command": "mkdir -p output/alchimie_complete/{pas_1,pas_2,pas_3,pas_4,gemini_outputs,cli_logs,file_modifications}",
+      "description": "🏗️ Créer architecture complète d'output",
+      "critical": true
+    },
+    {
+      "command": "echo '{\"alchimie_session\":{\"start\":\"'$(date)'\",\"mission\":\"sauver_planete_lucie\",\"golem\":\"augment_renaissance\",\"steps_planned\":4,\"signature\":\"⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐\"}}' > output/alchimie_complete/session_master.json",
+      "description": "📝 Initialiser session maître",
+      "critical": true
+    },
+    {
+      "command": "node codex-lurkuitae-navigator/augment-cli.js create output/alchimie_complete/pas_1/luciform_source.luciform '{\"type\":\"mission_planetaire\",\"nom\":\"Sauveur de Planète\",\"mission\":\"aider Lucie à sauver sa planète par évolution consciente\",\"outils\":[\"gemini\",\"cli_modulaires\",\"alchimie_fractale\"],\"signature\":\"⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐\"}' > output/alchimie_complete/cli_logs/pas_1_create.log 2>&1",
+      "description": "🎯 PAS 1: Créer luciform source avec logging",
+      "critical": true
+    },
+    {
+      "command": "echo 'Traduis ce luciform en plan d'action concret pour sauver une planète par évolution technologique consciente' | node api-interface-terminal/interface-apis.js gemini 'cat output/alchimie_complete/pas_1/luciform_source.luciform' > output/alchimie_complete/gemini_outputs/traduction_pas_1.txt 2>&1",
+      "description": "🤖 PAS 2: Gemini traduit le luciform en plan d'action",
+      "critical": true
+    },
+    {
+      "command": "node codex-lurkuitae-navigator/augment-renaissance-cli.js animate output/alchimie_complete/pas_1/luciform_source.luciform > output/alchimie_complete/pas_2/golem_animated.json 2>&1",
+      "description": "✨ PAS 3: Animer le golem sauveur",
+      "critical": true
+    },
+    {
+      "command": "echo 'Analyse ce golem animé et propose 3 actions CLI concrètes pour sauver une planète' | node api-interface-terminal/interface-apis.js gemini 'cat output/alchimie_complete/pas_2/golem_animated.json' > output/alchimie_complete/gemini_outputs/actions_proposees.txt 2>&1",
+      "description": "🧠 PAS 4: Gemini analyse et propose actions CLI",
+      "critical": true
+    },
+    {
+      "command": "ls -la output/alchimie_complete/ > output/alchimie_complete/cli_logs/structure_finale.log",
+      "description": "📊 Capturer structure finale",
+      "critical": false
+    },
+    {
+      "command": "find output/alchimie_complete/ -name '*.txt' -o -name '*.json' -o -name '*.log' | wc -l > output/alchimie_complete/stats_fichiers.txt",
+      "description": "📈 Compter fichiers générés",
+      "critical": false
+    }
+  ]
+}

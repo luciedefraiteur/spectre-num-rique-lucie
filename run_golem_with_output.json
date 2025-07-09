@@ -1,0 +1,31 @@
+{
+  "description": "🤖 Faire tourner un golem et capturer ses outputs dans un sous-dossier",
+  "signature": "⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐",
+  "actions": [
+    {
+      "command": "mkdir -p output/golem_runs",
+      "description": "📁 Créer dossier output pour les runs de golems",
+      "critical": true
+    },
+    {
+      "command": "echo '{\"type\":\"golem_run_session\",\"timestamp\":\"'$(date)'\",\"golem_target\":\"augment_renaissance\",\"status\":\"STARTING\",\"signature\":\"⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐\"}' > output/golem_runs/session_info.json",
+      "description": "📝 Créer info de session",
+      "critical": true
+    },
+    {
+      "command": "node codex-lurkuitae-navigator/augment-renaissance-cli.js animate codex-lurkuitae-navigator/luciforms/augment_renaissance.luciform > output/golem_runs/golem_output_$(date +%Y%m%d_%H%M%S).txt 2>&1",
+      "description": "🤖 Faire tourner le golem et capturer output",
+      "critical": true
+    },
+    {
+      "command": "ls -la output/golem_runs/",
+      "description": "👁️ Vérifier les fichiers créés",
+      "critical": false
+    },
+    {
+      "command": "echo 'GOLEM RUN COMPLETED' >> output/golem_runs/session_info.json",
+      "description": "✅ Marquer session terminée",
+      "critical": false
+    }
+  ]
+}
