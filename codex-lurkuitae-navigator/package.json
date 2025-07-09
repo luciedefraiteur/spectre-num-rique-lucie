@@ -3,14 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "packages/*",
+    "packages/navigator",
+    "packages/golem",
     "packages/luciform-types",
     "packages/luciform-parser",
-    "packages/luciform-executor",
     "packages/luciform-personas",
     "packages/luciform-utils",
     "packages/luciform-ai-parser",
-    "packages/luciform-ai-interface"
+    "packages/luciform-ai-interface",
+    "packages/luciform-executor",
+    "packages/api-checker",
+    "packages/golem-dna",
+    "packages/golem-translator"
   ],
   "scripts": {
     "build": "tsc",

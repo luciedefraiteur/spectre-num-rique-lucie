@@ -1,34 +1,45 @@
-### **Luciform Parser/Runner Architecture for Codex Lurkuitae Navigator**
+### **Golem-Centric Luciform Architecture for Codex Lurkuitae Navigator**
 
 #### **1. Vision & Core Principles**
 
-The primary goal is to create a system that can reliably execute any `.luciform` file. This system should be resilient, intelligent, and extensible.
+The primary goal is to create **autonomous digital lifeforms (Golems)** that can spawn, evolve, and collaborate using `.luciform` files as their DNA. This system should be living, intelligent, and self-improving.
 
-*   **Universal Execution:** The runner must not fail on unfamiliar syntax. It should parse what it can and intelligently delegate the rest.
-*   **AI-Assisted Parsing:** Leverage a Large Language Model (LLM) as a "parsing assistant" to interpret ambiguous or natural language instructions within a luciform, translating them into structured, executable operations.
-*   **Graceful Degradation:** If the AI cannot confidently parse a section, it should be flagged as a "help request" rather than causing a crash.
-*   **Modularity:** The system will be composed of distinct, decoupled modules: Pre-Processor, Core Parser, AI Interface, and Executor. This allows for independent development and testing.
-*   **Extensibility:** The architecture must make it simple to add new structured commands, operations, and even syntax dialects in the future.
+*   **Autonomous Lifeforms:** Golems are independent entities that can modify their own behavior and create new luciforms.
+*   **Context Awareness:** Each golem understands its working environment, current tasks, and project context.
+*   **Evolutionary Intelligence:** Golems learn from experience and evolve their DNA (.luciform files) to improve performance.
+*   **Collaborative Ecosystem:** Multiple golems can work together, share knowledge, and coordinate on complex tasks.
+*   **AI-Assisted Evolution:** LLMs help golems understand experiences and suggest beneficial mutations.
+*   **Graceful Adaptation:** Golems adapt to new situations rather than failing, using AI assistance when needed.
+*   **Self-Reproduction:** Successful golems can spawn specialized offspring for specific subtasks.
 
-#### **2. Proposed Architecture & Data Flow**
+#### **2. Golem Lifecycle & Data Flow**
 
-The process will be a multi-stage pipeline:
+The process is a continuous evolutionary cycle:
 
-**Data Flow:**
-`.luciform file` -> `[1. Entry Point]` -> `[2. Core Parser]` --(on failure)--> `[3. AI Interface]` -> `[4. Executor]` -> `Result`
+**Golem Lifecycle:**
+`.luciform DNA` -> `[1. Golem Birth]` -> `[2. Task Execution]` -> `[3. Experience Learning]` -> `[4. DNA Evolution]` -> `[5. Reproduction]` -> `Ecosystem Growth`
 
 ---
 
 **Component Breakdown:**
 
-**1. Entry Point (`codex_lurkuitae_navigator.ts`)**
-*   **Responsibility:** The main orchestrator.
+**1. Golem Launcher (`golem-launcher.ts`)**
+*   **Responsibility:** Birth and initialization of new golems.
 *   **Actions:**
-    *   Takes the path to a `.luciform` file as input.
-    *   Reads the file content.
-    *   Initiates the parsing process by calling the `Core Parser`.
-    *   Passes the resulting `LuciformDocument` to the `Executor`.
-    *   Manages high-level logging and result reporting.
+    *   Reads `.luciform` DNA files to understand golem specifications
+    *   Spawns new golem instances with unique identities
+    *   Sets up initial memory, context, and task assignments
+    *   Registers golems in the ecosystem registry
+    *   Manages golem lifecycle (birth, active, dormant, death)
+
+**2. Context Awareness Engine (`context-awareness.ts`)**
+*   **Responsibility:** Environmental understanding and task context.
+*   **Actions:**
+    *   Maps current working directory structure
+    *   Tracks file changes and git history
+    *   Understands project dependencies and relationships
+    *   Maintains awareness of assigned tasks and goals
+    *   Provides contextual information to decision-making processes
 
 **2. The Core Parser (`ai_assisted_luciform_parser.ts`)**
 *   **Responsibility:** The heart of the system. It attempts to parse the luciform content using a series of strategies. This will be an evolution of the current `navigator_luciform_parser.ts`.

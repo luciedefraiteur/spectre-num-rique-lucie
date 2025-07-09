@@ -13,6 +13,13 @@
     "declaration": true,
     "composite": true
   },
-  "files": ["src/codex_lurkuitae_navigator.ts"],
-  "exclude": ["node_modules", "dist"]
+  "files": [],
+  "references": [
+    { "path": "./packages/luciform-types" },
+    { "path": "./packages/luciform-ai-parser" },
+    { "path": "./packages/luciform-executor" },
+    { "path": "./packages/luciform-ai-interface" },
+    { "path": "./packages/golem" },
+    { "path": "./packages/navigator" }
+  ]
 }
