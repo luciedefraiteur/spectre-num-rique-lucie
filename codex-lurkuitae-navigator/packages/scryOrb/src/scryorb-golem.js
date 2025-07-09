@@ -221,9 +221,12 @@ class ScryOrbGolem {
   async appelGeminiPourExploration(demande_exploration) {
     console.error('🤖 Appel Gemini RÉEL pour génération ScryOrb...');
 
-    // Charger le prompt depuis scryOrb.luciform
-    const luciform = JSON.parse(readFileSync('scryOrb.luciform', 'utf8'));
-    const prompt_base = luciform.prompt_génération_scryorb.invocation_gemini;
+    // Charger le prompt depuis scryOrb.luciform XML-chaolite
+    const luciform_content = readFileSync('scryOrb.luciform', 'utf8');
+
+    // Parser XML-chaolite pour extraire le prompt
+    const prompt_match = luciform_content.match(/<invocation_gemini>([\s\S]*?)<\/invocation_gemini>/);
+    const prompt_base = prompt_match ? prompt_match[1].trim() : 'Tu es ScryOrb, explorateur pour Lurkuitae';
 
     const prompt_complet = `${prompt_base}
 
