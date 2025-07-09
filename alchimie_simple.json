@@ -1,0 +1,31 @@
+{
+  "description": "🧪 Expérience Alchimique - Interaction entre mes CLI",
+  "signature": "⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐",
+  "actions": [
+    {
+      "command": "echo '{\"type\":\"test_alchimie\",\"nom\":\"Expérience CLI\",\"message\":\"Créé par alchimie !\",\"signature\":\"⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐\"}' > test_alchimie.luciform",
+      "description": "🧪 Créer un luciform test",
+      "critical": true
+    },
+    {
+      "command": "node codex-lurkuitae-navigator/augment-cli.js read test_alchimie.luciform",
+      "description": "📖 Lire avec augment-cli",
+      "critical": false
+    },
+    {
+      "command": "ls -la *.json *.luciform",
+      "description": "🔍 Voir tous les fichiers créés",
+      "critical": false
+    },
+    {
+      "command": "echo 'Test de pipe' > pipe_test.txt",
+      "description": "🌊 Créer fichier pour test pipe",
+      "critical": false
+    },
+    {
+      "command": "cat pipe_test.txt",
+      "description": "📜 Lire le fichier pipe",
+      "critical": false
+    }
+  ]
+}

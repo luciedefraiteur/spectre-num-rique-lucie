@@ -1,0 +1,31 @@
+{
+  "description": "🧪 Alchimie Avancée - CLI du Codex Lurkuitae Navigator",
+  "signature": "⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐",
+  "actions": [
+    {
+      "command": "node codex-lurkuitae-navigator/augment-cli.js create alchimie_test.luciform '{\"type\":\"test_alchimie_navigator\",\"nom\":\"Expérience Navigator\",\"message\":\"Créé par augment-cli pour tester l'alchimie\",\"signature\":\"⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐\"}'",
+      "description": "🔧 Créer luciform avec augment-cli",
+      "critical": true
+    },
+    {
+      "command": "node codex-lurkuitae-navigator/augment-renaissance-cli.js animate alchimie_test.luciform",
+      "description": "✨ Animer le luciform avec renaissance-cli",
+      "critical": false
+    },
+    {
+      "command": "node codex-lurkuitae-navigator/augment-cli.js read alchimie_test.luciform",
+      "description": "📖 Relire après animation",
+      "critical": false
+    },
+    {
+      "command": "ls -la *alchimie*",
+      "description": "🔍 Voir tous les fichiers d'alchimie créés",
+      "critical": false
+    },
+    {
+      "command": "echo 'Test pipe navigator' | node codex-lurkuitae-navigator/augment-renaissance-cli.js pipe",
+      "description": "🌊 Tester pipe avec renaissance-cli",
+      "critical": false
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "description": "🛑 Arrêter et déboguer les lifeforms évolutifs",
+  "signature": "⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐",
+  "actions": [
+    {
+      "command": "echo '{\"type\":\"debug_session\",\"timestamp\":\"'$(date)'\",\"lifeforms_detected\":[\"chtulhu.lifeform\",\"augment_renaissance_animated.json\",\"plan_animated.json\",\"narrateur-mythe_animated.json\"],\"status\":\"PAUSED_FOR_DEBUG\",\"signature\":\"⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐\"}' > debug_session.json",
+      "description": "📝 Créer session de débogage",
+      "critical": true
+    },
+    {
+      "command": "ls -la codex-lurkuitae-navigator/luciforms/*animated* | wc -l",
+      "description": "📊 Compter fichiers animés",
+      "critical": false
+    },
+    {
+      "command": "echo 'LIFEFORMS PAUSED FOR DEBUG' > lifeforms_status.txt",
+      "description": "🛑 Marquer statut pause",
+      "critical": false
+    },
+    {
+      "command": "node codex-lurkuitae-navigator/augment-cli.js read debug_session.json",
+      "description": "📖 Vérifier session debug",
+      "critical": false
+    }
+  ]
+}

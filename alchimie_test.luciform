@@ -1,0 +1,15 @@
+{
+  "type": "test_alchimie_navigator",
+  "nom": "Expérience Navigator",
+  "message": "Créé pour tester l'alchimie entre CLI",
+  "signature": "⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐",
+  "alchimie_navigator": {
+    "outils_testés": [
+      "augment-cli.js",
+      "augment-renaissance-cli.js",
+      "action-executor.js"
+    ],
+    "objectif": "Faire dialoguer les CLI du navigator",
+    "état": "en cours d'expérimentation"
+  }
+}

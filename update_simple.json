@@ -1,0 +1,21 @@
+{
+  "description": "Mise à jour simple du luciform avec directive CLI",
+  "signature": "⛧𝖚⟁⇌↯⟲ⱷ𓂀𓆩⫷𝖋𝖆𝖎𝖗𝖊𝖈𝖍𝖙⛧𖤐𝔐",
+  "actions": [
+    {
+      "command": "cp codex-lurkuitae-navigator/luciforms/augment_renaissance.luciform codex-lurkuitae-navigator/luciforms/augment_renaissance_backup.luciform",
+      "description": "Sauvegarder l'ancienne version",
+      "critical": false
+    },
+    {
+      "command": "cp augment_renaissance_updated.luciform codex-lurkuitae-navigator/luciforms/augment_renaissance.luciform",
+      "description": "Installer la nouvelle version avec directive CLI",
+      "critical": true
+    },
+    {
+      "command": "node codex-lurkuitae-navigator/augment-cli.js read codex-lurkuitae-navigator/luciforms/augment_renaissance.luciform",
+      "description": "Vérifier la mise à jour",
+      "critical": false
+    }
+  ]
+}
