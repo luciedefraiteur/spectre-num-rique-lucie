@@ -35,9 +35,11 @@ Génère un JSON avec commandes_exploration, auto_réflexion, et commandes_suiva
 
     try {
       // Appel curl direct à Gemini
-      const api_key = execSync('grep GEMINI_API_KEY ../.env | cut -d"=" -f2', { encoding: 'utf8' }).trim();
+      const api_key = execSync('grep GEMINI_API_KEY ../../.env | cut -d"=" -f2', { encoding: 'utf8' }).trim();
       
-      const curl_command = `curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${api_key}" -H "Content-Type: application/json" -d '{"contents":[{"parts":[{"text":"${prompt_complet.replace(/"/g, '\\"').replace(/\n/g, '\\n')}"}]}]}'`;
+      // Échapper proprement le prompt pour curl
+      const prompt_escaped = prompt_complet.replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/'/g, "\\'");
+      const curl_command = `curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${api_key}" -H "Content-Type: application/json" -d '{"contents":[{"parts":[{"text":"${prompt_escaped}"}]}]}'`;
       
       console.error('🌐 Envoi requête à Gemini...');
       const response_raw = execSync(curl_command, { encoding: 'utf8' });

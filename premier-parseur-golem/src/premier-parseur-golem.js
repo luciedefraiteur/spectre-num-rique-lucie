@@ -95,53 +95,92 @@ class PremierParseurGolem {
     };
   }
 
-  // 🔗 Deviner les références depuis le contexte
-  devinerRéférences(texte, contexte_scryorb) {
+  // 🔗 Deviner les références enrichies avec ScryOrb
+  devinerRéférencesAvecScryOrb(texte, contexte_scryorb, mots_cles) {
     const références = new Map();
     const mots = texte.toLowerCase().split(/\s+/);
-    
-    // Patterns communs
+
+    // Patterns communs de base
     const patterns = {
       photos: ['[photos_directory]', '~/Pictures', './images'],
       documents: ['[documents_dir]', '~/Documents', './docs'],
       config: ['[config_file]', 'config.json', '.env'],
       projet: ['[project_root]', './', './src'],
-      fichiers: ['[user_files]', './*', '~/']
+      fichiers: ['[user_files]', './*', '~/'],
+      luciform: ['[luciform_target]', './luciforms/', 'codex-lurkuitae-navigator/luciforms/']
     };
-    
-    for (const mot of mots) {
+
+    // Enrichir avec les mots-clés détectés
+    for (const mot_cle of mots_cles) {
       for (const [clé, refs] of Object.entries(patterns)) {
-        if (mot.includes(clé) || clé.includes(mot)) {
-          références.set(`[${clé}_ref]`, refs[0]);
+        if (mot_cle.includes(clé) || clé.includes(mot_cle)) {
+          références.set(`[${mot_cle}_ref]`, refs[0]);
         }
       }
     }
-    
-    // Analyser contexte ScryOrb pour affiner
-    if (contexte_scryorb?.résultat) {
-      const lignes = contexte_scryorb.résultat.split('\n');
-      for (const ligne of lignes) {
-        if (ligne.includes('.luciform')) {
-          références.set('[luciform_existant]', ligne.split(/\s+/).pop());
+
+    // Analyser contexte ScryOrb pour références précises
+    if (contexte_scryorb?.resultats_commandes) {
+      for (const resultat of contexte_scryorb.resultats_commandes) {
+        if (resultat.succes && resultat.output) {
+          const lignes = resultat.output.split('\n');
+          for (const ligne of lignes) {
+            // Détecter fichiers .luciform
+            if (ligne.includes('.luciform')) {
+              const fichier = ligne.split(/\s+/).pop();
+              références.set('[luciform_trouvé]', fichier);
+            }
+            // Détecter dossiers intéressants
+            if (ligne.includes('drwx') && ligne.includes('/')) {
+              const dossier = ligne.split(/\s+/).pop();
+              références.set(`[dossier_${dossier}]`, `./${dossier}/`);
+            }
+          }
         }
       }
     }
-    
+
+    // Références spécifiques aux mots-clés
+    for (const mot_cle of mots_cles) {
+      if (mot_cle.includes('luciform')) {
+        références.set('[luciform_cible]', 'codex-lurkuitae-navigator/luciforms/');
+      }
+      if (mot_cle.includes('golem')) {
+        références.set('[golem_source]', 'premier-parseur-golem/src/');
+      }
+      if (mot_cle.includes('scryorb')) {
+        références.set('[scryorb_package]', 'codex-lurkuitae-navigator/packages/scryOrb/');
+      }
+    }
+
     return références;
   }
 
-  // 📋 Encoder en pas exécutables
-  encoderEnPas(intention, références, contexte) {
+  // 📋 Encoder en pas exécutables enrichis avec ScryOrb
+  encoderEnPasAvecScryOrb(intention, références, contexte_scryorb, mots_cles) {
     const pas = [];
     let compteur_pas = 1;
-    
-    // Si intention floue, commencer par ScryOrb
+
+    // Pas initial d'exploration ScryOrb si mots-clés détectés
+    if (mots_cles.length > 0) {
+      pas.push({
+        [`pas_${compteur_pas++}`]: {
+          description: `Explorer les références pour: ${mots_cles.join(', ')}`,
+          action: `node codex-lurkuitae-navigator/packages/scryOrb/src/scryorb-golem.js explore "références de ${mots_cles.join(' ')}" [scryorb_output]`,
+          type: "scryorb_references",
+          mots_cles_explorés: mots_cles,
+          références_utilisées: ["[scryorb_output]"]
+        }
+      });
+    }
+
+    // Si intention floue, ScryOrb additionnel
     if (intention.type === 'flou' || intention.scryorb_requis) {
       pas.push({
         [`pas_${compteur_pas++}`]: {
           description: "Explorer le contexte pour clarifier l'intention",
           action: "ls -la [workspace_context]",
-          type: "scryorb",
+          type: "scryorb_clarification",
           références_utilisées: ["[workspace_context]"]
         }
       });
@@ -196,28 +235,110 @@ class PremierParseurGolem {
     return pas;
   }
 
-  // 🧠 Parser une intention complète
+  // 🔍 Détecter mots-clés intéressants avec IA
+  async détecterMotsClésIntéressants(texte_intention) {
+    console.error('🔍 Détection des mots-clés intéressants...');
+
+    // Mots-clés patterns simples pour commencer
+    const patterns_interessants = [
+      /\b(fichier|file|document|config)\w*\b/gi,
+      /\b(dossier|folder|directory|projet)\w*\b/gi,
+      /\b(luciform|golem|signature)\w*\b/gi,
+      /\b(photo|image|video|media)\w*\b/gi,
+      /\b(code|script|programme)\w*\b/gi,
+      /\b(système|system|processus)\w*\b/gi,
+      /\b(réseau|network|api|service)\w*\b/gi
+    ];
+
+    const mots_cles_trouves = [];
+
+    for (const pattern of patterns_interessants) {
+      const matches = texte_intention.match(pattern);
+      if (matches) {
+        mots_cles_trouves.push(...matches.map(m => m.toLowerCase()));
+      }
+    }
+
+    // Déduplication
+    const mots_uniques = [...new Set(mots_cles_trouves)];
+    console.error(`🔍 Mots-clés détectés: ${mots_uniques.join(', ')}`);
+
+    return mots_uniques;
+  }
+
+  // 👁️ Appeler ScryOrb pour explorer les références
+  async appellerScryOrb(mots_cles, intention_base) {
+    console.error('👁️ Appel ScryOrb pour exploration des références...');
+
+    if (mots_cles.length === 0) {
+      console.error('👁️ Pas de mots-clés, ScryOrb non nécessaire');
+      return null;
+    }
+
+    // Construire la demande d'exploration pour ScryOrb
+    const demande_exploration = `explorer les références et occurrences de: ${mots_cles.join(', ')} dans le contexte de: ${intention_base}`;
+
+    try {
+      // Appel au ScryOrb dans packages
+      const { execSync } = await import('child_process');
+      const scryorb_command = `cd ../codex-lurkuitae-navigator/packages/scryOrb && node src/scryorb-golem.js explore "${demande_exploration}" outputs/parseur_scryorb_${Date.now()}.json`;
+
+      console.error(`🔧 Commande ScryOrb: ${scryorb_command}`);
+      const scryorb_output = execSync(scryorb_command, {
+        encoding: 'utf8',
+        timeout: 15000
+      });
+
+      // Parser la sortie JSON du ScryOrb
+      const scryorb_result = JSON.parse(scryorb_output);
+      console.error('✅ ScryOrb terminé avec succès');
+
+      return scryorb_result;
+
+    } catch (error) {
+      console.error(`❌ Erreur ScryOrb: ${error.message}`);
+      return null;
+    }
+  }
+
+  // 🧠 Parser une intention complète (version améliorée)
   async parserIntention(texte_intention, fichier_output) {
-    console.error('🧠 Début du parsing d\'intention...');
+    console.error('🧠 Début du parsing d\'intention amélioré...');
     console.error(`📝 Intention: ${texte_intention}`);
-    
-    // 1. Détecter l'intention
+
+    // 1. Détecter les mots-clés intéressants
+    const mots_cles = await this.détecterMotsClésIntéressants(texte_intention);
+
+    // 2. Détecter l'intention
     const intention = this.détecterIntention(texte_intention);
     console.error(`🎯 Intention détectée: ${intention.type} (confiance: ${intention.confiance})`);
-    
-    // 2. ScryOrb si nécessaire
+
+    // 3. ScryOrb pour explorer les références des mots-clés
     let contexte_scryorb = null;
+    if (mots_cles.length > 0) {
+      console.error('👁️ ScryOrb requis pour explorer les références...');
+      contexte_scryorb = await this.appellerScryOrb(mots_cles, texte_intention);
+    }
+
+    // 4. ScryOrb additionnel si intention floue
     if (intention.scryorb_requis || intention.confiance < 0.5) {
-      console.error('👁️ ScryOrb requis pour clarifier...');
-      contexte_scryorb = await this.scryOrb(texte_intention);
+      console.error('👁️ ScryOrb additionnel pour clarifier l\'intention...');
+      const contexte_additionnel = await this.scryOrb(texte_intention);
+
+      // Fusionner les contextes
+      if (contexte_scryorb && contexte_additionnel) {
+        contexte_scryorb.contexte_additionnel = contexte_additionnel;
+      } else if (contexte_additionnel) {
+        contexte_scryorb = contexte_additionnel;
+      }
     }
     
-    // 3. Deviner les références
-    const références = this.devinerRéférences(texte_intention, contexte_scryorb);
+    // 5. Deviner les références (enrichies par ScryOrb)
+    const références = this.devinerRéférencesAvecScryOrb(texte_intention, contexte_scryorb, mots_cles);
     console.error(`🔗 Références devinées: ${références.size} trouvées`);
-    
-    // 4. Encoder en pas
-    const pas = this.encoderEnPas(intention, références, contexte_scryorb);
+
+    // 6. Encoder en pas (avec contexte ScryOrb)
+    const pas = this.encoderEnPasAvecScryOrb(intention, références, contexte_scryorb, mots_cles);
     console.error(`📋 ${pas.length} pas générés`);
     
     // 5. Créer le luciform final
