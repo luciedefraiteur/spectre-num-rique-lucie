@@ -1,0 +1,16 @@
+{
+  "name": "api-interface-terminal",
+  "version": "1.0.0",
+  "description": "Interface terminal pour tester les appels API (Gemini, OpenAI, etc.)",
+  "type": "module",
+  "main": "test-api.js",
+  "scripts": {
+    "test": "node test-api.js",
+    "gemini": "node test-api.js gemini",
+    "openai": "node test-api.js openai",
+    "debug": "node --inspect test-api.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
