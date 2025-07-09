@@ -1,7 +1,7 @@
 import {spawn} from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import {Operation} from './types.js';
+import {Operation} from '../types/base.js';
 
 declare var globalThis: any;
 
@@ -25,9 +25,9 @@ async function emitScryOrbFragment(ritualPhase: string, operation: Operation, de
 }
 
 // --- Batch Action Executor Map Types ---
-import { BatchActionFeedback, ResultAggregator } from './batch_editor_types.js';
-import { unknownHandler } from './permissive_parser/unknownHandler.js';
-import type { Action } from './permissive_parser/index.js';
+import { BatchActionFeedback, ResultAggregator } from '../types/batch_editor_types.js';
+import { unknownHandler } from '../permissive_parser/unknownHandler.js';
+import type { Action } from '../permissive_parser/index.js';
 
 // If you want to accept both Operation and other Actions in batch, use this union type:
 

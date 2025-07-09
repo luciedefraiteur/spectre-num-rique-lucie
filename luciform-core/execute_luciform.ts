@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises';
 import { parseLuciformDocument } from './luciform_parser/parser.js';
-import { ExecutableOperation, Operation, RitualContext } from './types/base.js';
+
 import { PromenadeActionNode, JsonActionNode, MessageActionNode, HelpRequestActionNode } from './luciform_parser/types.js';
 import { logRitual } from './log_writers.js';
 import { getPersonaResponse } from './personas.js';
@@ -14,51 +14,11 @@ export interface RitualExecutionStatus {
     error?: string;
 }
 
-import { RitualContext } from './types/base.js';
 
-const ritualContext: RitualContext = {
-  conduit: {
-    lastIncantation: '', lastOutcome: '', currentSanctum: '', terminalEssence: '', osEssence: '',
-    protoConsciousness: '', support: '', memory: '', state: '', energy: '', glitchFactor: 0,
-    almaInfluence: 0, eliInfluence: 0
-  },
-  kardiaSphere: { agapePhobos: 0, logosPathos: 0, harmoniaEris: 0 },
-  scroll: [],
-  maxScrollLength: 0,
-  incantation_history: [],
-  outcome_history: [],
-  step_results_history: [],
-  narrativeWeaving: {},
-  activeReflection: {},
-  user_preferences: '',
-  chantModeEnabled: false,
-  current_sanctum: '',
-  currentSanctumContent: '',
-  operatingSystem: '',
-  personality: '',
-  lifeSystem: {},
-};
 
-export async function executeLuciform(filePath: string, logFileName: string = 'ritual.log'): Promise<RitualExecutionStatus> {
-    console.log(`[DEBUG] Current Working Directory: ${process.cwd()}`);
-    console.log(`[DEBUG] Starting executeLuciform for: ${filePath}`);
-
-    let content: string = '';
-    try {
-        content = await fs.readFile(filePath, 'utf-8');
-        console.log(`[DEBUG] File read successfully. Content length: ${content.length}`);
-    } catch (fileReadError: any) {
-        console.error(`[ERROR] Failed to read luciform file: ${filePath}. Error: ${fileReadError.message}`);
-        return {
-            success: false,
-            completedSteps: 0,
-            totalSteps: 0,
-            error: `Failed to read luciform file: ${fileReadError.message}`,
-        };
-    }
-
-    let mogReport = "";
-    try {
+/*
+Initialisation de ritualContext commentée pour éviter les duplications.
+*/
         console.log("[DEBUG] Getting MOG report...");
         mogReport = await getPersonaResponse('mog', `Analyze the following ritual:\n\n${content}`, ritualContext, undefined);
         console.log(`[DEBUG] MOG Report: ${mogReport}`);

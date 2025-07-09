@@ -1,13 +1,13 @@
 import * as fs from 'fs/promises';
 import {exec} from 'child_process';
 import * as path from 'path';
-import {Operation, ShellCommand, ExecuteTypescriptFile, CreateFile, Promenade, AskLucie, Persona, ExecutableOperation, Message, AskQuestion} from './core/types.js';
-import {parseLuciformDocument} from './core/luciform_parser/parser.js';
-import { PromenadeActionNode, JsonActionNode, MessageActionNode } from './core/luciform_parser/types.js';
-import {invokeShadeOs} from './core/shade_os.js';
-import {logRitual} from './core/log_writers.js';
-import {detectedShell} from './core/utils/osHint.js';
-import {getPersonaResponse} from './core/personas.js';
+import { Operation, ShellCommand, ExecuteTypescriptFile, CreateFile, Promenade, AskLucie, Persona, ExecutableOperation, Message, AskQuestion, LuciformDocument, RitualContext, ActionNode } from './codex-lurkuitae-navigator/packages/luciform-types/src/base.js';
+import { parseLuciformDocument } from './codex-lurkuitae-navigator/packages/luciform-ai-parser/src/parser.js';
+import { PromenadeActionNode, JsonActionNode, MessageActionNode } from './codex-lurkuitae-navigator/packages/luciform-ai-parser/src/types.js';
+import { invokeShadeOs } from './luciform-core/shade_os.js';
+import { logRitual } from './luciform-core/log_writers.js';
+import { detectedShell } from './luciform-core/utils/osHint.js';
+import { getPersonaResponse } from './luciform-core/personas.js';
 
 // Fonction utilitaire pour exécuter des commandes shell
 import {spawn} from 'child_process';
@@ -169,31 +169,36 @@ export interface RitualExecutionStatus
     error?: string;
 }
 
-export async function executeLuciform(filePath: string): Promise<RitualExecutionStatus>
+export async function executeLuciform(
+  luciformDocument: LuciformDocument,
+  logRitual: (message: string, logFileName?: string) => Promise<void>,
+  getAIHelp: (rawContent: string, reason: string) => Promise<ActionNode>,
+  logFileName?: string
+):
+Promise<RitualExecutionStatus>
 {
-    console.log(`[DEBUG] Starting executeLuciform for: ${filePath}`);
-    const content = await fs.readFile(filePath, 'utf-8');
+    console.log(`[DEBUG] Starting executeLuciform for a LuciformDocument.`);
 
     let mogReport = "";
     try {
-        mogReport = await getPersonaResponse('mog', `Analyze the following ritual:\n\n${ content }`);
+        mogReport = await getPersonaResponse('mog', `Analyze the following ritual:\n\n${ JSON.stringify(luciformDocument, null, 2) }`);
         console.log(mogReport);
-        await logRitual(`[MOG REPORT]\n${ mogReport }`);
+        await logRitual(`[MOG REPORT]\n${ mogReport }`, logFileName);
     } catch (error: any) {
         console.error(`[ERROR] Failed to get MOG report: ${error.message}`);
         mogReport = `[MOG REPORT UNAVAILABLE] Error: ${error.message}`;
-        await logRitual(mogReport);
+        await logRitual(mogReport, logFileName);
     }
 
     try {
-        await logRitual(`[RITUAL START] Executing luciform: ${ filePath }`);
+        await logRitual(`[RITUAL START] Executing luciform.`, logFileName);
     } catch (logError: any) {
         process.stderr.write(`[ERROR] Failed to write RITUAL START to ritual.log: ${logError.message}\n`);
     }
 
-    const luciformDocument = parseLuciformDocument(content);
     const totalSteps = luciformDocument.pas.length;
     let completedSteps = 0;
+
 
     for(let i = 0; i < totalSteps; i++)
     {
@@ -201,7 +206,8 @@ export async function executeLuciform(filePath: string): Promise<RitualExecution
         const currentStep = i + 1;
         console.log(`[DEBUG] Processing step ${currentStep}/${totalSteps}`);
         try {
-            await logRitual(`\n[STEP ${ currentStep } / ${ totalSteps }] Processing...`);
+            await logRitual(`
+[STEP ${ currentStep } / ${ totalSteps }] Processing...`, logFileName);
         } catch (logError: any) {
             process.stderr.write(`[ERROR] Failed to write STEP Processing log: ${logError.message}\n`);
         }
@@ -253,21 +259,21 @@ export async function executeLuciform(filePath: string): Promise<RitualExecution
                 if(operation) {
                     console.log(`[DEBUG] Executing operation of type: ${operation.type}`);
                     try {
-                        await logRitual(`[OPERATION] Found operation of type: ${ operation.type }`);
+                        await logRitual(`[OPERATION] Found operation of type: ${ operation.type }`, logFileName);
                     } catch (logError: any) {
                         process.stderr.write(`[ERROR] Failed to write OPERATION log: ${logError.message}\n`);
                     }
                     await executeOperation(operation as ExecutableOperation);
                     completedSteps++;
                     try {
-                        await logRitual(`[STEP ${ currentStep } / ${ totalSteps }] Completed successfully.`);
+                        await logRitual(`[STEP ${ currentStep } / ${ totalSteps }] Completed successfully.`, logFileName);
                     } catch (logError: any) {
                         process.stderr.write(`[ERROR] Failed to write STEP Completed log: ${logError.message}\n`);
                     }
                 } else {
                     console.warn(`[DEBUG] No operation to execute for step ${currentStep}`);
                     try {
-                        await logRitual(`[WARN] No valid operation derived from action in step ${ currentStep }`);
+                        await logRitual(`[WARN] No valid operation derived from action in step ${ currentStep }`, logFileName);
                     } catch (logError: any) {
                         process.stderr.write(`[ERROR] Failed to write WARN log: ${logError.message}\n`);
                     }
@@ -276,7 +282,7 @@ export async function executeLuciform(filePath: string): Promise<RitualExecution
             {
                 console.warn(`[DEBUG] No action block found for step ${currentStep}`);
                 try {
-                    await logRitual(`[WARN] No action block found in step ${ currentStep }`);
+                    await logRitual(`[WARN] No action block found in step ${ currentStep }`, logFileName);
                 } catch (logError: any) {
                     process.stderr.write(`[ERROR] Failed to write WARN log: ${logError.message}\n`);
                 }
@@ -286,7 +292,7 @@ export async function executeLuciform(filePath: string): Promise<RitualExecution
             const errorMessage = `Error during step ${ currentStep }: ${ error.message }`;
             console.error(`[DEBUG] Error caught in step ${currentStep}: ${errorMessage}`);
             try {
-                await logRitual(`[ERROR] ${ errorMessage }`);
+                await logRitual(`[ERROR] ${ errorMessage }`, logFileName);
             } catch (logError: any) {
                 process.stderr.write(`[ERROR] Failed to write ERROR log: ${logError.message}\n`);
             }

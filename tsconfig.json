@@ -7,8 +7,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist",
-    "rootDir": "./"
+    "outDir": "./dist/root",
+    "rootDir": "./",
+    "composite": true,
+    "declaration": true
   },
   "include": [
     "./*.ts",
@@ -21,5 +23,11 @@
     "**/*.test.ts",
     "server.ts",
     "generate_luciform_docs.ts"
+  ],
+  "references": [
+    { "path": "./golem-client" },
+    { "path": "./golem-server" },
+    { "path": "./luciform-core" },
+    { "path": "./codex-lurkuitae-navigator" }
   ]
 }
