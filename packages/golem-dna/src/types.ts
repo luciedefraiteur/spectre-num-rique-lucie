@@ -27,7 +27,8 @@ export enum GolemSpecies {
   WEAVER = 'weaver',
   INTERPRETER = 'interpreter',    // Spécialisé dans luciforms créatifs/abstraits
   VERMICELLE = 'vermicelle',      // Inspiré du vermycell.luciform - fluide et adaptable
-  HYBRID = 'hybrid'
+  HYBRID = 'hybrid',
+  DIVINE_MOTHER = 'divine_mother' // Lurkuitae - Source divine de tous les golems
 }
 
 export interface PersonalityTraits {
@@ -100,23 +101,26 @@ export interface BehaviorPatterns {
 
 export enum PriorityStrategy {
   FIFO = 'fifo',
-  LIFO = 'lifo', 
+  LIFO = 'lifo',
   PRIORITY_BASED = 'priority_based',
-  EFFICIENCY_OPTIMIZED = 'efficiency_optimized'
+  EFFICIENCY_OPTIMIZED = 'efficiency_optimized',
+  BALANCED = 'balanced'
 }
 
 export enum ErrorStrategy {
   RETRY = 'retry',
   ESCALATE = 'escalate',
   ADAPT = 'adapt',
-  SEEK_HELP = 'seek_help'
+  SEEK_HELP = 'seek_help',
+  ADAPTIVE = 'adaptive'
 }
 
 export enum CollaborationStyle {
   INDEPENDENT = 'independent',
   COOPERATIVE = 'cooperative',
   LEADER = 'leader',
-  FOLLOWER = 'follower'
+  FOLLOWER = 'follower',
+  SUPPORTIVE = 'supportive'
 }
 
 export interface FitnessScore {

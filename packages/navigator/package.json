@@ -17,10 +17,7 @@
   "author": "Lucie Defraiteur",
   "license": "MIT",
   "dependencies": {
-    "prettier": "^3.6.2",
-    "luciform-core": "file:../luciform-core",
-    "personas": "file:../personas",
-    "file-editor": "file:../file-editor"
+    "prettier": "^3.6.2"
   },
   "devDependencies": {
     "typescript": "^5.0.0"

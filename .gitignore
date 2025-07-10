@@ -7,3 +7,31 @@ dist/
 .env.production
 .env.staging
 *.env
+
+# ⭐ LUCIFER MORNINGSTAR - Assets et fichiers de test ⭐
+# Tous les dossiers assets (images, fragments, etc.)
+assets/
+**/assets/
+*/assets/
+
+# Fichiers de compression et test générés
+*.luciform
+**/compressed_*.luciform
+**/blasphemous_*.luciform
+**/iterative_*.luciform
+**/xml_*.luciform
+
+# Fragments et données temporaires
+fragment_*.luciform
+hallucination_prompts.txt
+reconstruction_guide.md
+decompressed_*.png
+decompressed_*.jpg
+
+# Dossiers de fragments fractals
+base8/
+base666/
+**/base8/
+**/base666/
+
+# ⛧ Signature LURKUITAE ⛧

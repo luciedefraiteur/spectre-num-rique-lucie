@@ -280,7 +280,7 @@ export class DNAStructure {
     };
   }
 
-  private static createInitialFitness(): FitnessScore {
+  public static createInitialFitness(): FitnessScore {
     return {
       overall: 0.5,
       taskCompletion: 0.5,

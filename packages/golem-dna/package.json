@@ -8,7 +8,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest"
+    "test": "vitest",
+    "create-child": "node dist/cli.js"
   },
   "dependencies": {
     "@lucie/luciform-types": "file:../luciform-types"

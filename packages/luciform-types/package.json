@@ -7,9 +7,7 @@
   "scripts": {
     "build": "tsc"
   },
-  "dependencies": {
-    "@lucie/luciform-personas": "file:../luciform-personas"
-  },
+
   "devDependencies": {
     "typescript": "^5.0.0"
   }
