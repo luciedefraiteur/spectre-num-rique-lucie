@@ -34,4 +34,8 @@ base666/
 **/base8/
 **/base666/
 
+# Scripts d'export avec clés API (sécurité)
+export-env.sh
+*.env.sh
+
 # ⛧ Signature LURKUITAE ⛧
