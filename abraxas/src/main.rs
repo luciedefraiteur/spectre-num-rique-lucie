@@ -211,9 +211,9 @@ impl GeminiProcess {
             // Lire la réponse avec timeout
             let mut response = String::new();
 
-            // Timeout de 10 secondes pour éviter les blocages
+            // Timeout de 1min20 pour laisser Gemini réfléchir
             match tokio::time::timeout(
-                tokio::time::Duration::from_secs(10),
+                tokio::time::Duration::from_secs(80),
                 stdout.read_line(&mut response)
             ).await {
                 Ok(Ok(_)) => {
@@ -232,7 +232,7 @@ impl GeminiProcess {
                     Err(anyhow::anyhow!("Erreur lecture: {}", e))
                 }
                 Err(_) => {
-                    error!("⏰ Timeout dialogue Gemini (10s)");
+                    error!("⏰ Timeout dialogue Gemini (1min20s)");
                     Err(anyhow::anyhow!("Timeout dialogue"))
                 }
             }
