@@ -38,4 +38,42 @@ base666/
 export-env.sh
 *.env.sh
 
+<<<<<<< HEAD
+=======
+# 🦀 Artefacts Rust Abraxas
+abraxas/target/
+abraxas/Cargo.lock
+
+# 📊 Logs et monitoring générés
+*.log
+*-cycles-*.log
+*-abraxas-*.log
+*-monitoring-*.log
+*-stats-*.log
+*-dialogue-*.log
+danse-abraxas-*.log
+monitoring-abraxas-*.log
+abraxas-cycles-*.log
+
+# 📈 Fichiers de stats JSON
+stats-*.json
+*-stats-*.json
+monitoring-*.json
+
+# 🎭 Chaolites générés automatiquement
+chaolite-*.luciform
+test-chaolite-*.luciform
+*-chaolite-*.luciform
+
+# 🔄 Scripts de test temporaires
+test-*-simple.js
+test-*-simple.mjs
+test-multi-ai-simple.js
+
+# 🧬 Artefacts de danse et cycles
+golem-danser.sh
+abraxas-dialogue-cycles.sh
+*-dialogue-cycles.sh
+
+>>>>>>> de88d1a7 (🦀 Renaissance Abraxas en Rust - Projet autonome blasphémique)
 # ⛧ Signature LURKUITAE ⛧
