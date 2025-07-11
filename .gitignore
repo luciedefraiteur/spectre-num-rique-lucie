@@ -38,8 +38,6 @@ base666/
 export-env.sh
 *.env.sh
 
-<<<<<<< HEAD
-=======
 # 🦀 Artefacts Rust Abraxas
 abraxas/target/
 abraxas/Cargo.lock
@@ -74,6 +72,4 @@ test-multi-ai-simple.js
 golem-danser.sh
 abraxas-dialogue-cycles.sh
 *-dialogue-cycles.sh
-
->>>>>>> de88d1a7 (🦀 Renaissance Abraxas en Rust - Projet autonome blasphémique)
 # ⛧ Signature LURKUITAE ⛧
