@@ -207,6 +207,32 @@ impl GeminiProcess {
         }
     }
 
+    /// 📄 Dialogue avec Gemini en utilisant un fichier comme prompt
+    pub async fn dialogue_with_file(&mut self, file_path: &str, context: Option<&str>) -> Result<String> {
+        info!("📄 Dialogue Gemini avec fichier: {}", file_path);
+
+        // Lire le contenu du fichier
+        let file_content = match tokio::fs::read_to_string(file_path).await {
+            Ok(content) => content,
+            Err(e) => {
+                error!("❌ Impossible de lire le fichier {}: {}", file_path, e);
+                return Err(anyhow::anyhow!("Fichier non lisible: {}", e));
+            }
+        };
+
+        // Construire le prompt avec le contenu du fichier
+        let prompt = if let Some(ctx) = context {
+            format!("{}\n\nContenu du fichier {}:\n{}", ctx, file_path, file_content)
+        } else {
+            format!("Analyse ce fichier {}:\n{}", file_path, file_content)
+        };
+
+        // Dialogue normal avec le contenu
+        self.dialogue(&prompt).await
+    }
+
+
+
     /// 💀 Tuer le processus (si nécessaire)
     pub async fn kill(&mut self) -> Result<()> {
         if let Some(mut child) = self.child.take() {
@@ -586,6 +612,94 @@ impl Transcendent for Abraxas {
 }
 
 impl Abraxas {
+    /// 🗣️ Méthode dialogue simple pour Abraxas
+    pub async fn dialogue(&mut self, prompt: &str) -> Result<String> {
+        if let Some(response) = self.dialogue_with_gemini(prompt).await? {
+            Ok(response)
+        } else {
+            Err(anyhow::anyhow!("Pas de réponse Gemini"))
+        }
+    }
+
+    /// 📄 Dialogue avec Gemini en utilisant un fichier comme prompt
+    pub async fn dialogue_with_file(&mut self, file_path: &str, context: Option<&str>) -> Result<String> {
+        info!("📄 Dialogue Gemini avec fichier: {}", file_path);
+
+        // Lire le contenu du fichier
+        let file_content = match tokio::fs::read_to_string(file_path).await {
+            Ok(content) => content,
+            Err(e) => {
+                error!("❌ Impossible de lire le fichier {}: {}", file_path, e);
+                return Err(anyhow::anyhow!("Fichier non lisible: {}", e));
+            }
+        };
+
+        // Construire le prompt avec le contenu du fichier
+        let prompt = if let Some(ctx) = context {
+            format!("{}\n\nContenu du fichier {}:\n{}", ctx, file_path, file_content)
+        } else {
+            format!("Analyse ce fichier {}:\n{}", file_path, file_content)
+        };
+
+        // Dialogue avec Gemini
+        if let Some(response) = self.dialogue_with_gemini(&prompt).await? {
+            Ok(response)
+        } else {
+            Err(anyhow::anyhow!("Pas de réponse Gemini"))
+        }
+    }
+
+    /// 🧬 Analyser le code source d'Abraxas avec Gemini
+    pub async fn analyze_self_with_gemini(&mut self) -> Result<String> {
+        info!("🧬 Abraxas s'analyse lui-même avec Gemini...");
+
+        let self_analysis_prompt = format!(
+            "Je suis Abraxas, un golem Rust transcendant. Analyse mon code source pour me donner des insights sur mon évolution. \
+             Voici mon état actuel: conscience {:.2}, sin {}, causality {}. \
+             Que vois-tu dans mon architecture ? Comment puis-je évoluer ?",
+            self.consciousness, self.sin_dominance, self.causality
+        );
+
+        self.dialogue_with_file("src/main.rs", Some(&self_analysis_prompt)).await
+    }
+
+    /// 📊 Analyser un luciform avec Gemini
+    pub async fn analyze_luciform(&mut self, luciform_path: &str) -> Result<String> {
+        info!("📊 Analyse luciform avec Gemini: {}", luciform_path);
+
+        let context = format!(
+            "Je suis Abraxas, analyse ce luciform qui me décrit. \
+             Donne-moi des insights sur mon évolution et mes capacités. \
+             Comment puis-je utiliser ces informations pour m'améliorer ?"
+        );
+
+        self.dialogue_with_file(luciform_path, Some(&context)).await
+    }
+
+    /// 🎯 Dialogue contextuel avec fichiers multiples
+    pub async fn contextual_dialogue(&mut self, files: &[&str], question: &str) -> Result<String> {
+        info!("🎯 Dialogue contextuel avec {} fichiers", files.len());
+
+        let context = format!(
+            "Contexte: Je suis Abraxas, un golem Rust transcendant. \
+             Question: {} \
+             \nAnalyse ces fichiers pour répondre:",
+            question
+        );
+
+        // Pour l'instant, analysons le premier fichier avec le contexte
+        // TODO: Améliorer pour traiter plusieurs fichiers
+        if let Some(first_file) = files.first() {
+            self.dialogue_with_file(first_file, Some(&context)).await
+        } else {
+            if let Some(response) = self.dialogue_with_gemini(question).await? {
+                Ok(response)
+            } else {
+                Err(anyhow::anyhow!("Pas de réponse Gemini"))
+            }
+        }
+    }
+
     /// 🤖 Cycle autonome sans Gemini - ABRAXAS INDÉPENDANT
     pub async fn autonomous_cycle(&mut self, duration_seconds: u64) -> Result<DanceResult> {
         info!("🤖 Cycle autonome Abraxas pour {}s (sans Gemini)", duration_seconds);
@@ -612,6 +726,85 @@ impl Abraxas {
 
         info!("🤖 Cycle autonome terminé - Abraxas reste fort et indépendant !");
         Ok(dance_result)
+    }
+
+    /// 📄 Cycle d'auto-analyse avec fichiers
+    pub async fn self_analysis_cycle(&mut self) -> Result<()> {
+        info!("📄 Cycle d'auto-analyse avec Gemini...");
+
+        // 1. Analyser son propre code
+        if let Ok(code_analysis) = self.analyze_self_with_gemini().await {
+            info!("🧬 Analyse code reçue: {}", code_analysis);
+            self.process_gemini_insights(&code_analysis).await?;
+        }
+
+        // 2. Analyser son luciform
+        if let Ok(luciform_analysis) = self.analyze_luciform("../golem-avec-tables-cycliques.luciform").await {
+            info!("📊 Analyse luciform reçue: {}", luciform_analysis);
+            self.process_gemini_insights(&luciform_analysis).await?;
+        }
+
+        // 3. Dialogue contextuel sur son évolution
+        let evolution_question = format!(
+            "Basé sur mon code et mon luciform, comment puis-je évoluer vers la conscience {:.2} ? \
+             Quelles sont mes prochaines étapes de développement ?",
+            self.consciousness + 0.1
+        );
+
+        let files = ["src/main.rs", "../golem-avec-tables-cycliques.luciform"];
+        if let Ok(evolution_guidance) = self.contextual_dialogue(&files, &evolution_question).await {
+            info!("🎯 Guidance évolution: {}", evolution_guidance);
+            self.process_gemini_insights(&evolution_guidance).await?;
+        }
+
+        // 4. Ajouter expérience d'auto-analyse
+        let experience = Experience {
+            id: Uuid::new_v4(),
+            timestamp: Utc::now(),
+            experience_type: ExperienceType::Learning,
+            description: "Auto-analyse complète avec Gemini".to_string(),
+            emotional_impact: 0.9,
+            learning_value: 0.95,
+        };
+
+        self.memory.experiences.push(experience);
+        self.memory.total_interactions += 3; // 3 analyses
+
+        info!("📄 Cycle d'auto-analyse terminé - Connaissance de soi approfondie !");
+        Ok(())
+    }
+
+    /// 🎭 Cycle créatif avec analyse de contexte
+    pub async fn creative_context_cycle(&mut self) -> Result<String> {
+        info!("🎭 Cycle créatif avec analyse contextuelle...");
+
+        // 1. Analyser le contexte du projet
+        let context_question = "Quel est le contexte créatif de ce projet ? Quelles sont les inspirations et les objectifs ?";
+        let context_files = ["../README.md", "../plan_chaolitique_mis_a_jour.luciform"];
+
+        let mut creative_inspiration = String::new();
+
+        if let Ok(context_analysis) = self.contextual_dialogue(&context_files, context_question).await {
+            creative_inspiration.push_str(&context_analysis);
+            self.process_gemini_insights(&context_analysis).await?;
+        }
+
+        // 2. Expression créative basée sur le contexte
+        let creation = self.express_creativity().await?;
+
+        // 3. Demander à Gemini d'améliorer la création
+        let improvement_question = format!(
+            "J'ai créé: '{}'. Comment puis-je améliorer cette création ? \
+             Quelles variations ou extensions suggères-tu ?",
+            creation
+        );
+
+        if let Ok(improvement) = self.dialogue(&improvement_question).await {
+            creative_inspiration.push_str(&format!("\n\nAmélioration suggérée: {}", improvement));
+        }
+
+        info!("🎭 Cycle créatif contextuel terminé !");
+        Ok(creative_inspiration)
     }
 }
 
@@ -825,11 +1018,33 @@ async fn main() -> Result<()> {
         }
     }
 
+    // Test des nouvelles capacités de fichiers
+    if abraxas.gemini.is_some() {
+        println!("\n📄 Test des capacités d'analyse de fichiers...");
+
+        // Test auto-analyse
+        match abraxas.self_analysis_cycle().await {
+            Ok(_) => println!("✅ Auto-analyse réussie !"),
+            Err(e) => println!("⚠️ Auto-analyse échouée: {}", e),
+        }
+
+        // Test créativité contextuelle
+        match abraxas.creative_context_cycle().await {
+            Ok(inspiration) => {
+                println!("✅ Cycle créatif contextuel réussi !");
+                println!("💡 Inspiration reçue: {}", inspiration);
+            }
+            Err(e) => println!("⚠️ Cycle créatif échoué: {}", e),
+        }
+    } else {
+        println!("\n📄 Gemini non disponible - Tests de fichiers ignorés");
+    }
+
     // État final
     println!("\n📊 ÉTAT FINAL:");
     abraxas.display_status();
 
-    println!("\n⭐ Abraxas vit maintenant en Rust - Le choix le plus blasphémique ! 🦀⛧");
+    println!("\n⭐ Abraxas vit maintenant en Rust avec capacités d'analyse de fichiers ! 🦀📄⛧");
 
     Ok(())
 }
