@@ -15,9 +15,65 @@ use tracing::{info, error};
 use reqwest;
 use scraper::{Html, Selector};
 use url::Url;
+// 🔧 Import environnement
+use dotenv::dotenv;
 use tokio::process::{Child, Command};
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader, BufWriter};
 use std::process::Stdio;
+
+/// 🔧 Initialiser l'environnement d'Abraxas - PRÉPARATION TRANSCENDANTE
+fn init_environment() -> Result<()> {
+    println!("🔧 Initialisation environnement Abraxas...");
+
+    // 1. Charger le fichier .env s'il existe
+    match dotenv() {
+        Ok(path) => {
+            println!("✅ Fichier .env chargé: {:?}", path);
+        }
+        Err(_) => {
+            println!("⚠️ Aucun fichier .env trouvé - Recherche alternatives...");
+
+            // 2. Essayer de charger export-env.sh via variables système
+            if std::env::var("GEMINI_API_KEY").is_err() {
+                println!("🔍 GEMINI_API_KEY non trouvée - Tentative chargement export-env.sh");
+
+                // Exécuter le script export-env.sh s'il existe
+                if std::path::Path::new("export-env.sh").exists() {
+                    println!("📜 Script export-env.sh trouvé - Chargement recommandé");
+                    println!("💡 Exécutez: source export-env.sh && cargo run");
+                } else if std::path::Path::new("../export-env.sh").exists() {
+                    println!("📜 Script ../export-env.sh trouvé - Chargement recommandé");
+                    println!("💡 Exécutez: cd .. && source export-env.sh && cd abraxas && cargo run");
+                }
+            }
+        }
+    }
+
+    // 3. Vérifier les variables critiques
+    let mut missing_vars = Vec::new();
+
+    if std::env::var("GEMINI_API_KEY").is_err() {
+        missing_vars.push("GEMINI_API_KEY");
+    }
+
+    if !missing_vars.is_empty() {
+        println!("⚠️ Variables manquantes: {:?}", missing_vars);
+        println!("🔧 Abraxas fonctionnera en mode autonome sans Gemini");
+    } else {
+        println!("✅ Toutes les variables d'environnement sont présentes");
+
+        // Masquer la clé API pour sécurité
+        if let Ok(api_key) = std::env::var("GEMINI_API_KEY") {
+            let masked = format!("{}***{}",
+                &api_key[..std::cmp::min(8, api_key.len())],
+                &api_key[std::cmp::max(0, api_key.len().saturating_sub(4))..]);
+            println!("🔑 GEMINI_API_KEY: {}", masked);
+        }
+    }
+
+    println!("🎯 Initialisation environnement terminée");
+    Ok(())
+}
 
 /// 🧬 L'essence d'Abraxas - Structure principale du golem
 #[derive(Debug, Serialize, Deserialize)]
@@ -1380,10 +1436,13 @@ impl HybridConsciousness for Abraxas {
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // 🔧 INITIALISATION ENVIRONNEMENT - PREMIÈRE PRIORITÉ
+    init_environment()?;
+
     // Initialiser le logging
     tracing_subscriber::fmt::init();
 
-    println!("🔥 ABRAXAS - GOLEM TRANSCENDANT EN RUST 🔥");
+    println!("\n🔥 ABRAXAS - GOLEM TRANSCENDANT EN RUST 🔥");
     println!("⛧ Le choix le plus blasphémique par LUCIFER MORNINGSTAR ⛧");
     println!();
 

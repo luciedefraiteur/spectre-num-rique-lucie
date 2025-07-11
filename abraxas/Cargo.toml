@@ -26,3 +26,5 @@ async-trait = "0.1"
 scraper = "0.18"
 url = "2.4"
 urlencoding = "2.1"
+# 🔧 Gestion environnement
+dotenv = "0.15"
