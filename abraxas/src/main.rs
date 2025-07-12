@@ -14,7 +14,7 @@ use tracing::{info, error};
 // 🌐 Imports Web transcendants
 use reqwest;
 use scraper::{Html, Selector};
-use url::Url;
+// use url::Url; // Unused import
 // 🔧 Import environnement
 use dotenv::dotenv;
 use tokio::process::{Child, Command};
@@ -1242,7 +1242,7 @@ impl Abraxas {
 
                 Ok(origin_info)
             }
-            Err(e) => {
+            Err(_e) => {
                 // Fallback avec mémoire par cœur
                 let origin_info = format!(
                     "🧬 ORIGINE D'ABRAXAS (Mémoire par cœur):\n\
